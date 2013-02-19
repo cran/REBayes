@@ -1,0 +1,7 @@
+GLmix1	Gaussian Location Mixtures for Compound Decision Problem
+GVmix1  Gaussian Scale Mixtures for Panel Data
+GLVmix1	Gaussian Location-Scale Mixtures for Panel Data
+Bmix1	Binomial Mixture with the Beckett-Diaconis tack data
+liktest	Likelihood Evaluation for Gaussian Variance Mixtures Test
+tannenbaum Convergence tolerances do matter (sometimes)
+comparelcd Comparison of medde and logcondens log concave estimation
