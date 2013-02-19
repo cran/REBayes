@@ -1,0 +1,77 @@
+Versions 0.01 - 0.19
+
+This is an experimental package  for exploring various empirical Bayes
+problems usually involving Kiefer-Wolfowitz non parametric ML estimation
+of various mixture problems.  It supplants my earlier MeddeR package that
+had some similar capabilities, but employed an interface to Mosek via Matlab.
+
+Note that there is a .Rprofile file that may be needed to specify the
+license file for mosek.  This may be needed to get mosek()  to agree to do something.
+
+At some point Rmosek became capable of doing multicore things and simulations
+became much more convenient using foreach().
+
+Version 0.20
+
+1.  Added the tuning parameter rtol to KWDual and friends to control the
+convergence tolerance.  The default value of 1e-6 is the same as Mosek
+but in some cases tightening it to say 1e-10  can produce a better solution.
+There is a demo  called "tannenbaum" that illustrates this.
+
+Version 0.21
+
+1.  Fixed a bug in GVmix that was caused by my neglect of a Jacobian (mea
+culpa!).  This shouldn't affect simulation experience simv[123].R since it
+was just a multiplicative factor in the loglikelihood.  But this needs to
+be checked.
+
+Version 0.22
+
+1.  Added Bmix function for Binomial mixtures and a demo of this using the
+Beckett and Diaconis tack data taken (shamelessly) from the DPpackage.
+
+2.  Added rtol parameter to the call for WGLVmix and WGVmix.
+
+3.  Some further cleaning up of bball:  name matching and removal of observations on
+players with fewer than 3 half seasons.
+
+Version 0.23
+
+1.  Fixed the documentation for tacks data.
+
+2.  added option to collapse binomial data into cell counts in Bmix.
+
+Version 0.26
+
+1.  For hist = TRUE option in GLmix the binning is now done with equally
+spaced bins on the full support of the data.  The parameter m can be used
+to choose the bin width. And v can be given to separately control grid for
+fit.
+
+Version 0.27
+
+1.  Changed KWDual to return weighted log likelihood.  This was ok as it
+was when the weights were always 1/n but for the histogram binning, it needed
+to be changed.  Now it returns the average loglikelihood so for example it
+GLmix it gets multiplied by n to get the usual loglikelihood value.
+
+Version 0.28
+
+1.  Added TLmix to do mixtures of Student t's with known df.  Note that the
+equal quantile spacing of the v's is experimental.
+
+Version 0.30
+
+1.  Cleanup of some issues in the medde.Rd file to prepare a version for CRAN.
+
+Version 0.31
+
+1.  Reduced size of example in medde.Rd and moved other examples that ran
+demos out of examples and into details section.
+
+Version 0.32
+
+1.  Reduced size of examples again in medde.Rd and added SystemRequirements line to
+Description file.
+
+

@@ -1,0 +1,21 @@
+The userguide for Rmosek is included for reference.
+
+There are some semi-delicate aspects of Rmosek that need attention the following
+is copied from my Howto/mosek file:
+
+To install Rmosek  a la userguide:  (Assumes that current version is downloaded,
+e.g. in ~roger/Rinstall and R is run in that directory as 64 bit version as sudo.
+
+install.packages("Rmosek_1.2.3.tar.gz", type = "source", libs_only = FALSE, repos = NULL,
+   configure.vars="PKG_MOSEKHOME=/usr/local/mosek/6/tools/platform/osx64x86
+   PKG_MOSEKLIB=mosek64")
+
+Another aspect:  In using R CMD check, by default this runs in --vanilla mode
+so environment variables don't get passed.  Careful reading of the extensions manual
+reveals that you need to make a ~/.R/check.Renviron file containing the line
+
+MOSEKLM_LICENSE_FILE=/usr/local/mosek/6/licenses/mosek.lic
+
+so that mosek finds the license file.  Otherwise one finds that examples
+fail since mosek can't find the license.
+
