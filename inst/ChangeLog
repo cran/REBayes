@@ -74,4 +74,32 @@ Version 0.32
 1.  Reduced size of examples again in medde.Rd and added SystemRequirements line to
 Description file.
 
+Version 0.35
 
+1.  Bug in TLmix that messed up the default v grid.  (Damn missing minus signs!)
+
+2.  Changed the default grid in TLmix back to equally spaced from quantile
+based.  This probably needs further investigation.
+
+3.  Added pv  to return in GLVmix.R and to WGLVmix.R
+
+4.  Added 2012 data to bball
+
+5.  Added g to the returned list from GVmix and WGVmix
+
+6.  Added TLVmix and WTLVmix  to do Gaussian mixture estimation with Student
+t formulation of the likelihood.
+
+7.  Added Gompertzmix and Weibullmix and the medflies data set.
+
+Version 0.37
+
+1.  Changed the definition of g output by GLmix  to agree with its man page.
+If we ever get around to unifying all these functions this needs to be checked
+carefully, there are various issues especially when there are weights
+involved.
+
+Version 0.38
+
+1.  Fixed a bug in the medde function for the monotonized Bayes rule
+estimator.

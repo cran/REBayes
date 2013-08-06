@@ -53,7 +53,7 @@ if(exists("v0")){
 	fv[v0] <- 1/diff(v)[v0]
 	}
 else{
-	f<-GVmix(y,id,rtol = rtol, verb=verb)
+	f<-GVmix(y,id,rtol = rtol, pv = pv, verb=verb)
 	fv<-f$y
 	}
 

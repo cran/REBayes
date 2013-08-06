@@ -24,7 +24,9 @@ required package \pkg{Rmosek}.
 }
 \value{An object of class density with components
 \item{x}{points of evaluation on the domain of the density}
-\item{y}{estimated function values at the points x, the mixing density}
+\item{y}{estimated function values at the points v, the mixing density}
+\item{g}{the estimated mixture density returned via approxfun}
+\item{dy}{prediction of mean parameters for each observed x value via Bayes Rule}
 \item{logLik}{Log likelihood value at the proposed solution}
 \item{flag}{exit code from the optimizer}
 }

@@ -28,11 +28,12 @@ See Gu and Koenker (2012?)
 An object of class \code{density}  consisting of the following components:
 \item{x}{the variance bin boundaries}
 \item{y}{the function values of the mixing density for the variances. }
+\item{g}{the function values of the mixture density at the observed y's.}
 \item{logLik}{the value of the log likelihood at the solution}
 \item{status}{the mosek convergence status.}
 }
 \references{
-Gu Y. and R. Koenker (2012)  
+Gu Y. and R. Koenker (2013)  
 }
 \author{R. Koenker}
 \keyword{nonparametric}

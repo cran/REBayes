@@ -8,7 +8,7 @@ TLmix <- function(x, v, u, df = 1, m = 300, eps = 1e-6,
    #   u is a grid of points on which we bin the x's
    #   df is the degrees of freedom parameter of the Student base density
    n <- length(x)
-   if(missing(v)) v <- c(min(x)-eps,quantile(x,(1:(m-1))/m), max(x)+eps)
+   if(missing(v)) v <- seq(min(x)-eps, max(x)+eps, length = m)
    if(hist){
       if(missing(u)) u <- seq(min(x)-eps,max(x)+eps,length = m)
       w <- tabulate(findInterval(x,u))
@@ -18,9 +18,9 @@ TLmix <- function(x, v, u, df = 1, m = 300, eps = 1e-6,
       x <- x[wnz]
       }
    else 
-      w <- rep(1,n)/n
+   w <- rep(1,n)/n
    d <- diff(v)
-   v <- (v[-1] + v[m+1])/2
+   d <- c(d[1],d)
    A <- dt(outer(x,v,"-"),df = df) 
    A <- Matrix(A, sparse = TRUE)
    f = KWDual(x,w,d,A, rtol = rtol, verb = verb)

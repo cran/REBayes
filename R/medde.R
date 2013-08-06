@@ -101,7 +101,7 @@ C <- rep(0,p+q)
 if(lambda > -1)
    A <- cbind(H , t(XJ))
 else {
-   A <- cbind(H , t(XJ))
+   A <- cbind(H , -t(XJ))
    C[(p+1):(p+q)] <- rep(1,q)
    }
 A <- as(as.matrix.csc(A),"dgCMatrix")

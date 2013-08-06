@@ -1,8 +1,8 @@
-WGLVmix <- function(y, id, w, u, v, pu = 300, pv = 300, eps = 1e-6, 
+WTLVmix <- function(y, id, w, u, v, pu = 300, pv = 300, eps = 1e-6, 
 	rtol = 1.0e-6, verb=0)
 {
 
-   # Kiefer-Wolfowitz Estimation of Gaussian Location and Variance Mixtures
+   # Kiefer-Wolfowitz Estimation of Gaussian Location and Variance Mixtures Student t Version
    # Input:
    #   y is an N vector of observed values
    #   id is an N vector of indices for the n "individuals"
@@ -33,21 +33,10 @@ if(length(v) == 1) {
 du <- diff(u)
 du <- c(du[1],du)
 wu <- rep(1,n)/n
-dv <- diff(v)
-dv <- c(dv[1],dv)
 wv <- rep(1,n)/n
 
-# Note that 2*r*s/theta ~ chisq_2r  so A needs to be an n by p matrix with entries
-# f(s,theta) = (r*s/theta)^r exp(-r*s/theta)/(s Gamma(r))
-
-R <- outer(r*s,v,"/")  
-sgamma <- outer(s * gamma(r),rep(1,pv))
-r <- outer((m - 1)/2, rep(1,pv))
-Av <- outer((exp(-R) * R^r)/sgamma, rep(1,pu))
-Au <- dnorm(outer(outer(t, u, "-") * outer(sqrt(wsum),rep(1,pu)), sqrt(v), "/"))
-Au <- Au/outer(outer(1/sqrt(wsum),rep(1,pu)),sqrt(v))
-Au <- aperm(Au,c(1,3,2)) # permute Au indices so that they are aligned with those of Av
-A <- Av * Au
+Au <- dt(outer(t, u, "-") * outer(sqrt(wsum/s),rep(1,pu)),df = m-1)
+Au <- Au/outer(sqrt(s/wsum),rep(1,pu))
 
 # Initialize the variances 
 
@@ -63,10 +52,6 @@ else{
 
 #Now do the mean part. 
 
-Au<-matrix(0,n,pu)
-for(i in 1:pu){
-	Au[,i] <- A[,,i] %*% (fv/sum(fv) )
-	}
 Au <- Matrix(Au, sparse = TRUE)
 f <- KWDual(t,wu,du,Au, rtol = rtol, verb = verb)
 fu <- f$f
