@@ -8,6 +8,7 @@ GVmix <- function(y, id, v, pv = 300, eps = 1e-6, rtol = 1.0e-6, verb=0){
    # Output:
    #   v as above
    #   fv mixing density for the variances
+   #   g mixture density at the observed s's
    #   flag indicating (non)convergence code (0 is OK)
 
 s <- tapply(y,id,"var")
@@ -30,7 +31,8 @@ A <- (exp(-R) * R^(r-1))/vgamma
 A <- Matrix(A, sparse = TRUE)
 f <- KWDual(s,wv,dv,A, rtol = rtol, verb = verb)
 y <- f$f/sum(f$f * dv)
-z <- list(x = v, y = y, logLik = f$logLik, flag = f$status)
+g <- A %*% y
+z <- list(x = v, y = y, g = g, logLik = f$logLik, flag = f$status)
 class(z) <- "density"
 return(z)
 }

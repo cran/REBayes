@@ -21,8 +21,12 @@ GLmix <- function(x, v, m = 300, eps = 1e-6, hist = FALSE, rtol = 1.0e-06, verb=
    d <- c(d[1],d)
    A <- dnorm(outer(x,v,"-")) 
    A <- Matrix(A, sparse = TRUE)
-   f = KWDual(x,w,d,A, rtol = rtol, verb = verb)
-z <- list(x = v, y = f$f, g = f$g, logLik = n * f$logLik, flag = f$status)
+   f <- KWDual(x,w,d,A, rtol = rtol, verb = verb)
+   y <- f$f
+   dy <- as.vector((A %*% (y * v))/(A %*% y))
+   o <- order(x)
+   g <- approxfun(x[o], w[o]/(sum(f$f)*f$g[o]), rule = 2) 
+z <- list(x = v, y = f$f, g = g, dy = dy, logLik = n * f$logLik, flag = f$status)
 class(z) <- "density"
 return(z)
 }

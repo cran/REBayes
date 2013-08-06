@@ -5,7 +5,7 @@
 Baseball Batting Averages
 }
 \description{
-U.S. Major League Batting Average Data:  2002-2011
+U.S. Major League Batting Average Data:  2002-2012
 }
 \usage{data(bball)}
 \format{
