@@ -42,7 +42,7 @@ opro[5,] <-  as.list(rep(0,n))
 P$scopt<- list(opro = opro)
 P$dparam$intpnt_nl_tol_rel_gap <- rtol
 z <- mosek(P, opts = list(verbose = verb))
-status = z$sol$itr$solsta
+status <- z$sol$itr$solsta
 g <- z$sol$itr$xx
 f <- z$sol$itr$suc
 logLik <- sum(w * log(w/(g * sum(f))))

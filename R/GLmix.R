@@ -1,9 +1,11 @@
-GLmix <- function(x, v, m = 300, eps = 1e-6, hist = FALSE, rtol = 1.0e-06, verb=0){
+GLmix <- function(x, v, m = 300, sigma = 1, eps = 1e-6, hist = FALSE, 
+		  rtol = 1.0e-06, verb=0){
 
    # Kiefer-Wolfowitz Estimation Gaussian Location mixtures
    # Input:
    #   x is an n vector of observed values
    #   v is a grid of points on which we evaluate (optional)
+   #   sigma is the scale of the Gaussian noise
    #   u is a grid of points on which we bin the x's
    n <- length(x)
    if(missing(v)) v <- seq(min(x)-eps,max(x)+eps,length = m)
@@ -19,14 +21,15 @@ GLmix <- function(x, v, m = 300, eps = 1e-6, hist = FALSE, rtol = 1.0e-06, verb=
       w <- rep(1,length(x))/length(x)
    d <- diff(v)
    d <- c(d[1],d)
-   A <- dnorm(outer(x,v,"-")) 
+   A <- dnorm(outer(x,v,"-"),sd = sigma) 
    A <- Matrix(A, sparse = TRUE)
    f <- KWDual(x,w,d,A, rtol = rtol, verb = verb)
    y <- f$f
    dy <- as.vector((A %*% (y * v))/(A %*% y))
    o <- order(x)
    g <- approxfun(x[o], w[o]/(sum(f$f)*f$g[o]), rule = 2) 
-z <- list(x = v, y = f$f, g = g, dy = dy, logLik = n * f$logLik, flag = f$status)
-class(z) <- "density"
+z <- list(x = v, y = f$f, g = g, sigma = sigma, dy = dy, logLik = n * f$logLik, 
+	  flag = f$status)
+class(z) <- c("GLmix", "density")
 return(z)
 }

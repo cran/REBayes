@@ -103,3 +103,18 @@ Version 0.38
 
 1.  Fixed a bug in the medde function for the monotonized Bayes rule
 estimator.
+
+Version 0.41
+
+1.  Removed GLVmix and WGLVmix since they are supplanted by TLVmix and
+WTLVmix.
+
+2.  Added a predict.GLmix function as an illustration for how to do prediction
+from the posterior for Lp norm loss with p in {0,1,2}.
+
+3.  Added a sigma argument to GLmix so that one can specify non standard
+Gaussian noise.
+
+4.  Added a demo for prediction to illustrate (3.).
+
+5.  Added check for zero indices in the Loss = 1 predict.GLmix function

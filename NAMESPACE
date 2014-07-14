@@ -1,3 +1,5 @@
 # Export all names
+import(SparseM)
 import(Matrix)
+import(Rmosek)
 exportPattern(".")

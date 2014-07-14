@@ -17,8 +17,8 @@
 	equally spaced grid of 300 values} 
   \item{lambda}{ total variation penalty parameter, if lambda is in [-1,0], 
 	a concavity constraint is imposed. If lambda is in (-oo, -1)
-	a convexity constraint on .5 x^2 + log f is imposed. See Koenker (2011)
-	for further details on this last option, and Koenker and Mizera (2010)
+	a convexity constraint on .5 x^2 + log f is imposed. See Koenker and Mizera 
+	(2013) for further details on this last option, and Koenker and Mizera (2010)
 	for further details on the concavity constrained options.}
   \item{alpha}{ Renyi entropy parameter characterizing fidelity criterion }
   \item{Dorder}{ Order of the derivative operator for the penalty} 
@@ -29,7 +29,7 @@
   \item{p}{ probabilities to evaluate in calls to qmedde}
   \item{medde}{ fitted medde object for calls in qmedde and rmedde}
   \item{smooth}{ option to draw random meddes from the smoothed density
-	estimate, as described in Chen and Samworth (2012)}
+	estimate, as described in Chen and Samworth (2013)}
 }
 \details{
 See the references for further details. And also Mosek "Manuals".
@@ -57,8 +57,8 @@ The acronym has a nice connection to
 \item{status}{exit status from Mosek}
 }
 \references{
-Chen, Y. and R.J. Samworth, (2012) "Smoothed log-concave maximum 
-likelihood estimation with applications", preprint, U. of Cambridge.
+Chen, Y. and R.J. Samworth, (2013) "Smoothed log-concave maximum 
+likelihood estimation with applications", \emph{Statistica Sinica}, 23, 1373--1398.
 
 Koenker, R and I. Mizera, 
 ``Density Estimation by Total Variation Regularization,'' 
@@ -73,6 +73,9 @@ Asymptotic Statistics}, (2006).
 
 Koenker, R and I. Mizera, (2010) ``Quasi-Concave Density Estimation'' 
 \emph{Annals of Statistics}, 38, 2998-3027.
+
+Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
+Compound Decisions, and Empirical Bayes Rules,'' submitted. 
 }
 
 \author{Roger Koenker}

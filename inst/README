@@ -1,21 +1,33 @@
-The userguide for Rmosek is included for reference.
 
-There are some semi-delicate aspects of Rmosek that need attention the following
-is copied from my Howto/mosek file:
+			Advice to Those Installing REBayes
 
-To install Rmosek  a la userguide:  (Assumes that current version is downloaded,
-e.g. in ~roger/Rinstall and R is run in that directory as 64 bit version as sudo.
+The REBayes package is now available from CRAN.  However, unlike most R packages
+it requires some further installation actions.  In an ideal world, CRAN would
+automagically install the Rmosek package as well.  Installation of dependencies
+usually work fine, but Rmosek requires some tweaking at install time.  Rmosek
+is an interface to the mosek environment of Erling Andersen.  You should install
+mosek first, along with its license file before trying to use REBayes.
 
-install.packages("Rmosek_1.2.3.tar.gz", type = "source", libs_only = FALSE, repos = NULL,
-   configure.vars="PKG_MOSEKHOME=/usr/local/mosek/6/tools/platform/osx64x86
-   PKG_MOSEKLIB=mosek64")
+The academic license is now freely downloadable from 
+http://license.mosek.com/license2/academic/ and used to be good for 90 days, 
+but now apparently is good for one year.
+Just fill in the form and then via email you get a license file (mosek.lic) 
+that needs to be moved to  the appropriate place in the mosek directory.
+This used to be into the subdirectory licenses, but since version 7 it belongs
+in MOSEKHOME.  Of course you need to verify that the mosek executable is in
+your path:  try mosek from the shell command line to check this.  It used to
+be necessary to define the location of the license file as a shell variable
+but this no longer seems necessary either.  Once mosek is installed, the next
+step is to install the R package Rmosek.  Since version 7 of mosek there seems
+to be some conflict with the CRAN version so you need to download Rmosek from
+R-forge rather than CRAN.  See the suggestion on the Rmosek webpage.
 
-Another aspect:  In using R CMD check, by default this runs in --vanilla mode
-so environment variables don't get passed.  Careful reading of the extensions manual
-reveals that you need to make a ~/.R/check.Renviron file containing the line
+Now install REBayes also from source and all should be well to test you might
+try as an initial step:
 
-MOSEKLM_LICENSE_FILE=/usr/local/mosek/6/licenses/mosek.lic
+require(REBayes)
+demo(GLmix1)
 
-so that mosek finds the license file.  Otherwise one finds that examples
-fail since mosek can't find the license.
+Considerable further detail is available from the mosek and Rmosek documentation.
 
+Installation on windows is more challenging, but can be done with enough patience.
