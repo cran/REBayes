@@ -6,8 +6,8 @@
 \alias{plot.medde}
 \title{Maximum Entropy [De]Regularized Density Estimation}
 \description{Density estimation based on maximum entropy methods}
-\usage{ medde(x, v = 300, lambda, alpha = 1, Dorder = 1, rtol = 1e-06, verb = 0)
-
+\usage{ medde(x, v = 300, lambda, alpha = 1, Dorder = 1, rtol = 1e-06, 
+	verb = 0, control = NULL)
 	qmedde(p,medde)
 	rmedde(n,medde,smooth = TRUE)
 }
@@ -25,6 +25,7 @@
   \item{rtol}{ Convergence tolerance for Mosek algorithm}
   \item{verb}{ Parameter controlling verbosity of solution, 0 for silent, 5 
 	gives rather detailed iteration log.} 
+  \item{control}{ Mosek control list see KWDual documentation}
   \item{n}{ number of observations desired in calls to rmedde}
   \item{p}{ probabilities to evaluate in calls to qmedde}
   \item{medde}{ fitted medde object for calls in qmedde and rmedde}

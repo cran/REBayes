@@ -5,7 +5,7 @@
 \description{Density estimation based on Kiefer Wolfowitz method}
 \usage{ 
 GLmix(x, v, m = 300, sigma = 1, eps = 1e-06, hist = FALSE, 
-    rtol = 1.0e-6, verb = 0) 
+    rtol = 1.0e-6, verb = 0, control = NULL) 
 \method{predict}{GLmix}(object, newdata, Loss = 2, ...)
 }
 \arguments{
@@ -17,6 +17,7 @@ GLmix(x, v, m = 300, sigma = 1, eps = 1e-06, hist = FALSE,
   \item{hist}{If TRUE then aggregate x to histogram weights} 
   \item{rtol}{ relative tolerance for dual gap convergence criterion }
   \item{verb}{integer determining how verbose the output should be}
+  \item{control}{ Mosek control list see KWDual documentation}
   \item{object}{fitted object of class "GLmix"}
   \item{newdata}{Values at which prediction is desired}
   \item{Loss}{Loss function used to generate prediction}
@@ -26,6 +27,9 @@ GLmix(x, v, m = 300, sigma = 1, eps = 1e-06, hist = FALSE,
 Kiefer Wolfowitz MLE density estimation as proposed by Jiang and Zhang for the
 Gaussian compound decision problem.  The histogram option is intended for large
 problems, say n > 1000, where reducing the sample size dimension is desirable.
+When \code{sigma} is heterogeneous and \code{hist = TRUE} the procedure tries
+to do separate histogram binning for distinct values of \code{sigma}, however
+this is only feasible when there are only a small number of distinct \code{sigma}.
 By default the grid for the binning is equally spaced on the support of the data.
 This function does the normal convolution problem, for gamma mixtures of variances
 see \code{GVmix}, or for mixtures of both means and variances \code{TLVmix}. 

@@ -9,7 +9,7 @@ A Kiefer-Wolfowitz procedure for ML estimation of a Gaussian model with
 independent variance components with longitudinal data.
 }
 \usage{
-GVmix(y, id, v, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0)
+GVmix(y, id, v, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0, control = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,6 +20,7 @@ GVmix(y, id, v, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0)
   \item{eps}{A tolerance for determining the support of the bins}
   \item{rtol}{ relative tolerance for dual gap convergence criterion }
   \item{verb}{A flag indicating how verbose the Mosek output should be}
+  \item{control}{ Mosek control list see KWDual documentation}
 }
 \details{
 See Gu and Koenker (2012?)

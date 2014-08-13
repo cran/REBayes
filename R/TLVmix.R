@@ -1,4 +1,5 @@
-TLVmix <- function(y, id, u, v, pu = 300, pv = 300, eps = 1e-6, rtol = 1.0e-6,verb=0){
+TLVmix <- function(y, id, u, v, pu = 300, pv = 300, eps = 1e-6, rtol = 1.0e-6,
+		   verb=0, control = NULL){
 
    # Kiefer-Wolfowitz Estimation of Gaussian Location and Variance Mixtures
    # (This differs from GLVmix in that the likelihood formulation is Student t)
@@ -50,7 +51,7 @@ else{
 #Now do the mean part. 
 
 Au <- Matrix(Au, sparse = TRUE)
-f <- KWDual(t,wu,du,Au,rtol = rtol, verb = verb)
+f <- KWDual(t,wu,du,Au,rtol = rtol, verb = verb, control = control)
 fu <- f$f
 flag <- f$status
 list(u = u, fu = fu, v = v, fv = fv, logLik = f$logLik, flag = flag)

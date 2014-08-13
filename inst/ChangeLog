@@ -118,3 +118,12 @@ Gaussian noise.
 4.  Added a demo for prediction to illustrate (3.).
 
 5.  Added check for zero indices in the Loss = 1 predict.GLmix function
+
+Version 0.47
+
+1.  Fixed the hist option in GLmix to deal with heterogeneous sigmas.
+
+Version 0.48
+
+1.  Added control option to allow users to pass mosek control parameters,
+mainly at this point to control num_threads for use in simulations.

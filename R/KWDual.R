@@ -1,4 +1,4 @@
-KWDual <- function(x, w, d, A, rtol = 1.0e-6, verb = 0){
+KWDual <- function(x, w, d, A, rtol = 1.0e-6, verb = 0, control = NULL){
 ############################################################################
 # Useage:  KWDual(x, w, d, A, rtol = 1.0e-6, verb = 0)
 #
@@ -9,9 +9,9 @@ KWDual <- function(x, w, d, A, rtol = 1.0e-6, verb = 0){
 #       min_x  {F(x) := sum -log (x_i)}  s.t. A' x <= d, 0 <= x,  
 #
 #
-#	where e.g.  A = phi(outer(Y,g,"-")), with Y data and g a grid on the support of Y.
+#	where e.g.  A = phi(outer(Y,g,"fun")), with Y data and g a grid on the support of Y,
+#	and "fun"  is some function representing the dependence of the base distribution.
 #
-#	This is an Rmosek version of an earlier MeddeR function
 #-------------------------------------------------------------------------------------
 #
 # Roger Koenker 
@@ -41,6 +41,11 @@ opro[4,] <-  as.list(rep(1,n))
 opro[5,] <-  as.list(rep(0,n))
 P$scopt<- list(opro = opro)
 P$dparam$intpnt_nl_tol_rel_gap <- rtol
+if(length(control)){
+    P$iparam <- control$iparam
+    P$dparam <- control$dparam
+    P$sparam <- control$sparam
+}
 z <- mosek(P, opts = list(verbose = verb))
 status <- z$sol$itr$solsta
 g <- z$sol$itr$xx

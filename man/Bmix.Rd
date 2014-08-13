@@ -3,7 +3,8 @@
 \title{ Binomial mixture estimation via Kiefer Wolfowitz MLE }
 \description{ Binomial mixture estimation via Kiefer Wolfowitz MLE }
 \usage{
-Bmix(x, k, v, m = 300, eps = 1e-06, rtol = 1e-09, collapse = TRUE, verb = 0)
+Bmix(x, k, v, m = 300, eps = 1e-06, rtol = 1e-09, collapse = TRUE, 
+     verb = 0, control = NULL)
 }
 \arguments{
   \item{x}{ count of "successes" for binomial observations }
@@ -15,6 +16,7 @@ Bmix(x, k, v, m = 300, eps = 1e-06, rtol = 1e-09, collapse = TRUE, verb = 0)
   \item{rtol}{ Convergence tolerance for duality gap in Mosek.  }
   \item{collapse}{Collapse observations into cell counts. }
   \item{verb}{ Integer determining verbosity of Mosek output }
+  \item{control}{ Mosek control list see KWDual documentation}
 }
 \details{Interior point solution of Kiefer-Wolfowitz NPMLE for mixture of binomials }
 

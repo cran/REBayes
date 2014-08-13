@@ -8,39 +8,19 @@ Kiefer-Wolfowitz NPMLE for Gompertz Mixtures of scale parameter
 }
 \usage{
 Gompertzmix(x, v, alpha, theta, m = 300, weight = rep(1, length(x)), 
-	eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0)
+	eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0, control = NULL)
 }
-\arguments{
-  \item{x}{
-Survival times
-}
-  \item{v}{
-Grid values for mixing distribution
-}
-  \item{alpha}{
-Shape parameter for Gompertz distribution
-}
-  \item{theta}{
-Scale parameter for Gompertz Distribution
-}
-  \item{m}{
-Number of v grid points
-}
-  \item{weight}{
-Frequency (count) for survival times
-}
-  \item{eps}{
-tolerance parameter
-}
-  \item{hist}{
-If TRUE aggregate to histogram counts
-}
-  \item{rtol}{
-convergence tolerance for optimization
-}
-  \item{verb}{
-verboseness of optimization
-}
+\arguments{ \item{x}{ Survival times }
+  \item{v}{ Grid values for mixing distribution }
+  \item{alpha}{ Shape parameter for Gompertz distribution }
+  \item{theta}{ Scale parameter for Gompertz Distribution }
+  \item{m}{ Number of v grid points }
+  \item{weight}{ Frequency (count) for survival times }
+  \item{eps}{ tolerance parameter }
+  \item{hist}{ If TRUE aggregate to histogram counts }
+  \item{rtol}{ convergence tolerance for optimization }
+  \item{verb}{ verboseness of optimization }
+  \item{control}{ Mosek control parameters see KWDual documentation}
 }
 \details{
 Kiefer Wolfowitz NPMLE density estimation for Gompertz scale mixtures.

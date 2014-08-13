@@ -1,7 +1,7 @@
 Package: REBayes
 Title: Empirical Bayes Estimation and Inference in R
 Description: Kiefer-Wolfowitz Maximum Likelihood Estimation for Mixtures
-Version: 0.45
+Version: 0.48
 Author: Roger Koenker <rkoenker@uiuc.edu>
 Maintainer: Roger Koenker <rkoenker@uiuc.edu>
 Depends: R (>= 2.10), Rmosek,Matrix,SparseM
@@ -10,7 +10,7 @@ SystemRequirements: MOSEK (http://www.mosek.com) and MOSEK License for
         use of Rmosek.
 License: GPL (>= 2)
 URL: http://www.r-project.org
-Packaged: 2014-07-13 19:36:36 UTC; roger
+Packaged: 2014-08-13 15:28:56 UTC; roger
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-07-14 08:08:31
+Date/Publication: 2014-08-13 19:12:53

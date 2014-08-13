@@ -8,39 +8,22 @@ Kiefer-Wolfowitz NPMLE for Weibull Mixtures of scale parameter
 }
 \usage{
 Weibullmix(x, v, alpha, lambda, weight = rep(1, length(x)), m = 300, 
-	eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0)
+	eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0, control = NULL)
 }
 \arguments{
   \item{x}{
 Survival times
 }
-  \item{v}{
-Grid values for mixing distribution
-}
-  \item{alpha}{
-Shape parameter for Weibull distribution
-}
-  \item{lambda}{
-Scale parameter for Weibull Distribution
-}
-  \item{m}{
-Number of v grid points
-}
-  \item{weight}{
-Frequency (count) for survival times
-}
-  \item{eps}{
-tolerance parameter
-}
-  \item{hist}{
-If TRUE aggregate to histogram counts
-}
-  \item{rtol}{
-convergence tolerance for optimization
-}
-  \item{verb}{
-verboseness of optimization
-}
+  \item{v}{ Grid values for mixing distribution }
+  \item{alpha}{ Shape parameter for Weibull distribution }
+  \item{lambda}{ Scale parameter for Weibull Distribution }
+  \item{m}{ Number of v grid points }
+  \item{weight}{ Frequency (count) for survival times }
+  \item{eps}{ tolerance parameter }
+  \item{hist}{ If TRUE aggregate to histogram counts }
+  \item{rtol}{ convergence tolerance for optimization }
+  \item{verb}{ verboseness of optimization }
+  \item{control}{ Mosek control list see KWDual documentation}
 }
 \details{
 Kiefer Wolfowitz NPMLE density estimation for Weibull scale mixtures.

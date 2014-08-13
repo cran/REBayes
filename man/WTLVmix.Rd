@@ -10,7 +10,8 @@ independent mean and variance components with weighted longitudinal data.
 This version employs a Student t version of the likelihood.
 }
 \usage{
-WTLVmix(y, id, w, u, v, pu = 300, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0)
+WTLVmix(y, id, w, u, v, pu = 300, pv = 300, eps = 1e-06, rtol = 1.0e-6, 
+	verb = 0, control = NULL)
 }
 \arguments{
   \item{y}{ A vector of observations }
@@ -23,6 +24,7 @@ WTLVmix(y, id, w, u, v, pu = 300, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0
   \item{eps}{A tolerance for determining the support of the bins}
   \item{rtol}{A tolerance for determining duality gap convergence tolerance in Mosek}
   \item{verb}{A flag indicating how verbose the Mosek output should be}
+  \item{control}{ Mosek control list see KWDual documentation}
 }
 \details{
 The vector \code{v} can be specified as a scalar; in this case no mixture

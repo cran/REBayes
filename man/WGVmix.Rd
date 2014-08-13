@@ -9,7 +9,7 @@ A Kiefer-Wolfowitz procedure for ML estimation of a Gaussian model with
 independent variance components with weighted longitudinal data.
 }
 \usage{
-WGVmix(y, id, w, v, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0)
+WGVmix(y, id, w, v, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0, control = NULL)
 }
 \arguments{
   \item{y}{ A vector of observations }
@@ -20,6 +20,7 @@ WGVmix(y, id, w, v, pv = 300, eps = 1e-06, rtol = 1.0e-6, verb = 0)
   \item{eps}{A tolerance for determining the support of the bins}
   \item{rtol}{A tolerance for determining duality gap convergence tolerance in Mosek}
   \item{verb}{A flag indicating how verbose the Mosek output should be}
+  \item{control}{ Mosek control list see KWDual documentation}
 }
 \details{
 See Gu and Koenker (2012?)

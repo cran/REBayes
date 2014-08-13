@@ -1,5 +1,5 @@
 Gompertzmix <- function(x, v, alpha, theta, m=300, weight = rep(1, length(x)),
-	eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0){
+	eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0, control = NULL){
     # Log-scale for frailty Gompertz model
     # f(t|alpha,theta,v) = theta * exp(v) * exp(alpha * t) * 
     #      exp(-(theta/alpha) * exp(v) * (exp(alpha*t)-1))
@@ -28,7 +28,7 @@ Gompertzmix <- function(x, v, alpha, theta, m=300, weight = rep(1, length(x)),
         }
     }
     A <- Matrix(A, sparse = TRUE)
-    f = KWDual(x, w, d, A, rtol = rtol, verb = verb)
+    f = KWDual(x, w, d, A, rtol = rtol, verb = verb, control = control)
     z <- list(x = v, y = f$f, g = f$g, logLik = n * f$logLik, 
     flag = f$status)
     class(z) <- "density"

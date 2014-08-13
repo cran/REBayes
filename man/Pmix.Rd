@@ -7,7 +7,7 @@ Poisson mixture estimation via Kiefer Wolfowitz MLE
 Poisson mixture estimation via Kiefer Wolfowitz MLE
 }
 \usage{
-Pmix(X, v, m = 300, eps = 1e-06, rtol = 1e-06, verb = 0)
+Pmix(X, v, m = 300, eps = 1e-06, rtol = 1e-06, verb = 0, control = NULL)
 }
 \arguments{
   \item{X}{
@@ -29,6 +29,7 @@ Tolerance parameter for Mosek converence
   \item{verb}{
 integer determining how verbose the Mosek output should be
 }
+\item{control}{ Mosek control list see KWDual documentation}
 }
 \details{
 Kiefer Wolfowitz NPMLE estimation for Poisson mixtures.

@@ -1,5 +1,5 @@
 medde <- function(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, 
-	rtol = 1e-06, verb = 0){
+	rtol = 1e-06, verb = 0, control = NULL){
 ############################################################################
 # fit <- medde(x, v, lambda, alpha, Dorder, rtol, verb)
 #
@@ -167,6 +167,11 @@ else
 
 P$scopt <- list(opro = opro)
 P$dparam$intpnt_nl_tol_rel_gap <- rtol
+if(length(control)){
+    P$iparam <- control$iparam
+    P$dparam <- control$dparam
+    P$sparam <- control$sparam
+}
 z <- mosek(P, opts = list(verbose = verb))
 status = z$sol$itr$solsta
 if(status != "OPTIMAL") warning(paste("Solution status = ", status))

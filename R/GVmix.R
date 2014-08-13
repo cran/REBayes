@@ -1,4 +1,5 @@
-GVmix <- function(y, id, v, pv = 300, eps = 1e-6, rtol = 1.0e-6, verb=0){
+GVmix <- function(y, id, v, pv = 300, eps = 1e-6, rtol = 1.0e-6, 
+		  verb=0, control = NULL){
 
    # Kiefer-Wolfowitz Estimation of Gaussian Variance Mixtures for repeated measures 
    # Input:
@@ -29,7 +30,7 @@ vgamma <- outer(gamma(r)/r, v)
 r <- outer((m - 1)/2, rep(1,pv))
 A <- (exp(-R) * R^(r-1))/vgamma
 A <- Matrix(A, sparse = TRUE)
-f <- KWDual(s,wv,dv,A, rtol = rtol, verb = verb)
+f <- KWDual(s,wv,dv,A, rtol = rtol, verb = verb, control = control)
 y <- f$f/sum(f$f * dv)
 g <- A %*% y
 z <- list(x = v, y = y, g = g, logLik = f$logLik, flag = f$status)

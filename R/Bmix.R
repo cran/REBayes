@@ -1,4 +1,5 @@
-Bmix <- function(x, k, v, m = 300, eps = 1e-6, rtol = 1.0e-9, collapse = TRUE, verb=0){
+Bmix <- function(x, k, v, m = 300, eps = 1e-6, rtol = 1.0e-9, 
+		 collapse = TRUE, verb=0, control = NULL){
 
    # Kiefer-Wolfowitz Estimation of Binomial Mixtures
    # Input:
@@ -24,7 +25,7 @@ Bmix <- function(x, k, v, m = 300, eps = 1e-6, rtol = 1.0e-9, collapse = TRUE, v
    d <- c(d[1],d)
    A <- outer(x,v,function(x, v, k) dbinom(x,size = k, prob = v), k = k)
    A <- Matrix(A, sparse = TRUE)
-   z <- KWDual(x,w,d,A, rtol = rtol, verb = verb)
+   z <- KWDual(x,w,d,A, rtol = rtol, verb = verb, control = control)
    f <- z$f
    z <- list(x = v, y = f, logLik = z$logLik, flag = z$status)
 class(z) <- "density"

@@ -4,10 +4,10 @@
 Dual optimization for Kiefer-Wolfowitz problems
 }
 \description{
-Interface function for calls to Mosek from various REBayesfunctions
+Interface function for calls to Mosek from various REBayes functions
 }
 \usage{
-KWDual(x, w, d, A, rtol = 1.0e-6, verb = 0)
+KWDual(x, w, d, A, rtol = 1.0e-6, verb = 0, control = NULL)
 }
 \arguments{
   \item{x}{
@@ -27,6 +27,17 @@ relative tolerance for dual gap convergence criterion
 }
   \item{verb}{
 verbosity desired from mosek
+}
+  \item{control}{
+control list consisting of sublists \code{iparam}, \code{dparam}, and \code{sparam},
+containing elements of various mosek control parameters.  See the Rmosek and Mosek
+manuals for further details.  A prime example is \code{rtol} which should eventually
+be deprecated and folded into \code{control}, but will persist for a while for
+compatibility reasons.  Another example, the one that motivated the introduction
+of \code{control} would be \code{control = list(iparam = list(num_threads = 1))},
+which forces Mosek to use a single threaded process.  The default allows Mosek
+to uses multiple threads (cores) if available, which is generally desirable, but
+may have unintended consequences when running simulations on clusters.
 }
 }
 \details{

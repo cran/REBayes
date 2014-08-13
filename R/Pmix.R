@@ -1,4 +1,4 @@
-Pmix <- function(X, v, m = 300, eps = 1e-6, rtol = 1e-06, verb=0){
+Pmix <- function(X, v, m = 300, eps = 1e-6, rtol = 1e-06, verb=0, control = NULL){
 
    # Kiefer-Wolfowitz Estimation of Poisson Mixtures
    # Input:
@@ -14,7 +14,7 @@ Pmix <- function(X, v, m = 300, eps = 1e-6, rtol = 1e-06, verb=0){
    d <- c(d[1],d)
    A <- outer(x,v,"dpois")
    A <- Matrix(A, sparse = TRUE)
-   z <- KWDual(x,w,d,A,rtol,verb)
+   z <- KWDual(x,w,d,A,rtol,verb, control = control)
    f <- z$f
    y <- 0:(max(x) + 1)
    g <- outer(y,v,"dpois") %*% f

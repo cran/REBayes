@@ -1,5 +1,5 @@
 Weibullmix <- function(x, v, alpha, lambda, weight = rep(1, length(x)), 
-	m=300, eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0){
+	m=300, eps = 1e-06, hist = FALSE, rtol = 1e-06, verb = 0, control = NULL){
     # log-scale for frailty Weibull model 
     # f(t|alpha, lambda) = alpha * exp(v) * (lambda * t )^(alpha-1) * 
 	# exp(-(lambda * t)^alpha * exp(v))
@@ -24,7 +24,7 @@ Weibullmix <- function(x, v, alpha, lambda, weight = rep(1, length(x)),
     for(j in 1:length(v))
        A[,j] <- dweibull(x,shape=alpha, scale = (1/lambda) * (exp(v[j]))^(-1/alpha))
     A <- Matrix(A, sparse = TRUE)
-    f = KWDual(x, w, d, A, rtol = rtol, verb = verb)
+    f = KWDual(x, w, d, A, rtol = rtol, verb = verb, control = control)
     z <- list(x = v, y = f$f, g = f$g, logLik = n * f$logLik, 
     flag = f$status)
     class(z) <- "density"
