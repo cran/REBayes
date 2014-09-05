@@ -127,3 +127,13 @@ Version 0.48
 
 1.  Added control option to allow users to pass mosek control parameters,
 mainly at this point to control num_threads for use in simulations.
+
+Version 0.49
+
+1.  Added WGLVmix for bivariate panel problems like the income dynamics paper.
+
+2.  Added reference to JSS Convex Opt paper to medde man page
+
+Version 0.50
+
+1.  Fixed Gompertzmix.R  in accordance with Brian's advice.

@@ -57,26 +57,29 @@ The acronym has a nice connection to
 \item{logLik}{log likelihood value}
 \item{status}{exit status from Mosek}
 }
-\references{
+\references{a 
 Chen, Y. and R.J. Samworth, (2013) "Smoothed log-concave maximum 
 likelihood estimation with applications", \emph{Statistica Sinica}, 23, 1373--1398.
 
-Koenker, R and I. Mizera, 
+Koenker, R and I. Mizera, (2007) 
 ``Density Estimation by Total Variation Regularization,'' 
 \emph{Advances in Statistical Modeling and Inference:  Essays in Honor of
-Kjell Doksum}, V.N. Nair (ed.) (2007), 613-634.
+Kjell Doksum}, V.N. Nair (ed.), 613-634.
 
-Koenker, R and I. Mizera, 
+Koenker, R and I. Mizera, (2006)
 ``The alter egos of the regularized maximum likelihood density estimators:
 deregularized maximum-entropy, Shannon, Renyi, Simpson, Gini, and stretched
 strings,'' \emph{ Proceedings of the  7th Prague Symposium on
-Asymptotic Statistics}, (2006).
+Asymptotic Statistics}.
 
 Koenker, R and I. Mizera, (2010) ``Quasi-Concave Density Estimation'' 
 \emph{Annals of Statistics}, 38, 2998-3027.
 
 Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
-Compound Decisions, and Empirical Bayes Rules,'' submitted. 
+Compound Decisions, and Empirical Bayes Rules,'' JASA, 109, 674--685. 
+
+Koenker, R and I. Mizera, (2014) ``Convex Optimization in R.'', 
+\emph{Journal of Statistical Software}, 60, 1-23.
 }
 
 \author{Roger Koenker}

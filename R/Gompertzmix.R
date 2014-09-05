@@ -4,7 +4,7 @@ Gompertzmix <- function(x, v, alpha, theta, m=300, weight = rep(1, length(x)),
     # f(t|alpha,theta,v) = theta * exp(v) * exp(alpha * t) * 
     #      exp(-(theta/alpha) * exp(v) * (exp(alpha*t)-1))
     # Support is bounded by max and min of MLE for v
-    require(reliaR)
+    requireNamespace("reliaR", quietly = TRUE)
     n <- length(x)
     if (missing(v)) # Support is bounded by max and min of MLE for v
         v <- seq(min(-log((theta/alpha)*(exp(alpha*x)-1)))-eps,
@@ -24,7 +24,7 @@ Gompertzmix <- function(x, v, alpha, theta, m=300, weight = rep(1, length(x)),
     A <- matrix(0, nrow=n,ncol=length(v))
     for (i in 1:n){
         for (j in 1:length(v)){
-            A[i,j] <- dgompertz(x[i],alpha=alpha, theta = theta * exp(v[j]))
+            A[i,j] <- reliaR::dgompertz(x[i],alpha=alpha, theta = theta * exp(v[j]))
         }
     }
     A <- Matrix(A, sparse = TRUE)
