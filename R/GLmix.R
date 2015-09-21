@@ -1,11 +1,61 @@
-GLmix <- function (x, v, m = 300, sigma = 1, eps = 1e-06, hist = FALSE, 
-    rtol = 1e-06, verb = 0, control = NULL) 
+#' Kiefer-Wolfowitz NPMLE for Gaussian Location Mixtures
+#' 
+#' Kiefer Wolfowitz Nonparametric MLE for Gaussian Location Mixtures
+#' 
+#' Kiefer Wolfowitz MLE as proposed by Jiang and Zhang for
+#' the Gaussian compound decision problem.  The histogram option is intended
+#' for large problems, say n > 1000, where reducing the sample size dimension
+#' is desirable. When \code{sigma} is heterogeneous and \code{hist = TRUE} the
+#' procedure tries to do separate histogram binning for distinct values of
+#' \code{sigma}, however this is only feasible when there are only a small
+#' number of distinct \code{sigma}. By default the grid for the binning is
+#' equally spaced on the support of the data. This function does the normal
+#' convolution problem, for gamma mixtures of variances see \code{GVmix}, or
+#' for mixtures of both means and variances \code{TLVmix}.  
+#' 
+#' The predict method for \code{GLmix} objects will compute means, medians or
+#' modes of the posterior according to whether the \code{Loss} argument is 2, 1
+#' or 0.
+#' 
+#' @param x Data: Sample Observations
+#' @param v Undata: Grid Values defaults equal spacing of with v bins, when v is
+#' a scalar
+#' @param sigma scale parameter of the Gaussian noise
+#' @param hist If TRUE then aggregate x to histogram bins
+#' @param histm histogram bin boundaries, equally spacing with \code{histm} 
+#' bins when  scalar.
+#' @param weights  replicate weights for x obervations, should sum to 1 
+#' @param ... other parameters to pass to KWDual to control optimization
+#' @return An object of class density with components: 
+#' 	\item{x}{points of  evaluation on the domain of the density} 
+#' 	\item{y}{estimated function values at the points v, the mixing density} 
+#' 	\item{g}{the estimated mixture density function values at x} 
+#' 	\item{logLik}{Log likelihood value at the proposed solution} 
+#' 	\item{dy}{prediction of mean parameters for each observed x value via Bayes Rule} 
+#' 	\item{status}{exit code from the optimizer}
+#' @author Roger Koenker
+#' @references Kiefer, J. and J. Wolfowitz Consistency of the Maximum
+#' Likelihood Estimator in the Presence of Infinitely Many Incidental
+#' Parameters \emph{Ann. Math. Statist}.  Volume 27, Number 4 (1956), 887-906.
+#' 
+#' Jiang, Wenhua and Cun-Hui Zhang General maximum likelihood empirical Bayes
+#' estimation of normal means \emph{Ann. Statist.}, Volume 37, Number 4 (2009),
+#' 1647-1684.
+#'
+#' Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
+#' Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
+#' @keywords nonparametric
+#' @importFrom stats dnorm
+#' @export
+GLmix <- function (x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = NULL, ...)
 {
     n <- length(x)
-    if (missing(v)) 
-        v <- seq(min(x) - eps, max(x) + eps, length = m)
+    eps <- 1e-4
+    if (length(v) ==1) 
+        v <- seq(min(x) - eps, max(x) + eps, length = v)
+    m <- length(v)
     if (hist) {
-      histbin <- function(x, m = 300, eps = 1e-06) {
+      histbin <- function(x, m = histm, eps = 1e-06) {
         u <- seq(min(x) - eps, max(x) + eps, length = m)
         w <- tabulate(findInterval(x, u))
         x <- (u[-1] + u[-m])/2
@@ -32,18 +82,18 @@ GLmix <- function (x, v, m = 300, sigma = 1, eps = 1e-06, hist = FALSE,
 	    sigma <- rep(sus,unlist(lapply(h, function(f) length(f$x))))
       }
     }
-    else w <- rep(1, length(x))/length(x)
+    if(length(weights)) w <- weights
+    else w <- rep(1, n)/n
     d <- diff(v)
-    d <- c(d[1], d)
+    v <- (v[-1] + v[-m])/2
     A <- dnorm(outer(x, v, "-"), sd = sigma)
-    A <- Matrix(A, sparse = TRUE)
-    f <- KWDual(x, w, d, A, rtol = rtol, verb = verb, control = control)
+    f <- KWDual(A, d, w, ...)
     y <- f$f
-    dy <- as.vector((A %*% (y * v))/(A %*% y))
-    o <- order(x)
-    g <- approxfun(x[o], w[o]/(sum(f$f) * f$g[o]), rule = 2)
-    z <- list(x = v, y = f$f, g = g, sigma = sigma, dy = dy, 
-        logLik = n * f$logLik, flag = f$status)
+    g <- f$g
+    logLik <- n * sum(w * log(g))
+    dy <- as.vector((A %*% (y * d * v))/g)
+    z <- list(x = v, y = y, g = g, logLik = logLik, 
+	dx = x, dy = dy, status = f$status)
     class(z) <- c("GLmix", "density")
     return(z)
 }

@@ -137,3 +137,32 @@ Version 0.49
 Version 0.50
 
 1.  Fixed Gompertzmix.R  in accordance with Brian's advice.
+
+Version 0.52
+
+1.  Major cleanup of code and conversion of documentation to roxygen2 format.
+
+2.  Added function to compute Cosslett (1983) estimator for binary choice
+model.
+
+3.  Rationalized likelihood and Bayes Rule computations for KW functions.
+
+Version 0.54
+
+1.  Removed dependence on SparseM, which was causing some difficulties with
+R CMD check and NAMESPACE conflicts.  With any luck this should also produce
+some efficiency gain perhaps very slight.  
+
+2.  Cleaned up Description file and added Jiaying and Ivan to authors list.
+
+3.  Added importFrom directives for stats graphics and methods packages.
+
+4.  Added option to compute KW solutions via the POGS procedure.  This is
+quite experimental at this stage.  Try demo(GLmix2) to illustrate use and
+performance.
+
+Version 0.55
+
+1.  Reintroduced weights for all of the fitting routines that didn't already
+have them.  (As a consequence of trying to reconstruct medfly figures which
+required them, as pointed out by Jiaying.)

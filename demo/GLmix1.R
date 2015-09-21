@@ -8,5 +8,5 @@ m <- 300
 v <- rep(0,n)
 v[sample(n,7500)] <- 2
 y <- rnorm(n) + v
-z <- GLmix(y, m = m, hist = TRUE, verb = 5)
+z <- GLmix(y, hist = TRUE, verb = 5)
 plot(z,xlab = expression(mu),main = "Estimated Mixing Density")

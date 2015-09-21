@@ -1,9 +1,21 @@
 
+#' Predict Method for GLmix
+#' 
+#' Predict Method for Gaussian Location Mixtures
+#' 
+#' The predict method for \code{GLmix} objects will compute means, medians or
+#' modes of the posterior according to the \code{Loss} argument.  Typically,
+#' \code{newdata} would be passed to \code{predict}
+#' 
+#' @param object fitted object of class "GLmix"
+#' @param newdata Values at which prediction is desired
+#' @param Loss Loss function used to generate prediction
+#' @param ... optional arguments to predict
+#' @return A vector of predictions
+#' @author Roger Koenker
+#' @keywords nonparametric
+#' @export
 predict.GLmix <- function(object, newdata, Loss = 2, ...) {
-    #Given a fitted Gaussian Location Mixture predict at the vector x:
-    #	object is a fitted GLmix object
-    #	newdata  the points at which predictions are desired
-    #   Loss is the p of the Lp loss function
     x <- newdata
     v <- object$x
     fv <- object$y
