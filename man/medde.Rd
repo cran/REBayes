@@ -16,7 +16,7 @@ equally spaced grid of 300 values}
 
 \item{lambda}{total variation penalty parameter, if lambda is in [-1,0], a
 concavity constraint is imposed. If lambda is in (-oo, -1) a convexity
-constraint on .5 x^2 + log f is imposed. See Koenker and Mizera (2013) for
+constraint on .5 x^2 + log f is imposed. See Koenker and Mizera (2014) for
 further details on this last option, and Koenker and Mizera (2010) for
 further details on the concavity constrained options.}
 
@@ -114,7 +114,7 @@ Prague Symposium on Asymptotic Statistics}.
 Koenker, R and I. Mizera, (2010) ``Quasi-Concave Density Estimation''
 \emph{Annals of Statistics}, 38, 2998-3027.
 
-Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
+Koenker, R and I. Mizera, (2014) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' JASA, 109, 674--685.
 
 Koenker, R and I. Mizera, (2014) ``Convex Optimization in R.'',

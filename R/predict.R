@@ -1,4 +1,3 @@
-
 #' Predict Method for GLmix
 #' 
 #' Predict Method for Gaussian Location Mixtures

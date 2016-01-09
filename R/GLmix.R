@@ -20,8 +20,11 @@
 #' @param x Data: Sample Observations
 #' @param v Undata: Grid Values defaults equal spacing of with v bins, when v is
 #' a scalar
-#' @param sigma scale parameter of the Gaussian noise
-#' @param hist If TRUE then aggregate x to histogram bins
+#' @param sigma scale parameter of the Gaussian noise, may take vector values
+#' of length(x)
+#' @param hist If TRUE then aggregate x to histogram bins, when sigma is vector
+#' valued this option is inappropriate unless there are only a small number of
+#' distinct sigma values.
 #' @param histm histogram bin boundaries, equally spacing with \code{histm} 
 #' bins when  scalar.
 #' @param weights  replicate weights for x obervations, should sum to 1 
@@ -54,18 +57,28 @@ GLmix <- function (x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = N
     if (length(v) ==1) 
         v <- seq(min(x) - eps, max(x) + eps, length = v)
     m <- length(v)
+    weights <- weights/sum(weights)
+    w <- weights
     if (hist) {
-      histbin <- function(x, m = histm, eps = 1e-06) {
+      histbin <- function(x, m = histm, eps = 1e-06, weights = weights) {
         u <- seq(min(x) - eps, max(x) + eps, length = m)
-        w <- tabulate(findInterval(x, u))
-        x <- (u[-1] + u[-m])/2
-        wnz <- (w > 0)
-        w <- w[wnz]/sum(w[wnz])
-        list(x = x[wnz], w = w)
+        xu <- findInterval(x, u)
+	txu <- tabulate(xu)
+        midu <- (u[-1] + u[-m])/2
+        wnz <- (txu > 0)
+	if(length(weights)){ 
+	    if(length(weights) == length(x)) 
+		w <- as.numeric(tapply(weights, xu, sum))
+	    else
+		stop("length(weights) not equal length(x)")
+	    }
+	else
+	    w <- txu[wnz]/sum(txu[wnz])
+        list(midu = midu[wnz], w = w)
         }
       if(length(sigma) == 1){
-	  h <- histbin(x, m)
-	  x <- h$x
+	  h <- histbin(x, m = histm, weights = weights)
+	  x <- h$midu
 	  w <- h$w
 	}
       else { # create sigma bins for histogram
@@ -74,16 +87,19 @@ GLmix <- function (x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = N
 	    nus <- table(us)
 	    if(min(nus) < 100) stop("too few obs in some sigma bin")
 	    h <- as.list(1:length(nus))
-	    for(i in 1:length(sus))
-		h[[i]] <- histbin(x[us == i],m)
-	    x <- unlist(lapply(h, function(f) f$x))
+	    for(i in 1:length(sus)){
+		if(length(weights))
+		    h[[i]] <- histbin(x[us == i],m = histm, weights = weights[us == i])
+		else
+		    h[[i]] <- histbin(x[us == i],m = histm, weights = weights)
+	    }
+	    x <- unlist(lapply(h, function(f) f$midu))
 	    w <- unlist(lapply(h, function(f) f$w))
 	    w <- w/sum(w)
-	    sigma <- rep(sus,unlist(lapply(h, function(f) length(f$x))))
+	    sigma <- rep(sus,unlist(lapply(h, function(f) length(f$midu))))
       }
     }
-    if(length(weights)) w <- weights
-    else w <- rep(1, n)/n
+    if(!length(w)) w <- rep(1, n)/n
     d <- diff(v)
     v <- (v[-1] + v[-m])/2
     A <- dnorm(outer(x, v, "-"), sd = sigma)
@@ -93,7 +109,7 @@ GLmix <- function (x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = N
     logLik <- n * sum(w * log(g))
     dy <- as.vector((A %*% (y * d * v))/g)
     z <- list(x = v, y = y, g = g, logLik = logLik, 
-	dx = x, dy = dy, status = f$status)
+	sigma = sigma, dx = x, dy = dy, status = f$status)
     class(z) <- c("GLmix", "density")
     return(z)
 }

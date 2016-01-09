@@ -1,4 +1,5 @@
-GLmix1	Gaussian Location Mixtures for Compound Decision Problem
+GLmix0	Gaussian Location Mixtures for Compound Decision Problem 
+GLmix1	Gaussian Location Mixtures for Compound Decision Problem with hist = TRUE
 GLmix2	Gaussian Location Mixtures Mosek vs POGS implementations
 GVmix1  Gaussian Scale Mixtures for Panel Data
 WGLVmix1 Gaussian Location-Scale Mixtures for Panel Data

@@ -29,6 +29,7 @@
 Bmix <- function(x, k, v = 300, collapse = TRUE, weights = NULL, ...){
 
     n <- length(x)
+    w <- weights
     if(collapse){ #collapse observations into cell counts
       T <- table(x,k)
       x <- rep(as.numeric(dimnames(T)[[1]]), NCOL(T))
@@ -40,8 +41,7 @@ Bmix <- function(x, k, v = 300, collapse = TRUE, weights = NULL, ...){
       k <- k[s]
       w <- y/sum(y)
       }
-    if(length(weights)) w <- weights
-    else w <- rep(1,n)/n
+    if(!length(w)) w <-  rep(1,n)/n
    eps <- 1e-4
    if(length(v) == 1) v <- seq(eps, 1 - eps, length = v)
    m <- length(v)

@@ -118,7 +118,7 @@ if(length(dots$method))
 rtol <- ifelse(length(dots$rtol), dots$rtol, 1e-6)
 verb <- ifelse(length(dots$verb), dots$verb, 0)
 if(length(dots$control)) control <- dots$control
-else control <- dots
+else control <- NULL
 
 
 C <- rep(0,n)

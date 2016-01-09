@@ -40,7 +40,7 @@ Kiefer, J. and J. Wolfowitz Consistency of the Maximum
 Likelihood Estimator in the Presence of Infinitely Many Incidental
 Parameters \emph{Ann. Math. Statist}. 27, (1956), 887-906.
 
-Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
+Koenker, R and I. Mizera, (2014) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 }
 \keyword{nonparametric}

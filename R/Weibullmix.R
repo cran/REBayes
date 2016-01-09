@@ -37,7 +37,9 @@ Weibullmix <- function(x, v = 300, u = 300, alpha, lambda, hist = FALSE, weights
     if (length(v) == 1) 
         v <- seq(min(-alpha*log(lambda * x))-eps,max(-alpha*log(lambda * x))+eps,length=v)
 	
+    w <- weights
     if (hist) {
+	if(length(w)) stop("weights not allowed with hist option")
 	if(length(u) == 1)
 	    u <- seq(min(x) - eps, max(x) + eps, length = u)
 	m <- length(u)
@@ -47,8 +49,7 @@ Weibullmix <- function(x, v = 300, u = 300, alpha, lambda, hist = FALSE, weights
         w <- w[wnz]/sum(w[wnz])
         x <- x[wnz]
     }
-    if(length(weights)) w <- weights
-    else w <- rep(1,n)/n
+    if(!length(w)) w <- rep(1,n)/n
     m <- length(v)
     d <- diff(v)
     v <- (v[-1]+v[-m])/2

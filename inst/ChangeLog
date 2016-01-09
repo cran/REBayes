@@ -166,3 +166,21 @@ Version 0.55
 1.  Reintroduced weights for all of the fitting routines that didn't already
 have them.  (As a consequence of trying to reconstruct medfly figures which
 required them, as pointed out by Jiaying.)
+
+Version 0.58
+
+1.  Commented out all the POGS options since CRAN didn't like package
+dependencies that didn't have a proper repo.
+
+Version 0.59
+
+1.  Fixed weights for GLmix which didn't work right when hist = TRUE option
+was used.
+
+2.  Also fixed weights in Bmix and Weibull.
+
+Version 0.61
+
+1.  Fixed bug in KWDual that inhibited passing rtol
+
+2.  Fixed date on Koenker-Mizera pointed about by Kurt

@@ -13,9 +13,12 @@ GLmix(x, v = 300, sigma = 1, hist = FALSE, histm = 300,
 \item{v}{Undata: Grid Values defaults equal spacing of with v bins, when v is
 a scalar}
 
-\item{sigma}{scale parameter of the Gaussian noise}
+\item{sigma}{scale parameter of the Gaussian noise, may take vector values
+of length(x)}
 
-\item{hist}{If TRUE then aggregate x to histogram bins}
+\item{hist}{If TRUE then aggregate x to histogram bins, when sigma is vector
+valued this option is inappropriate unless there are only a small number of
+distinct sigma values.}
 
 \item{histm}{histogram bin boundaries, equally spacing with \code{histm}
 bins when  scalar.}
@@ -64,7 +67,7 @@ Jiang, Wenhua and Cun-Hui Zhang General maximum likelihood empirical Bayes
 estimation of normal means \emph{Ann. Statist.}, Volume 37, Number 4 (2009),
 1647-1684.
 
-Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
+Koenker, R and I. Mizera, (2014) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 }
 \keyword{nonparametric}

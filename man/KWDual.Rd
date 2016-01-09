@@ -60,7 +60,7 @@ and employs an ADMM (Alternating Direction Method of Multipliers) approach.
 R. Koenker
 }
 \references{
-Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
+Koenker, R and I. Mizera, (2014) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 
 Mosek Aps (2015) Users Guide to the R-to-Mosek Optimization Interface,
