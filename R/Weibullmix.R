@@ -13,7 +13,8 @@
 #' @param v Grid values for mixing distribution
 #' @param u Grid values for histogram bins, if needed
 #' @param alpha Shape parameter for Weibull distribution
-#' @param lambda Scale parameter for Weibull Distribution
+#' @param lambda Scale parameter for Weibull Distribution; must either have length 1, or length
+#' equal to \code{length(x)} the latter case accommodates the possibility of a linear predictor
 #' @param hist If TRUE aggregate to histogram counts
 #' @param weights  replicate weights for x obervations, should sum to 1 
 #' @param ...  optional parameters passed to KWDual to control optimization 
@@ -31,7 +32,7 @@
 #' @keywords nonparametric
 #' @importFrom stats dweibull
 #' @export
-Weibullmix <- function(x, v = 300, u = 300, alpha, lambda, hist = FALSE, weights = NULL,  ...){
+Weibullmix <- function(x, v = 300, u = 300, alpha, lambda = 1, hist = FALSE, weights = NULL,  ...){
     n <- length(x)
     eps <- 1e-4
     if (length(v) == 1) 
@@ -53,7 +54,17 @@ Weibullmix <- function(x, v = 300, u = 300, alpha, lambda, hist = FALSE, weights
     m <- length(v)
     d <- diff(v)
     v <- (v[-1]+v[-m])/2
-    A <- outer(x, (1/lambda) * (exp(v))^(-1/alpha), FUN = dweibull, shape = alpha)
+    if(length(lambda) == 1)
+        A <- outer(x, (1/lambda) * (exp(v))^(-1/alpha), FUN = dweibull, shape = alpha)
+    else if(length(lambda) == n){
+       A <- matrix(0, nrow = n, ncol = length(v))
+       for (j in 1:length(v)) {
+           s <- (1/lambda) * (exp(v[j]))^(-1/alpha)
+           A[, j] <- dweibull(x, shape = alpha, scale = s)
+           }
+    }
+    else
+        stop("lambda is of wrong dimension")
     f = KWDual(A, d, w, ...)
     logLik <- n * sum(w * log(f$g))
     dy <- as.vector((A %*% (f$f * d * v))/f$g)  

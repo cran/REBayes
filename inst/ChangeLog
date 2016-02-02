@@ -184,3 +184,16 @@ Version 0.61
 1.  Fixed bug in KWDual that inhibited passing rtol
 
 2.  Fixed date on Koenker-Mizera pointed about by Kurt
+
+Version 0.62
+
+1.  Made lambda = 1 the default in Weibullmix
+
+2.  Added Norberg life insurance data.
+
+3.  Modified Weibullmix to allow lambda to be a vector to accommodate a linear
+predictor for profile likelihood settings.
+
+4.  Modified Pmix to allow exposure variable
+
+5.  Added vignette rebayes.pdf 

@@ -108,16 +108,15 @@
 medde <- function(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, 
 	rtol = 1e-06, verb = 0, control = NULL){
 ############################################################################
-#'fit <- medde(x, v, lambda, alpha, Dorder, rtol, verb)
 #
 #
-#'First version: 22 Dec 2006  (only does Dorder <- 1, and a few alphas)
-#'               26 Dec 2006  (does Dorder <- 1,2,3, and a few more alphas)
-#'               28 Dec 2006  (added merge flag) 
-#'               31 Dec 2006  (log-concave case) 
-#'                5 Jan 2007  (bivariate case) 
-#'                9 Apr 2008  (well-tempered case) 
-#'                1 Jul 2015  (Revised version without SparseM)
+# First version: 22 Dec 2006  (only does Dorder <- 1, and a few alphas)
+#               26 Dec 2006  (does Dorder <- 1,2,3, and a few more alphas)
+#               28 Dec 2006  (added merge flag) 
+#               31 Dec 2006  (log-concave case) 
+#                5 Jan 2007  (bivariate case) 
+#                9 Apr 2008  (well-tempered case) 
+#                1 Jul 2015  (Revised version without SparseM)
 ############################################################################
 
 
