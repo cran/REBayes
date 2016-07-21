@@ -18,7 +18,8 @@ equally spaced grid of 300 values}
 concavity constraint is imposed. If lambda is in (-oo, -1) a convexity
 constraint on .5 x^2 + log f is imposed. See Koenker and Mizera (2013) for
 further details on this last option, and Koenker and Mizera (2010) for
-further details on the concavity constrained options.}
+further details on the concavity constrained options.  The demo Brown
+recreates the monotonized Bayes rule example in Figure 1 of the 2013 paper.}
 
 \item{alpha}{Renyi entropy parameter characterizing fidelity criterion}
 

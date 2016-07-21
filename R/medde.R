@@ -44,7 +44,8 @@
 #' concavity constraint is imposed. If lambda is in (-oo, -1) a convexity
 #' constraint on .5 x^2 + log f is imposed. See Koenker and Mizera (2013) for
 #' further details on this last option, and Koenker and Mizera (2010) for
-#' further details on the concavity constrained options.
+#' further details on the concavity constrained options.  The demo Brown
+#' recreates the monotonized Bayes rule example in Figure 1 of the 2013 paper.
 #' @param alpha Renyi entropy parameter characterizing fidelity criterion
 #' @param Dorder Order of the derivative operator for the penalty
 #' @param rtol Convergence tolerance for Mosek algorithm
@@ -193,7 +194,7 @@ if(Dorder %in% 0:2){
 else
    stop("Dorder must be in {0,1,2}")
 
-   XJ <- sparseMatrix(IA, JA, x = XA, dims = c(q,p))
+   XJ <- sparseMatrix(IA, JA, x = -XA, dims = c(q,p))
    list(XJ = XJ, XC = d, XL = R, XU = v)
 }
 if(dimx != dimv) 

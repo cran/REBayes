@@ -33,8 +33,8 @@ R programs to extract the data from the original sources are available on reques
 }
 }
 \references{
-Gu, Jiaying and Roger Koenker (2015) Empirical Bayesball Remixed,
-preprint.
+Gu, Jiaying and Roger Koenker (2015) Empirical Bayesball Remixed:
+Empirical Bayes Methods for Longitudinal Data, J. Applied Econometrics, forthcoming.
 }
 \keyword{data}
 

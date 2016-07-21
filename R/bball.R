@@ -24,8 +24,8 @@
 #' 	\item agesq age squared
 #' }
 #' @source  ESPN Website: \url{http://espn.go.com/mlb/statistics}
-#' @references Gu, Jiaying and Roger Koenker (2015) Empirical Bayesball Remixed,
-#' preprint.
+#' @references Gu, Jiaying and Roger Koenker (2015) Empirical Bayesball Remixed:
+#' Empirical Bayes Methods for Longitudinal Data, J. Applied Econometrics, forthcoming.
 #' @keywords data
 #' @name bball
 NULL

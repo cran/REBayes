@@ -185,7 +185,7 @@ Version 0.61
 
 2.  Fixed date on Koenker-Mizera pointed about by Kurt
 
-Version 0.62
+Version 0.62  submitted Feb 2 2016
 
 1.  Made lambda = 1 the default in Weibullmix
 
@@ -197,3 +197,17 @@ predictor for profile likelihood settings.
 4.  Modified Pmix to allow exposure variable
 
 5.  Added vignette rebayes.pdf 
+
+Version 0.63
+
+1.  added importFrom("stats", "dpois") to NAMESPACE.
+
+2.  added WTLmix to do iterative Normal/Gamma estimation for the independent 
+prior longitudinal model.
+
+3.  Fixed sign bug in mesh1 inside medde and added a demo to recreate Figure 
+from the paper Convex Optimization Shape Constraints, Compound Decisions and
+Empirical Bayes Rules. XJ had the wrong sign coming out of mesh1.
+
+4.  Added Rxiv function for archiving table and figure files, still needs
+work.
