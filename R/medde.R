@@ -23,7 +23,13 @@
 #
 #' where \eqn{x}x is a vector with two component subvectors: \eqn{x_1} is a 
 #' vector of function values of the density \eqn{x_2} is a vector of dual values,
-#' \eqn{\lambda} is typically positive, if negative then the \eqn{x_2} constraint
+#' \eqn{\lambda} is typically positive, and controls the fluctuation of the Dorder
+#' derivative of some transform of the density. When alpha = 1 this transform is
+#' simply the logarithm of the density, and Dorder = 1 yields a piecewise exponential
+#' estimate; when Dorder = 2 then we obtain a variant of Silverman's (1982) estimator
+#' that shrinks the fitted density toward the Gaussian, i.e. with total variation
+#' of the second derivative of \eqn{\log f} equal to zero.  See demo(Silverman) for
+#' an illustration of this case.  If \eqn{lambda} is negative then the \eqn{x_2} constraint
 #' is replaced by \eqn{x_2 \geq 0}, which for \eqn{\alpha = 1}, 
 #' constrains the fitted density to be log-concave, for
 #' negative lambda fitting for other alphas and Dorders 
@@ -47,12 +53,14 @@
 #' further details on the concavity constrained options.  The demo Brown
 #' recreates the monotonized Bayes rule example in Figure 1 of the 2013 paper.
 #' @param alpha Renyi entropy parameter characterizing fidelity criterion
+#' by default 1 is log-concave and 0.5 is Hellinger.
 #' @param Dorder Order of the derivative operator for the penalty
+#' @param w  weights corresponding to x observations
 #' @param rtol Convergence tolerance for Mosek algorithm
 #' @param verb Parameter controlling verbosity of solution, 0 for silent, 5
 #' gives rather detailed iteration log.
 #' @param control Mosek control list see KWDual documentation
-#' @return An object of class "Medde" with components \item{x}{points of
+#' @return An object of class "medde" with components \item{x}{points of
 #' evaluation on the domain of the density} \item{y}{estimated function values
 #' at the evaluation points x} \item{phi}{n by 2 matrix of (sorted) original
 #' data and estimated log density values these data points} \item{logLik}{log
@@ -84,6 +92,7 @@
 #' @keywords nonparametric
 #' @export
 #' @import Matrix
+#' @importFrom stats dpois
 #' @examples
 #' 
 #' #Maximum Likelihood Estimation of a Log-Concave Density
@@ -107,7 +116,7 @@
 #' 
 #' 
 medde <- function(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, 
-	rtol = 1e-06, verb = 0, control = NULL){
+	w = NULL, rtol = 1e-06, verb = 0, control = NULL){
 ############################################################################
 #
 #
@@ -118,6 +127,7 @@ medde <- function(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
 #                5 Jan 2007  (bivariate case) 
 #                9 Apr 2008  (well-tempered case) 
 #                1 Jul 2015  (Revised version without SparseM)
+#		28 Sep 2016  (Fixed bug and added weights)
 ############################################################################
 
 
@@ -146,8 +156,8 @@ mesh1 <- function(x, v, Dorder = 1) {
 #      XJ  - the penalty block of the constraint matrix
 #      XU  - the unique values at which the density is to be estimated
 #
-# Roger Koenker, last MeddeR revision 4 Jan 2007
-#                    RMosek version 12 Nov 2012
+# Roger Koenker, adapted from MeddeR revision 4 Jan 2007
+#                    RMosek version 3.3.0  (2016-05-03)
 ############################################################################
 
 n <- length(x)
@@ -189,13 +199,13 @@ if(Dorder %in% 0:2){
              s[2:(p-2)]/D1 + s[2:(p-2)]/D2 + s[3:(p-1)]/D2, -s[3:(p-1)]/D2)
      XA <- XA/c(DA, DA, DA, DA)
      }
-  )
-}
+   )
+ }
 else
    stop("Dorder must be in {0,1,2}")
 
-   XJ <- sparseMatrix(IA, JA, x = -XA, dims = c(q,p))
-   list(XJ = XJ, XC = d, XL = R, XU = v)
+XJ <- sparseMatrix(IA, JA, x = -XA, dims = c(q,p))
+list(XJ = XJ, XC = d, XL = R, XU = v)
 }
 if(dimx != dimv) 
 	stop('x and v of different dimensions')
@@ -230,8 +240,8 @@ else {
    A <- cbind(H , -t(XJ))
    C[(p+1):(p+q)] <- rep(1,q)
    }
-L <- as(XL %*% rep(1,n)/n, "vector")
-
+if(!length(w)) w <- rep(1,n)/n
+   L <- as.vector(XL %*% w)
 if(lambda > 0) { # TV Constraint
    LX <- c(rep(0,p),  -rep(lambda,q))
    UX <- c(rep(Inf,p), rep(lambda,q))
@@ -260,28 +270,28 @@ if(alpha == 1){ # Shannon
    }
 else if(alpha == 0.5){ # Hellinger
     opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(rep(1,p))
+    opro[2, ] <- as.list(1:p)
     opro[3, ] <- as.list(-XC)
     opro[4, ] <- as.list(rep(0.5, p))
     opro[5, ] <- as.list(rep(0, p))
    }
 else if(alpha == 0){ # Berg
     opro[1, ] <- as.list(rep("log", p))
-    opro[2, ] <- as.list(rep(1,p))
+    opro[2, ] <- as.list(1:p)
     opro[3, ] <- as.list(-XC)
-    opro[4, ] <- as.list(rep(0, p))
+    opro[4, ] <- as.list(rep(1, p))
     opro[5, ] <- as.list(rep(0, p))
    }
 else if(alpha == 2){ # Pearson
     opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(rep(1,p))
-    opro[3, ] <- as.list(XC)
+    opro[2, ] <- as.list(1:p)
+    opro[3, ] <- as.list(-XC)
     opro[4, ] <- as.list(rep(2, p))
     opro[5, ] <- as.list(rep(0, p))
    }
 else if(alpha == 3){ # Silverman for Good
     opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(rep(1,p))
+    opro[2, ] <- as.list(1:p)
     opro[3, ] <- as.list(XC)
     opro[4, ] <- as.list(rep(3, p))
     opro[5, ] <- as.list(rep(0, p))

@@ -9,7 +9,7 @@ is an interface to the mosek environment of Erling Andersen.  You should install
 mosek first, along with its license file before trying to use REBayes.
 
 The academic license is now freely downloadable from 
-http://license.mosek.com/license2/academic/ and used to be good for 90 days, 
+https://www.mosek.com/resources/academic-license and used to be good for 90 days, 
 but now apparently is good for one year.
 Just fill in the form and then via email you get a license file (mosek.lic) 
 that needs to be moved to  the appropriate place in the mosek directory.
@@ -22,12 +22,13 @@ step is to install the R package Rmosek.  Since version 7 of mosek there seems
 to be some conflict with the CRAN version so you need to download Rmosek from
 R-forge rather than CRAN.  See the suggestion on the Rmosek webpage.
 
-Now install REBayes also from source and all should be well to test you might
-try as an initial step:
+Now install REBayes also from CRAN (or source) and all should be well, 
+to test you might try as an initial step:
 
 require(REBayes)
 demo(GLmix1)
 
 Considerable further detail is available from the mosek and Rmosek documentation.
 
-Installation on windows is more challenging, but can be done with enough patience.
+Installation on windows is more challenging, but can be done with enough patience,
+provided that you have compilers etc for Rmosek.

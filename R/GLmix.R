@@ -15,7 +15,7 @@
 #' 
 #' The predict method for \code{GLmix} objects will compute means, medians or
 #' modes of the posterior according to whether the \code{Loss} argument is 2, 1
-#' or 0.
+#' or 0, or posterior quantiles if \code{Loss} is in (0,1).
 #' 
 #' @param x Data: Sample Observations
 #' @param v Undata: Grid Values defaults equal spacing of with v bins, when v is

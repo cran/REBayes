@@ -2,8 +2,10 @@
 #' 
 #' Poisson mixture estimation via Kiefer Wolfowitz MLE
 #' 
-#' Kiefer Wolfowitz NPMLE estimation for Poisson mixtures.
-#' 
+#' The predict method for \code{Pmix} objects will compute means, medians or
+#' modes of the posterior according to whether the \code{Loss} argument is 2, 1
+#' or 0, or posterior quantiles if \code{Loss} is in (0,1).
+#'
 #' @param x Data: Sample observations (integer valued)
 #' @param v Grid Values for the mixing distribution defaults to equal
 #' spacing of length v when v is specified as a scalar

@@ -2,6 +2,10 @@
 #' 
 #' Interior point solution of Kiefer-Wolfowitz NPMLE for mixture of binomials
 #' 
+#' The predict method for \code{Bmix} objects will compute means, medians or
+#' modes of the posterior according to whether the \code{Loss} argument is 2, 1
+#' or 0, or posterior quantiles if \code{Loss} is in (0,1).
+#'
 #' @param x Count of "successes" for binomial observations
 #' @param k Number of trials for binomial observations
 #' @param v Grid Values for the mixing distribution defaults to equal

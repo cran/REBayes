@@ -145,6 +145,8 @@ if(length(control)){
 z <- Rmosek::mosek(P, opts = list(verbose = verb))
 status <- z$sol$itr$solsta
 f <- z$sol$itr$suc
+if(min(f) < 0) warning("estimated mixing distribution has some negative values:
+		       consider reducing rtol")
 g <- as.vector(t(A) %*% (f * d))
 list(f = f, g = g, status = status)
 }

@@ -211,3 +211,20 @@ Empirical Bayes Rules. XJ had the wrong sign coming out of mesh1.
 
 4.  Added Rxiv function for archiving table and figure files, still needs
 work.
+
+Version 0.65-8
+
+1.  Fixed nasty bug in Hellinger,  1:p  not rep(1,p) in opro[2,] in medde.
+
+2.  Added weights option to medde.
+
+3.  Added a Silverman density estimation example to demos
+
+4.  Added predict methods for Pmix and Bmix
+
+5.  Added quantile loss option to predict methods 
+
+6.  Added the vignette rebayes.Rnw and rebayes.bib files
+
+7.  Added another fitted Silverman curve to the Silverman demo to
+illustrate that when lambda is very small the fit oscillates around a bit.

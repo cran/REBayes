@@ -3,7 +3,7 @@ Title: Empirical Bayes Estimation and Inference in R
 Description: Kiefer-Wolfowitz maximum likelihood estimation for mixture models
     and some other density estimation and regression methods based on convex
     optimization.
-Version: 0.63
+Version: 0.68
 Authors@R: c(
     person( "Roger", "Koenker", email=  "rkoenker@uiuc.edu", role =  c("aut", "cre")),
     person("Jiaying", "Gu", email =  "gu17@illinois.edu", role = "ctb"),
@@ -12,7 +12,9 @@ Authors@R: c(
 Maintainer: Roger Koenker <rkoenker@uiuc.edu>
 Depends: R (>= 2.10), Matrix
 Imports: Rmosek, methods, reliaR
+Suggests: knitr
 LazyData: TRUE
+VignetteBuilder: knitr
 SystemRequirements: MOSEK (http://www.mosek.com) and MOSEK License for
         use of Rmosek, optional use of the pogs optimizer may require
         CUDA/GPU accoutrements.
@@ -20,9 +22,9 @@ License: GPL (>= 2)
 URL: http://www.r-project.org
 NeedsCompilation: no
 RoxygenNote: 5.0.1
-Packaged: 2016-07-20 20:06:35 UTC; roger
+Packaged: 2016-10-18 22:52:35 UTC; roger
 Author: Roger Koenker [aut, cre],
   Jiaying Gu [ctb],
   Ivan Mizera [ctb]
 Repository: CRAN
-Date/Publication: 2016-07-21 12:24:37
+Date/Publication: 2016-10-19 13:07:16
