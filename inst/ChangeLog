@@ -228,3 +228,11 @@ Version 0.65-8
 
 7.  Added another fitted Silverman curve to the Silverman demo to
 illustrate that when lambda is very small the fit oscillates around a bit.
+
+Version 0.70
+
+1.  Added Guvenen.rda to prepare for medde vignette.
+
+2.  Added medde vignette
+
+

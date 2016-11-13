@@ -1,0 +1,23 @@
+#' @name velo
+#' @title Rotational Velocity of Stars
+#' @description  A sample of rotational velocities of stars from Hoffleit and 
+#' Warren (1991) similar to that previosly considered by Pal, Woodroofe and Meyer (2007)
+#' and used by Koenker and Mizera (2010).  The \code{demo(velo)} illustrates fitted
+#' densities for three relatively weak concavity constraints corresponding to
+#' \eqn{-1/sqrt(f)}, \eqn{-1/f} and \eqn{-1/f^2} constrained to be concave.
+#' Note that last of these pushes the optimization methods about as far as they can do.
+#' @usage velo
+#' @format  A numeric vector with 3933 observations on one variable.
+#' \itemize{
+#'     \item{\code{velo}}{a numeric vector with rotational velocities.}
+#' }
+#' @source  Hoffleit, D. and Warren, W. H. (1991). The Bright Star Catalog (5th ed.). 
+#' Yale University Observatory, New Haven.
+#' @references Pal, J. K., Woodroofe, M. and Meyer, M. (2007). Estimating a Polya frequency 
+#' function. In Complex Datasets and Inverse Problems: Tomography, Networks and 
+#' Beyond, (R. Liu, W. Strawderman, and C.-H. Zhang, eds.). IMS Lecture Notes-Monograph 
+#' Series 54 239-249. Institute of Mathematical Statistics.
+#' Koenker, R. and Mizera, I. (2010) Quasi-Concave Density Estimation, 
+#' Annals of Statistics, 38, 2998-3027.
+#' @keywords datasets
+NULL

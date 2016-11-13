@@ -13,6 +13,7 @@ qmedde(p, medde)
 }
 \description{
 Slightly modified version  borrowed from the package logcondens
+Todo:  extend this to cases with \eqn{\alpha != 1}.
 }
 \keyword{nonparametric}
 

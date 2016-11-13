@@ -1,0 +1,643 @@
+%\VignetteIndexEntry{MEDDE: Penalized Renyi Density Estimation}
+%\VignetteEngine{knitr::knitr}
+\documentclass[mathserif,12pt]{amsart}
+
+%% additional packages
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide,graphicx,color,thumbpdf}
+\usepackage{hyperref}
+\usepackage{alltt}
+\usepackage{amsmath}
+\usepackage{upquote}
+\usepackage{mdframed}
+\usepackage{xcolor}
+\usepackage{eulervm}
+
+%% BibTeX settings
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{jae}
+\bibpunct{(}{)}{,}{a}{,}{,}
+\newcommand{\doi}[1]{\href{http://dx.doi.org/#1}{\normalfont\texttt{doi:#1}}}
+
+%% markup commands for code/software
+\let\code=\texttt
+\let\pkg=\textbf
+\let\proglang=\textsf
+\newcommand{\file}[1]{`\code{#1}'}
+%\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+
+%% paragraph formatting
+\renewcommand{\baselinestretch}{1}
+
+%% \usepackage{Sweave} is essentially
+\RequirePackage[T1]{fontenc}
+\RequirePackage{ae,fancyvrb}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl}
+
+
+
+\def\RR{\mathbb{R}}
+\def\OO{\mathcal O}
+\def\PP{\mathbb{P}}
+\def\LL{\mathcal L}
+\def\II{\mathcal I}
+\def\EE{\mathbb E}
+\def\VB{\mathbb V}
+\def\FF{\mathcal F}
+\def\NN{\mathcal N}
+\def\XX{\mathcal X}
+\def\SS{\mathcal S}
+\def\GG{\mathcal G}
+\def\CC{\mathcal C}
+\def\AA{\mathcal A}
+\def\TT{\mathcal T}
+\def\HH{\mathcal H}
+\def\JJ{\mathcal J}
+\def\KK{\mathcal K}
+\def\PP{\mathcal{P}}
+\def\DD{\mathcal{D}}
+\def\LL{\mathcal L}
+\def\II{\mathcal I}
+\def\pperp{\perp\!\!\!\perp}
+
+\def\Polya{P\'olya }
+\def\Renyi{R\'enyi }
+\def\diag{\mbox{diag}}
+\def\sgn{\mbox{sgn}}
+\def\TV{\bigvee_\Omega }
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+\renewcommand{\abstractname}{Abstract}
+\def\argmax{\text{argmax}}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\renewenvironment{proof}{\noindent {\bf Proof.\ }}{\hfill{\rule{2mm}{2mm}}}
+\renewenvironment{remark}{\noindent {\bf Remark.\ }} {\hfill{ \rule{2mm}{2mm}}}
+\renewenvironment{example}{\noindent {\bf Example.\ }}{\hfill{ \rule{2mm}{2mm}}}
+
+
+\begin{document}
+
+\bibliographystyle{jae}
+
+\title{ Medde:\\  Maximum Entropy Deregularized Density Estimation }
+\author{Roger Koenker}
+\thanks{Version:  \today .  The author would like to thank Ivan Mizera and
+Jon Wellner for very helpful conversations, and Fatih Guvenen for providing
+the kernel density estimate reconsidered in Example \ref{ex.Guv}.
+All of the computational experience reported here was conducted in the R
+language with the package \pkg{REBayes}, \cite{REBayes}.  Code for all of the
+reported computation may be found in the vignette {\tt medde.Rnw} that
+appears as part of that package.}
+
+
+\begin{abstract}
+    The trouble with likelihood is not the likelihood itself, it's the log.
+\end{abstract}
+
+\maketitle
+
+%\noindent {\bf Keywords:} 
+
+<<preliminaries, echo=FALSE, warning = FALSE, message = FALSE, results='hide'>>=
+require("REBayes")
+knitr::render_sweave()
+options(prompt = "R> ", continue = "+  ", digits = 2, show.signif.stars = FALSE)
+cleanup <- FALSE
+@
+
+
+\section{Introduction} \label{sec:intro}
+
+Suppose that you would like to estimate a unimodal density.  There are several
+exploratory inference approaches that could be employed, notably \cite{Cox66},
+\cite{S.81, S.83} and \cite{HH.85}.  More recently interest has focused on
+maximum likelihood estimation of log concave densities as described by 
+\cite{Rufibach}, \cite{Walther} and \cite{CSS}, who offer a more direct
+approach to estimation of {\it{strongly}} unimodal densities as characterized
+by \cite{I.56}.  Weaker notions of unimodality have been explored in \cite{KM.10}
+and \cite{HW.16}.  In this note I would like to briefly describe some further
+experience with these weaker forms of unimodality and their relevance for both
+shape constrained estimation and norm constrained estimation of densities.
+
+Our path leads us away from the well paved highway of maximum likelihood, but
+it is arguably more scenic.  I will briefly review 
+means of order $\rho$ and their connection to classes of concave densities
+and \Renyi entropy, and then illustrate their application to shape
+constrained  and norm constrained density estimation.  Further details about the
+computational methods are provided in Section \ref{sec.medde}.
+
+\section{Means of order $\rho$ and a Hierarchy of Concave Densities}
+
+A natural hierarchy of concave functions can be built on the
+foundation of the weighted means of order $\rho$ studied
+by \citet*{HLP}.  For any $p$ in the unit simplex, 
+$\SS = \{ p \in \RR^n | p \geq 0, \sum p_i =1 \}$, let
+\[
+M_{\rho} (a;p) = M_{\rho}(a_1, \cdots , a_n ; p) 
+= \Bigl(\sum_{i=1}^n p_i a_i^{\rho} \Bigr)^{\! 1/\rho}, \quad \rho \ne 0, 
+\]
+with $ M_{0} (a;p) = M_{\rho}(a_1, \cdots , a_n ; p) = \prod_{i=1}^n a_i^{p_i}$
+as a limit as $\rho \rightarrow 0$
+The familiar arithmetic, geometric, and harmonic means correspond to
+$\rho$ equal to $1$, $0$, and $-1$, respectively.
+
+Following \citet{A.72}, a non-negative, real function $f$, defined on
+a convex set $C \subset \RR^d$ is called \emph{$\rho$-concave} if for
+any $x_0, x_1 \in C$, and $p \in \SS$,
+\[
+f(p_0 x_0 + p_1 x_1 ) \geq M_\rho (f(x_0), f(x_1); p).
+\]
+In this terminology $\log$-concave functions are $0$-concave, and
+concave functions are $1$-concave.
+Since $M_\rho(a,p)$ is monotone increasing in $\rho$ for $a \geq 0$ and
+any $p \in \SS$, it follows that if $f$ is $\rho$-concave, then $f$ is
+also $\rho '$-concave for any $\rho ' < \rho$. Thus, concave functions
+are $\log$-concave, but not vice-versa. In the limit $-\infty$-concave
+functions satisfy the condition
+\[
+f(p_0 x_0 + p_1 x_1 ) \geq \min \{f(x_0), f(x_1) \},
+\]
+so they are \emph{quasi-concave}, and consequently so are all $\rho$-concave
+functions.   Further details and motivation for $\rho$-concave densities can be found
+in \citet{Prekopa}, \citet{Borell}, and \citet{DJD}.
+
+\subsection{Estimation of log concave densities}
+
+A probability density function, $f$, is called \emph{log-concave} if
+$-\log f$ is a (proper) convex function on the support of $f$.   Maximum
+likelihood estimation of log concave densities can be formulated as a
+convex optimization problem.  Let  $X = \{ X_1 , \cdots ,
+X_n \}$ be a collection of data points in $\RR^d$ such that the convex
+hull of $X$, $\HH (X)$, has a nonempty interior in~$\RR^d$; such a
+configuration occurs with probability $1$ if $n \geq d$ and the $X_i$
+behave like a random sample from $f_0$, a probability density with
+respect to the Lebesgue measure on $\RR^d$.  Setting $g = -\log f$,
+we can formulate the maximum likelihood problem as,
+\begin{equation}
+\label{!lcmlelog}
+\min_g  \Bigl\{ \sum_{i=1}^n g(X_i) \; | \; \int\!\mathrm{e}^{-g} \,dx = 1, g \in \KK(X)  \Bigr\},
+\tag{$\PP_0$}
+\end{equation}
+where $\KK(X)$ denotes the class of closed convex functions on $\HH(X) \subset \RR^d$.
+As shown in \cite{KM.10} such problems have solutions that admit a finite
+dimensional characterization determined by the function values of $\hat g$
+evaluated at the observed $X_i$ with values of $g$ elsewhere determined by linear
+interpolation.  This primal problem has an equivalent dual formulation as,
+\begin{equation}
+\label{!mledual}
+\max_f \Bigl\{ - \int f \log f \,dy \; | \;  f =
+(d(P_n-G))/dy, \quad G \in \KK (X)^o \Bigr\},\tag{$\DD_0$}
+\end{equation}
+where $\KK(X)^o$ denotes the polar cone corresponding to $\KK(X)$, that is,
+\begin{equation*}
+\KK(X)^o = \Bigl\{ G \in \mathcal{C}^\ast (X)
+\mid \int g \,dG \leq 0 \text{ for all } g \in \KK(X) \Bigr\},
+\end{equation*}
+and $\mathcal{C}^\ast (X)$ denotes the space of (signed) Radon measures 
+on $\HH(X)$, its distinguished element is $P_n$, the empirical measure 
+supported by the data points $\{ X_i, i = 1, \cdots , X_n \}$. 
+
+It is a notable feature of the log concave MLE that it is tuning parameter
+free, well posed without any further need for regularization.  This feature
+carries over to weaker forms of concave, shape constrained estimators we will
+consider next.  It is hardly surprising in view of prior likelihood  experience
+that our dual formulation involves maximizing Shannon entropy, since we are
+already well aware of the close connection to Kullback-Leibler divergence.
+One potentially disturbing aspect of foregoing formulation is the
+finding that solutions, $\hat g$ must be piecewise linear, so the estimated
+density, $\hat f$ must be piecewise exponential, which when extrapolated into
+the tails implies sub-exponential tail behavior.  This finding motivated 
+consideration of weaker forms of concavity that permit heavier tail
+behavior as well as more peaked densities.  A second, seemingly anomalous
+feature of the dual problem is the fact that $G$ must be chosen to annihilate
+the jumps in $P_n$ in order to produce a density, $f$, with respect to
+Lebesgue measure.  Further details on this may be found in \cite{KM.10}.
+
+
+\subsection{\Renyi likelihood and weaker forms of concave densities}
+
+Given the appearance of Shannon entropy in the likelihood formulation of log
+concave density estimation, it is natural, or at least tempting, to consider
+the family of \cite{r.61} entropies,
+\[
+R_\alpha (f) = (1 - \alpha)^{-1} \log ( \int f^\alpha (x) dx )
+\]
+as a vehicle for estimating $\rho$-concave densities.  Shannon is conveniently
+nested as $\alpha = 1$ in this family.  We will focus attention on $\alpha < 1$,
+corresponding to $\rho = \alpha - 1 < 0$.  Maximizing $R_\alpha (f)$ with respect
+to $f$ is equivalent to maximizing, for fixed $\alpha < 1$,
+\[
+\alpha^{-1}  \int f^\alpha (x) dx.  
+\]
+This yields the new  pairing of primal and dual problems:
+\begin{equation}
+\label{mleR}
+\min_g  \Bigl\{ \sum_{i=1}^n g(X_i) + \frac{1}{\beta} \int g^\beta \,dx \; \vert \:  g \in \KK(X)  \Bigr\},
+\tag{$\PP_\alpha$}
+\end{equation}
+and
+\begin{equation}
+    \max_f \Bigl\{ \frac{1}{\alpha}  \int f^\alpha (y)  \,dy \; \vert \;  f =
+d(P_n-G)/dy, \quad G \in \KK (X)^o \Bigr\},\tag{$\DD_\alpha$}
+\end{equation}
+with $\alpha$ and $\beta$ conjugates in the usual sense that 
+$\alpha^{-1} + \beta^{-1} = 1$.  
+
+This formulation weakens the unimodality constraint admitting a larger class of
+heavier tailed, more peaked densities; at the same time it modifies the fidelity
+criterion replacing log likelihood with a criterion based on \Renyi entropy.
+Why not stick with log likelihood and just modify the constraint, as suggested
+by \cite{SW.10}?  The pragmatic reason is that modifying both preserves an extremely
+convenient form of the convex optimization problem.  This motivation is further
+elablorated in \cite{KM.10}.  From a more theoretical perspective weaker concavity
+requirements pose difficulties for the standard likelihood formulation, \cite{DW.16}
+elaborate on these difficulties and demonstrate among many other things that 
+when imposing concavity constraints with $\alpha < 0$ the MLE fails to exist.
+
+
+\vspace{3mm}
+\begin{example}\label{ex.Guv}
+In \cite{KM.10} we stressed the (Hellinger) case that $\alpha = 1/2$, so
+$\beta = -1$, and $g = -1/\sqrt{f}$.  Since $g$ is constrained to be concave
+we conclude that the estimated density, $f$ is $\rho$-concave for $\rho = -1/2$,
+a class that includes all of the Student t densities with degrees of freedom,
+$\nu \geq 1$, as well as all the log concaves.
+To illustrate the applicability of this Hellinger criterion within the
+\Renyi family, we reconsider a density estimation problem arising in econometrics. 
+\cite{Guvenen} have estimated models of income dynamics using very
+large (10 percent) samples of U.S. Social Security records linked to W2 data.
+Their work reveals quite extreme tail behavior in annual log income increments.
+In the left panel of Figure \ref{fig:Guv} we reproduce the Guvenen et al plot of a conventional kernel  
+density estimate  of the log density of annual increments of log income based on their sample.  
+Clearly, this density is {\it{not}} log-concave, however when we plot instead $-1/\sqrt{f}$ we see that
+concavity looks extremely plausible.  When the \Renyi estimate is superimposed
+in red, it fits almost perfectly.  
+
+<<Guvsetup, include = FALSE>>=
+Guv.cap <- "Density estimation of annual increments in log income for U.S. individuals over
+the period 1994-2013.  The left panel of the figure reproduces a plot of the logarithm
+of a kernel density estimate from \\cite{Guvenen} showing that annual income increments
+are clearly not log concave.  However the middle panel showing $-1/\\sqrt{f}$ does
+appear to be nicely concave and is fit remarkably well by the \\Renyi  procedure with 
+$\\alpha = 1/2$."
+@
+
+<<Guv, fig.height = 4, fig.width = 10, fig.cap = Guv.cap, echo = FALSE>>=
+# Estimate Hellinger Model for Guvenen Annual Income Increment Data
+data(Guvenen)
+x <- Guvenen[,1]
+y <- Guvenen[,2] # Log(f(x))
+
+
+par(mfrow = c(1,3))
+par(mgp = c(2,1,0))
+# Left Panel:  Log Concavity is violated
+plot(x, y, xlab = "x ~ log income annual increments", ylab = "log f(x)", type = "l")
+
+# But Hellinger Concavity is plausible
+plot(x, -1/sqrt(exp(y)), xlab = "x ~ log income annual increments", 
+     ylab = expression(-1/sqrt(f(x))), type = "l")
+w <- exp(y)*diff(x)[1]
+f <- medde(x, w = w, lambda = - 0.5, alpha = 0.5)
+s <- (f$x > -3.7) & (f$x < 3.7)
+xx <- f$x[s]
+yy <- f$y[s]
+zz <- -1/sqrt(yy)
+lines(xx,zz,col = "red")
+# Right Panel:  Density Estimates
+plot(xx, yy,xlab = "x ~ log income annual increments", ylab = "f(x)", type = "l")
+lines(x,exp(y),col = "red")
+@
+
+Permitting Cauchy tail behavior may be regarded as sufficiently indulgent for most
+statistical purposes, but the next example illustrates that more extreme \Renyi fitting
+criteria with $\alpha < 1/2$ is sometimes needed to accommodate  sharp peaks in the 
+target density.
+
+\vspace{3mm}
+\begin{example}\label{ex.velo}
+    We reconsider the rotational velocity of stars data considered previously in \cite{KM.10}.
+    The data was taken originally from \cite{hofwar91} and is available from the R package
+    {\pkg{REBayes}}.  Figure \ref{fig:velo} illustrates a histogram of the 3806 positive
+    rotational velocities from the original sample of 3933.  After dropping the 127 zero 
+    velocity observations, the histogram looks plausibly unimodal and we superimpose three
+    distinct \Renyi shape constrained estimates.  The Hellinger ($\alpha = 1/2$) estimate
+    is clearly incapable of capturing the sharp peak around $x = 18$, and even the fit for
+    $\alpha = 0$ fails to do so.  But pressing further, we see that setting $\alpha = -1$
+    provides an excellent fit by constraining $-1/f^2$ to be concave.  Inquiring minds
+    may wonder whether we could go even further.  Current numerical methods enable one to
+    go only a tiny bit further: with $\alpha = -1.1$ one gets a fit that matches the height of the
+    tallest histogram bar almost exactly, but venturing beyond this point fails to yield
+    a convergent solution to the fitting algorithm.
+    
+<<velosetup, include = FALSE>>=
+velo.cap <- "Rotational velocity of stars with three quasi concave shape constrained density estimates 
+    using the \\Renyi likelihood."
+@
+<<velo, fig.height = 5, fig.width = 7, fig.cap = velo.cap, echo = FALSE >>=
+# Star velocity Hellinger plot in K&M Quasi paper
+# Note that observations at x = 0 have been dropped.  
+
+data(velo)
+x <- velo
+x <- x[!(x == 0)]  # drop zero velocities
+v <- 0:460 + 0.05
+w <- tabulate(x)
+w <- w/sum(w)
+y <- 1:length(w)
+hist(x, 100, freq = FALSE, main = "")
+alphas <- c(0.5, 0, -1)
+for(i in 1:3){
+    alpha <- alphas[i]
+    f <- medde(y, v = 1000, lambda = -0.5, alpha = alphas[i], w = w, rtol = 1e-8)
+    lines(f$x, f$y, col = i+1)
+}
+leg <- as.expression(lapply(c(1/2,0,-1),function(x) bquote(alpha ==.(x))))
+legend(300, 0.025, leg, lty = 1, col = 2:4)
+@
+\end{example}
+
+\section{\Renyi likelihood and norm constrained density estimation}
+
+Although our original intent for the \Renyi likelihood was strictly pragmatic -- to maintain the 
+convexity of the optimization problem underlying the estimation while maintaining weaker forms of
+the concavity constraint -- I would now like to briefly consider its use in norm
+constrained settings where the objective of penalization is smoothness of the
+estimated density rather than shape constraint.
+
+There is a long tradition of norm penalized nonparametric maximum likelihood  estimation of
+densities.  Perhaps the earliest example is \cite{Goo71} who proposed the penalty,
+\[
+J(f) = \int (\sqrt{f}')^2 dx,
+\]
+which shrinks the estimated density toward densities with smaller Fisher information for location.
+The deeper rationale for this form of shrinkage remains obscure, and most of the subsequent
+literature has instead focused on penalizing derivatives of $\log f$, with the familiar cubic
+smoothing spline penalty,
+\[
+J(f) = \int (\log f'')^2 dx,
+\]
+receiving most of the attention.  \cite{Sil82} proposed penalizing the squared $L_2$ norm 
+of the {\it{third}} derivative of $\log f$ as a means of shrinking toward the Gaussian density.
+
+Squared $L_2$ norm penalties are ideal for smoothly varying densities, but they abhor sharp
+bends and kinks, so there has been some interest in exploring total variation penalization
+as a way to expand the scope of penalty methods.  The taut-string methods of \cite{dk.01,dk.04} 
+penalize total variation of the density itself.  \cite{KM.07} describe some experience with
+penalties of the form,
+\[
+J(f) = \int | \log f'' | dx,
+\]
+that penalize the total variation of the first derivative of $\log f$.  In the spirit of
+\cite{Sil82} the next example illustrates penalization of the total variation of the third
+derivative of $\log f$, again with the intent of shrinking toward the Gaussian, but in a 
+manner somewhat more tolerant of abrupt changes in the derivatives than with Silverman's
+squared $L_2$ norm.
+
+<<Silsetup, include = FALSE>>=
+Sil.cap <- "Gaussian histogram based on 500 observations and two penalized
+maximum likelihood estimates with total variation norm penalty
+and $\\lambda \\in \\{ 0.5 \\times 10^{-3}, 0.5 \\times 10^{-6} \\}$."
+@
+
+<<Silverman, fig.height = 5, fig.width = 7, fig.cap = Sil.cap, echo = FALSE>>=
+# Silverman type total variation roughness penalty estimation in medde
+# Silverman BW (1982). On the Estimation of a Probability Density Function
+# by the Maximum Penalized Likelihood Method. Annals of Statistics, 10, 795-810
+n <- 500
+set.seed <-18 
+x <- rnorm(n)
+hist(x, 70, freq = FALSE, main = "", col = grey(.95))
+f <- medde(x, Dorder = 2, lambda = 0.0005, verb = 0)
+lines(f, col = "red")
+f <- medde(x, Dorder = 2, lambda = 0.0000005, verb = 0)
+lines(f, col = "blue")
+@
+
+
+
+\vspace{3mm}
+\begin{example}\label{ex.Silverman}
+In Figure \ref{fig:Silverman} we illustrate a histogram based on 500 standard 
+Gaussian observations, and superimpose two fitted densities estimated by
+penalizaed maximum likelihood as solutions to
+\[
+    \min_f \Bigl\{ - \sum_{i=1}^n \log f(X_i) + \lambda  \int | \log f''' | dx,
+\]
+for two choices of $\lambda$.  For $\lambda$ sufficiently large solutions to
+this problem conform to the parametric Gaussian MLE since the penalty forces
+the solution to take a Gaussian shape, but does not constrain the location or
+scale of the estimated density.  For smaller $\lambda$ we obtain a more
+oscillatory estimate than conforms more closely to the vagaries of the histogram.
+\end{example}
+\vspace{3mm}
+
+Penalizing total variation of $\log f ''$ as in Figure \ref{fig:Silverman} raises
+the question:  What about other \Renyi exponents for $\alpha \neq 1$?  
+Penalizing $\log f ''$  is implicitly presuming sub-exponential tail behavior 
+that may be better controlled by weaker \Renyi penalties.  To explore this 
+conjecture we consider a in the next example estimating a mixture of three
+lognormals.
+
+<<lnormsetup, include = FALSE>>=
+lnorm.cap <- "Mixture of three lognormals histogram and two
+\\Renyi likelihood estimates with total variation ($L_1$ norm) penalty
+with $\\alpha \\in \\{ 0, 1 \\}$."
+@
+<<lnormmix, fig.height = 5, fig.width = 7, fig.cap = lnorm.cap, echo = FALSE >>=
+# Mixture of log normals example from ancient problem set
+rlambda <- function(n, mu = c(0.5, 1.1, 2.6), sigma = c(0.2, 0.3, 0.2), 
+	 alpha = c(0.4, 1.2, 2.4), w = c( 0.33, 0.33, 0.34))
+{ #mixture of lognormals -- random numbers
+  #No error checking!  w is a weight vector which should add to one.
+  m <- length(w)
+  w <- cumsum(w)
+  U <- runif(n)
+  W <- matrix(0, n, m)
+  W[, 1] <- U < w[1]
+  for(i in 2:m) {
+      W[, i] <- (U < w[i]) & (U >= w[i - 1])
+     }
+  z <- rep(0, n)
+  for(i in 1:m) {
+      z <- z + W[, i] * (alpha[i] + exp(rnorm(n, mu[i], sigma[i])))
+     }
+  z
+}
+dlambda <- function(z, mu = c(0.5, 1.1, 2.6), sigma = c(0.2, 0.3, 0.2), 
+	 alpha = c(0.4, 1.2, 2.4), w = c( 0.33, 0.33, 0.34), eps = 0.0001)
+{
+#mixture of lognormals density function
+m <- length(w)
+f <- 0 * z
+for(i in 1:m) 
+    f <- f + (w[i] * dnorm(log(pmax(z - alpha[i], eps)), mu[i], 
+			 sigma[ i]))/((z - alpha[i]))
+f
+}
+set.seed(17)
+x <- rlambda(500)
+hist(x, 200, freq = FALSE, border = "grey", main = "")
+z <- seq(0,max(x), length=2000)
+lines(z, dlambda(z), col = 2)
+f <- medde(x, lambda = 0.0005, Dorder = 2, alpha = 0)
+lines(f, col = "blue")
+f <- medde(x, lambda = 0.0005, Dorder = 2, alpha = 1)
+lines(f, col = "green")
+leg <- c("True", as.expression(lapply(c(0,1),function(x) bquote(alpha ==.(x)))))
+legend(15,0.4,leg, lty = 1, lwd = 1.5, col = c("red","blue","green"))
+@
+
+\end{example}
+
+
+\vspace{3mm}
+\begin{example}\label{ex.lnormmix}
+    Figure \ref{fig:lnormmix} illustrates a histogram based on 500 observations from
+    the mixture of lognormals density depicted in red.  I have used this density for several years in class
+    to illustrate how difficult it can be to choose an effective bandwidth for
+    conventional kernel density estimation.  A bandwidth sufficiently small to 
+    distinguish the two left-most modes is almost surely incapable of producing
+    a smooth fit to the upper mode.  Logspline methods as proposed by \cite{ks.91}
+    perform much better in such cases, but they can be sensitive to knot selection
+    strategies.  The methods under consideration here are allied more closely to
+    the smoothing spline literature, and thereby circumvent the knot selection task, 
+    but in so doing have introduced new knobs to turn and buttons to push.  Not only
+    do we need to choose the familiar $\lambda$, there is now a choice of the order
+    of the derivative in the penalty, and the \Renyi exponent, $\alpha$, determining
+    the transformation of the density.  I would argue that these choices are more
+    easily adapted to particular applications, but others may disagree.  From a
+    Bayesian perspective, however, it seems indisputable that more diversity in the
+    class of tractable prior specifications is desirable.
+
+    Examining Figure \ref{fig:lnormmix} we see that the $\alpha = 1$ maximum
+    likelihood estimate is a bit too smooth, failing to find the second mode,
+    whereas the $\alpha = 0$ solution is too enthusiastic about the fitting the
+    first mode, but at least does distinguish the second mode.  Both methods
+    produce an excellent fit to the third mode, almost indistinguishable from
+    the true density.
+\end{example}
+
+\section{Discrete Implementation Details}
+\label{sec.medde}
+
+The discrete formulation of the variational problems described above lead to
+extremely efficient algorithms that exploit modern interior point methods for
+convex optimization.  All of our computational results were carried out with
+the function \code{medde} from the package \pkg{REBayes} for the \proglang{R} language
+and available from the CRAN website, \url{https://cran.r-project.org}.  This
+package relies in turn on the \cite{Mosek} optimization system and its \cite{Rmosek}
+interface for the \proglang{R} language.  The current implementation in \code{medde}
+is restricted to univariate densities as we will do here as well.  \cite{KM.10} 
+describes some extensions to bivariate settings.  Most of the other functionality of
+the \pkg{REBayes} is devoted to empirical Bayes methods and described in \cite{KG.16}.
+
+For univariate densities convexity of piecewise linear functions can be enforced
+by  imposing linear inequality constraints on the set of function values
+$\gamma_i = g(\xi_i)$ at selected points $\xi_1, \xi_2, \dots , \xi_m$.  We
+typically choose these $\xi_i$'s on an equally spaced grid of a few hundred
+points, and the convex cone constraint can then be expressed as $D \gamma \geq 0$
+for a tridiagonal matrix $D$ when the penalization is imposed on second derivatives
+as in the case of our concavity constraints, and quindiagonal in the case of third
+derivative constraints.  By default in \code{medde} we choose $m = 300$, with the
+$\xi_i$'s support extending slightly beyond the empirical support  of the observations.
+
+As described in \cite{KM.10} the primal formulation of the shape-constrained
+problem takes the discrete form,
+\[
+\{ w^\top L \gamma + s^\top \Psi(\gamma) | D \gamma \geq 0 \} = \min !
+\tag{P}
+\]
+where $\Psi(\gamma)$ denotes an $m$-vector with typical element
+$\psi (g(\xi_i)) = \psi (\gamma_i)$, $L$ is an ``evaluation operator''
+which either selects the elements from $\gamma$, or performs the
+appropriate linear interpolation from the neighboring ones, so that
+$L \gamma$ denotes the $n$-vector with typical element, $g(X_i)$, and
+$w$ is an $n$-vector of observation weights, typically $w_i \equiv 1/n$.
+The matrix $D$ is the discrete derivative operator that constrains the
+fitted function to lie in the convex cone $\KK (X)$.  The vector $s$
+denotes weights that impose the integrability constraint on the fitted
+density.  As long as the grid is sufficiently fine in univariate
+settings elements of $s$ can be averages of the adjacent spacings between the $\xi_i$'s.
+
+
+Associated with the primal problem (P) is the dual problem,
+\[
+\{ -s^\top \Psi^{\ast} (- \phi)\; | \; S \phi = -w^\top L  + D^\top \eta, 
+\phi \geq 0, D^\top \eta \geq 0 \} = \max !
+\tag{D}
+\]
+Here, $\eta$ is an $m$-vector of dual variables and $\phi$ is an $m$-vector
+of function values representing the density evaluated at the $\xi_i$'s,
+and $S = \diag (s)$. The vector $\Psi^{\ast}$ is the convex conjugate
+of $\Psi$ defined coordinate-wise with typical element $\psi^{\ast}
+(y) = \sup_x \{ y x - \psi(x) \}$. Problems (P) and (D) are strongly
+dual in the sense of the following result, which may viewed as the
+discrete counterpart of Theorem 2 of \cite{KM.10}.
+
+
+
+For $\Psi (x)$ with typical element $\psi (x) = e^{-x}$ we have
+$\Psi^{\ast}$ with elements $\psi^{\ast} (y) = -y \log y + y$, so the
+dual problem corresponding to maximum likelihood can be interpreted as
+maximizing the Shannon entropy of the estimated density subject to the
+constraints appearing in (D). Since $g$ was interpreted in (P) as
+$\log f$ this result justifies our interpretation of solutions of (D)
+as densities provided that they satisfy our integrability condition.
+This is easily verified and thus justifies the implicit Lagrange
+multiplier of one on the integrability constraint in (P). 
+Then solutions $\phi$ of (D) satisfy $s^\top \phi = 1$ and $\phi \geq 0$.
+as shown in Proposition 2 of \cite{KM.10}. The crucial element of the proof 
+of this proposition is that the differencing operator D
+annihilates the constant vector and therefore the result extends
+immediately to other norm-type penalties as well as to the other
+entropy objectives that we have discussed. Indeed, since the second
+difference operator representing our convexity constraint annihilates
+any affine function it follows by the same argument that the mean of
+the estimated density also coincides with the sample mean of the
+observed $X_i$'s.
+
+For penalties with \Renyi exponents less than one, the dual
+formulation takes $\psi (y) = y^\alpha$ except of course for $\alpha = 0$
+for which  $\psi (y) = \log y$.
+To implement the total variation regularization rather than the concavity
+constraint, the $L_1$ constraint on $D \gamma$ in the primal becomes an
+$L_\infty$ constraint in the dual, so in the dual formulation we simply
+constrain $\| D^\top \eta \|_\infty \leq \lambda$,  and similarly for
+total variation ($L_1$ norm) constraints on higher order derivatives.
+
+Code to reproduce each of the figures appearing above is available from
+the author on request.  Readers are cautioned that although all of the
+computational problems described above are strictly convex and therefore
+possess a unique solution, extreme choices of the penalty parameters can
+stress even the excellent optimization software provided by Mosek.  In
+Example \ref{ex.velo} we have seen that attempts to push the \Renyi $\alpha$
+parameter much below -1, cause difficulty.  In Example \ref{ex.Silverman} 
+a choice of $\lambda$ somewhat larger than those reported here also causes
+trouble.  Fortunately, it is relatively easy to find values of these parameters
+that are within an empirically sensible range.
+
+\section{Conclusion}
+
+Density estimation by penalty methods is one of those [IJ] Good ideas of the 1970's
+that has matured rather slowly.  Fortunately, recent developments in convex 
+optimization have greatly expanded the menu of possible penalties, and there
+are promising opportunities for embedding these methods into more complex
+semi-parametric analyses.
+
+Many aspects remain to be explored.  We have elementary Fisher consistency  results
+from \cite{KM.10} and some rate and limiting distributional results from \cite{HW.16},
+and others, but there are many interesting theoretical questions.  It would be
+nice to know more about multivariate extensions.  Little is known about choice
+of the \Renyi $\alpha$, can it be estimated in a reasonable way?  If only we could
+divert some energy away from kernel methods, maybe some progress could be made in
+one or more of these directions.
+
+\bibliography{medde}
+
+\end{document}

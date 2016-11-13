@@ -5,6 +5,7 @@ GVmix1  Gaussian Scale Mixtures for Panel Data
 WGLVmix1 Gaussian Location-Scale Mixtures for Panel Data
 WTLVmix1 Student Location-Scale Mixtures for Panel Data
 Silverman	Silverman penalized density estimation via medde
+velo	Quasi concave density estimation of rotational velocity of stars
 Bmix1	Binomial Mixture with the Beckett-Diaconis tack data
 Brown	Example of monotonized Bayes rule estimator via medde
 liktest	Likelihood Evaluation for Gaussian Variance Mixtures Test

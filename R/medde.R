@@ -3,52 +3,53 @@
 #' Density estimation based on maximum entropy methods
 #' 
 #' See the references for further details. And also Mosek "Manuals". The
-#' acronym has a nice connection to
-#' 
-#' http://www.urbandictionary.com/define.php?term=medder
-#' 
-#' Term used in Bahamian dialect, mostly on the Family Islands like Eleuthera
-#' and Cat Island meaning "mess with" "get involved" "get entangled" "fool
-#' around" "bother"
-#' 
+#' acronym, according to the urban dictionary has a nice connection to
+#' a term used in Bahamian dialect, mostly on the Family Islands like Eleuthera
+#' and Cat Island meaning "mess with" "get involved," "get entangled," "fool
+#' around," "bother:"
 #' "I don't like to medder up with all kinda people"
-#' 
 #' "Don't medder with people (chirren)"
-#' 
 #' "Why you think she medderin up in their business."
 #' 
 #' This version implements a class of penalized density estimators solving:
 #
-#' \deqn{\min_x \phi(x_1) | A_1 x_1 - A_2 x_2 = b,  0 \leq x_1, -\lambda \leq x_2 \leq \lambda }
+#' \deqn{\min_x \phi(x_1) | A_1 x_1 - A_2 x_2 = b,  0 \le x_1, -\lambda \le x_2 \le \lambda }{
+#' min_x \phi(x_1) | A_1 x_1 - A_2 x_2 = b,  0 \le x_1, -\lambda \le x_2 \le \lambda }
 #
-#' where \eqn{x}x is a vector with two component subvectors: \eqn{x_1} is a 
+#' where \eqn{x} is a vector with two component subvectors: \eqn{x_1} is a 
 #' vector of function values of the density \eqn{x_2} is a vector of dual values,
 #' \eqn{\lambda} is typically positive, and controls the fluctuation of the Dorder
 #' derivative of some transform of the density. When alpha = 1 this transform is
 #' simply the logarithm of the density, and Dorder = 1 yields a piecewise exponential
-#' estimate; when Dorder = 2 then we obtain a variant of Silverman's (1982) estimator
+#' estimate; when Dorder = 2 we obtain a variant of Silverman's (1982) estimator
 #' that shrinks the fitted density toward the Gaussian, i.e. with total variation
-#' of the second derivative of \eqn{\log f} equal to zero.  See demo(Silverman) for
-#' an illustration of this case.  If \eqn{lambda} is negative then the \eqn{x_2} constraint
-#' is replaced by \eqn{x_2 \geq 0}, which for \eqn{\alpha = 1}, 
-#' constrains the fitted density to be log-concave, for
-#' negative lambda fitting for other alphas and Dorders 
-#' proceed at your own risk. See also below...
-#' \eqn{\phi} is an additive convex function in the coordinates of \eqn{x_1},
-#' interpretable as a negative Renyi entropy.
-#' This formulation purports to solve a class of dual penalized maximum (Renyi) entropy
-#' problems in which regularization is achieved by constraining the sup norm of the
-#' dual vector.  In the primal representation of the problems this corresponds to
-#' a roughness penalty on the total variation of the Dorder derivative of some
-#' transformation of the fitted density.  
+#' of the second derivative of \eqn{log f} equal to zero.  See demo(Silverman) for
+#' an illustration of this case.  If \eqn{\lambda} is in \eqn{(-1,0]} then the 
+#' \eqn{x_2} constraint is replaced by \eqn{x_2 \geq 0}, which for \eqn{\alpha = 1}, 
+#' constrains the fitted density to be log-concave; for \eqn{\alpha = 0.5},  \eqn{-1/\sqrt f}
+#' is constrained to be concave; and for \eqn{\alpha \le 0}, \eqn{1/f^{\alpha -1}} is
+#' constrained to be concave.  In these cases no further regularization of the smoothness
+#' of density is required as the concavity constraint acts as  regularizer.
+#' As explained further in Koenker and Mizera (2010) and
+#' Han and Wellner (2016) decreasing \eqn{\alpha} constrains the fitted density to lie 
+#' in a larger class of quasi-concave
+#' densities.  See \code{demo(velo)} for an illustration of these options, but be aware
+#' that more extreme \eqn{\alpha} pose more challenges from an numerical optimization
+#' perspective.  Fitting for \eqn{\alpha < 1} employs a fidelity criterion closely 
+#' related to Renyi entropy that is more suitable than likelihood for very peaked, or very heavy
+#' tailed target densities.  For \eqn{\lambda < 0}  fitting for \code{Dorder != 1}
+#' proceed at your own risk.  When \eqn{\lambda < -1} a convexity constraint is
+#' imposed on \eqn{0.5 x^2 + log f(x)} that ensures that the resulting Bayes rule,
+#' aka Tweedie formula, is monotone in \eqn{x}, as described further in Koenker and
+#' Mizera (2013).  
 #'
 #' @param x Data: either univariate or bivariate (not yet implemented in
 #' Rmosek)
 #' @param v Undata: either univariate or bivariate, by default there is an
 #' equally spaced grid of 300 values
 #' @param lambda total variation penalty parameter, if lambda is in [-1,0], a
-#' concavity constraint is imposed. If lambda is in (-oo, -1) a convexity
-#' constraint on .5 x^2 + log f is imposed. See Koenker and Mizera (2013) for
+#' concavity constraint is imposed. If lambda is in \eqn{(-\infty, -1)} a convexity
+#' constraint on \eqn{0.5 x^2 + \log f(x)} is imposed. See Koenker and Mizera (2013) for
 #' further details on this last option, and Koenker and Mizera (2010) for
 #' further details on the concavity constrained options.  The demo Brown
 #' recreates the monotonized Bayes rule example in Figure 1 of the 2013 paper.
@@ -62,16 +63,22 @@
 #' @param control Mosek control list see KWDual documentation
 #' @return An object of class "medde" with components \item{x}{points of
 #' evaluation on the domain of the density} \item{y}{estimated function values
-#' at the evaluation points x} \item{phi}{n by 2 matrix of (sorted) original
-#' data and estimated log density values these data points} \item{logLik}{log
-#' likelihood value} \item{status}{exit status from Mosek}
+#' at the evaluation points x}  \item{logLik}{log Likelihood provided \code{alpha = 1}
+#' otherwise NULL} \item{status}{exit status from Mosek}
 #' @author Roger Koenker and Ivan Mizera
 #' @seealso This function is based on an earlier function of the same name in
 #' the deprecated package MeddeR that was based on an R-Matlab interface.
+#' A plotting method is available, or medde estimates can be added to plots
+#' with the usual \code{lines(meddefit, ...} invocation.  For log concave
+#' estimates there is also a quantile function \code{qmedde} and a random
+#' number generation function \code{rmedde}. 
 #' @references  Chen, Y. and R.J. Samworth, (2013) "Smoothed log-concave
 #' maximum likelihood estimation with applications", \emph{Statistica Sinica},
 #' 23, 1373--1398.
 #' 
+#' Han, Qiyang and Jon Wellner (2016) ``Approximation and estimation of s-concave 
+#' densities via Renyi divergences, \emph{Annals of Statistics}, 44, 1332-1359.
+#'
 #' Koenker, R and I. Mizera, (2007) ``Density Estimation by Total Variation
 #' Regularization,'' \emph{Advances in Statistical Modeling and Inference:
 #' Essays in Honor of Kjell Doksum}, V.N. Nair (ed.), 613-634.
@@ -128,6 +135,7 @@ medde <- function(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
 #                9 Apr 2008  (well-tempered case) 
 #                1 Jul 2015  (Revised version without SparseM)
 #		28 Sep 2016  (Fixed bug and added weights)
+#		20 Sep 2015  (Fixed options so alpha <= 0 works)
 ############################################################################
 
 
@@ -275,11 +283,18 @@ else if(alpha == 0.5){ # Hellinger
     opro[4, ] <- as.list(rep(0.5, p))
     opro[5, ] <- as.list(rep(0, p))
    }
-else if(alpha == 0){ # Berg
+else if(alpha == 0){ # EL
     opro[1, ] <- as.list(rep("log", p))
     opro[2, ] <- as.list(1:p)
     opro[3, ] <- as.list(-XC)
     opro[4, ] <- as.list(rep(1, p))
+    opro[5, ] <- as.list(rep(0, p))
+   }
+else if(alpha < 0){ # Quasi -- only tested for alpha == -1
+    opro[1, ] <- as.list(rep("pow", p))
+    opro[2, ] <- as.list(1:p)
+    opro[3, ] <- as.list(XC)
+    opro[4, ] <- as.list(rep(alpha, p))
     opro[5, ] <- as.list(rep(0, p))
    }
 else if(alpha == 2){ # Pearson
@@ -314,8 +329,9 @@ f <- z$sol$itr$xx[1:p]
 g <- t(XL) %*% f
 o <- order(x)
 phi <- cbind(x[o],log(g[o]))
-logLik <- sum(phi[,2])
-z <- list(x = v, y = f, phi = phi, logLik = logLik, status = status)
+if(alpha == 1) logLik <- sum(phi[,2])
+else logLik <- NULL
+z <- list(x = v, y = f, logLik = logLik, status = status)
 class(z) <- "medde"
 z
 }
@@ -333,6 +349,7 @@ plot.medde <- function(x, xlab = "x", ylab = "f(x)", ...){
 #' Quantile function for medde estimate
 #'
 #' Slightly modified version  borrowed from the package logcondens 
+#' Todo:  extend this to cases with \eqn{\alpha != 1}.
 #' @param p vector of probabilities at which to evaluate the quantiles
 #' @param medde fitted object from medde
 #' @keywords nonparametric
