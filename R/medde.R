@@ -25,7 +25,7 @@
 #' that shrinks the fitted density toward the Gaussian, i.e. with total variation
 #' of the second derivative of \eqn{log f} equal to zero.  See demo(Silverman) for
 #' an illustration of this case.  If \eqn{\lambda} is in \eqn{(-1,0]} then the 
-#' \eqn{x_2} constraint is replaced by \eqn{x_2 \geq 0}, which for \eqn{\alpha = 1}, 
+#' \eqn{x_2} TV constraint is replaced by \eqn{x_2 \geq 0}, which for \eqn{\alpha = 1}, 
 #' constrains the fitted density to be log-concave; for \eqn{\alpha = 0.5},  \eqn{-1/\sqrt f}
 #' is constrained to be concave; and for \eqn{\alpha \le 0}, \eqn{1/f^{\alpha -1}} is
 #' constrained to be concave.  In these cases no further regularization of the smoothness
@@ -38,40 +38,41 @@
 #' perspective.  Fitting for \eqn{\alpha < 1} employs a fidelity criterion closely 
 #' related to Renyi entropy that is more suitable than likelihood for very peaked, or very heavy
 #' tailed target densities.  For \eqn{\lambda < 0}  fitting for \code{Dorder != 1}
-#' proceed at your own risk.  When \eqn{\lambda < -1} a convexity constraint is
-#' imposed on \eqn{0.5 x^2 + log f(x)} that ensures that the resulting Bayes rule,
+#' proceed at your own risk.  A closely related problem is illustrated in the demo
+#' Brown which imposes a convexity constraint 
+#' on \eqn{0.5 x^2 + log f(x)}. This ensures that the resulting Bayes rule,
 #' aka Tweedie formula, is monotone in \eqn{x}, as described further in Koenker and
 #' Mizera (2013).  
 #'
-#' @param x Data: either univariate or bivariate (not yet implemented in
-#' Rmosek)
-#' @param v Undata: either univariate or bivariate, by default there is an
-#' equally spaced grid of 300 values
+
+#' @param x Data: either univariate or bivariate, the latter is highly experimental 
+#' @param v Undata: either univariate or bivariate, univariate default is an
+#' equally spaced grid of 300 values, for bivariate data there is not (yet) a default.
 #' @param lambda total variation penalty parameter, if lambda is in [-1,0], a
-#' concavity constraint is imposed. If lambda is in \eqn{(-\infty, -1)} a convexity
-#' constraint on \eqn{0.5 x^2 + \log f(x)} is imposed. See Koenker and Mizera (2013) for
-#' further details on this last option, and Koenker and Mizera (2010) for
-#' further details on the concavity constrained options.  The demo Brown
-#' recreates the monotonized Bayes rule example in Figure 1 of the 2013 paper.
+#' concavity constraint is imposed. see Koenker and Mizera (2010) for
+#' further details on the concavity constrained options.  
 #' @param alpha Renyi entropy parameter characterizing fidelity criterion
 #' by default 1 is log-concave and 0.5 is Hellinger.
 #' @param Dorder Order of the derivative operator for the penalty
-#' @param w  weights corresponding to x observations
-#' @param rtol Convergence tolerance for Mosek algorithm
+#' default is Dorder = 1, corresponding to TV norm constraint on the first derivative,
+#' or a concavity constraint on some transform of the density.
+#' @param w weights associated with x,
+#' @param mass  normalizing constant for fitted density,
+#' @param rtol Convergence tolerance for Mosek algorithm,
 #' @param verb Parameter controlling verbosity of solution, 0 for silent, 5
 #' gives rather detailed iteration log.
 #' @param control Mosek control list see KWDual documentation
 #' @return An object of class "medde" with components \item{x}{points of
 #' evaluation on the domain of the density} \item{y}{estimated function values
-#' at the evaluation points x}  \item{logLik}{log Likelihood provided \code{alpha = 1}
-#' otherwise NULL} \item{status}{exit status from Mosek}
+#' at the evaluation points x}  \item{status}{exit status from Mosek}
 #' @author Roger Koenker and Ivan Mizera
 #' @seealso This function is based on an earlier function of the same name in
 #' the deprecated package MeddeR that was based on an R-Matlab interface.
 #' A plotting method is available, or medde estimates can be added to plots
 #' with the usual \code{lines(meddefit, ...} invocation.  For log concave
 #' estimates there is also a quantile function \code{qmedde} and a random
-#' number generation function \code{rmedde}. 
+#' number generation function \code{rmedde}, eventually there should be
+#' corresponding functionality for other alphas.
 #' @references  Chen, Y. and R.J. Samworth, (2013) "Smoothed log-concave
 #' maximum likelihood estimation with applications", \emph{Statistica Sinica},
 #' 23, 1373--1398.
@@ -106,244 +107,105 @@
 #' set.seed(1968)
 #' x <- rgamma(50,10)
 #' m <- medde(x, v = 50, lambda = -.5, verb = 5)
-#' plot(m, type = "l")
+#' plot(m, type = "l", xlab = "x", ylab = "f(x)")
 #' lines(m$x,dgamma(m$x,10),col = 2)
-#' points(x,m$g,cex = 0.5)
-#' rug(x)
-#' title(paste("log likelihood = ", round(m$logLik,2)))
-#' legend(14,.12,c("ghat","true"),lty = 1, col = 1:2)
+#' title("Log-concave Constraint")
 #' 
 #' #Maximum Likelihood Estimation of a Gamma Density with TV constraint
 #' set.seed(1968)
 #' x <- rgamma(50,5)
-#' f <- medde(x, v = 50, lambda = 0.005, verb = 5)
-#' plot(f, type = "l")
+#' f <- medde(x, v = 50, lambda = 0.2, verb = 5)
+#' plot(f, type = "l", xlab = "x", ylab = "f(x)")
 #' lines(f$x,dgamma(f$x,5),col = 2)
 #' legend(10,.15,c("ghat","true"),lty = 1, col = 1:2)
+#' title("Total Variation Norm Constraint")
 #' 
 #' 
-medde <- function(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, 
-	w = NULL, rtol = 1e-06, verb = 0, control = NULL){
-############################################################################
-#
-#
-# First version: 22 Dec 2006  (only does Dorder <- 1, and a few alphas)
-#               26 Dec 2006  (does Dorder <- 1,2,3, and a few more alphas)
-#               28 Dec 2006  (added merge flag) 
-#               31 Dec 2006  (log-concave case) 
-#                5 Jan 2007  (bivariate case) 
-#                9 Apr 2008  (well-tempered case) 
-#                1 Jul 2015  (Revised version without SparseM)
-#		28 Sep 2016  (Fixed bug and added weights)
-#		20 Sep 2015  (Fixed options so alpha <= 0 works)
-############################################################################
 
-
-if(length(v) == 1){
-	eps <- ifelse(lambda < 0, 0.0001,1)
-	v <- seq(min(x) - eps, max(x) + eps, length = v)
-	}
-dimx <- NCOL(x)
-dimv <- NCOL(v)
-
-mesh1 <- function(x, v, Dorder = 1) {
-############################################################################
-# mesh <- mesh1(x, v, Dorder, merge)
-#
-# Meshing for univariate medde, old option to merge x and v removed in R version
-#
-# Input:
-#    x      - vector of n observations (aka data)
-#    v      - vector of m virtual observations (aka undata)
-#    Dorder - order of the TV penalty, e.g. 0 for TV(phi(f)), 1 for TV(phi(f)'), ... 
-#
-# Output:  
-#
-#      XL  - the evaluation operator 
-#      XC  - the Riemann weights used to integrate 
-#      XJ  - the penalty block of the constraint matrix
-#      XU  - the unique values at which the density is to be estimated
-#
-# Roger Koenker, adapted from MeddeR revision 4 Jan 2007
-#                    RMosek version 3.3.0  (2016-05-03)
-############################################################################
-
-n <- length(x)
-p <- length(v)
-k <- findInterval(x,v)
-h <- diff(v)
-ia <- c(1:n,1:n)
-ja <- c(k+1,k)
-ra <- c((x - v[k])/h[k], (v[k+1] - x)/h[k])
-R <- t(sparseMatrix(ia, ja, x = ra, dims = c(n,p)))
-s <- 1/h
-d <- 0.5*(c(h, 0) + c(0,h))
-H <- Diagonal(x = d)
-
-if(Dorder %in% 0:2){
-  switch(Dorder + 1,
-  {#case 0
-     q <-  p-1
-     IA <- c(1:(p-1), 1:(p-1))
-     JA <- c(1:(p-1), 2:p)
-     XA <- c(-s[1:(p-1)], s[1:(p-1)])
-     },
-  {#case 1
-     q <-  p-2
-     IA <- c(1:(p-2), 1:(p-2), 1:(p-2))
-     JA <- c(1:(p-2), 2:(p-1), 3:p)
-     XA <- c(-s[1:(p-2)], s[1:(p-2)]+s[2:(p-1)], -s[2:(p-1)])
-     D  <- .5 * (h[1:(p-2)]+h[2:(p-1)])
-     XA <- XA / c(D, D, D)
-     },
-  {#case 2
-     q <-  p-3
-     IA <- c(1:(p-3), 1:(p-3), 1:(p-3), 1:(p-3))
-     JA <- c(1:(p-3), 2:(p-2), 3:(p-1), 4:p)
-     D1 <-  .5 * (h[1:(p-3)] + h[2:(p-2)])
-     D2 <-  .5 * (h[2:(p-2)] + h[3:(p-1)])
-     DA <- .5 * (D1 + D2)
-     XA <- c(s[1:(p-3)]/D1, - (s[1:(p-3)] +  s[2:(p-2)])/D1 - s[2:(p-2)]/D2,
-             s[2:(p-2)]/D1 + s[2:(p-2)]/D2 + s[3:(p-1)]/D2, -s[3:(p-1)]/D2)
-     XA <- XA/c(DA, DA, DA, DA)
-     }
-   )
- }
-else
-   stop("Dorder must be in {0,1,2}")
-
-XJ <- sparseMatrix(IA, JA, x = -XA, dims = c(q,p))
-list(XJ = XJ, XC = d, XL = R, XU = v)
+medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, 
+    w = NULL, mass = 1, rtol = 1e-06, verb = 0, control = NULL) 
+{
+    n <- length(x)
+    if (length(v) == 1) 
+        v <- seq(min(x), max(x), length = v)
+    p <- length(v)
+    d <- (c(diff(v),0) + c(0,diff(v)))/2
+    A <- switch(Dorder + 1,
+	t(diff(Diagonal(length(v)))),
+	t(diff(diff(Diagonal(length(v))))),
+	t(diff(diff(diff(Diagonal(length(v)))))))
+    q <- dim(A)[2]
+    if(length(w)) 
+	e <- c(w %*% apply(diag(p),2,function(e, v, x) 
+		     approx(v, e, x)$y, v = v, x = x))
+    else
+	e <- apply(apply(diag(p),2,function(e, v, x) 
+		     approx(v, e, x)$y, v = v, x = x),2,mean)
+    if(is.finite(mass)) dv <- mass * d/sum(d) else dv <- d
+    beta <- alpha/(alpha - 1)
+    if (lambda > 0) {
+        LX <- c(rep(0, p), -rep(lambda, q))
+        UX <- c(rep(Inf, p), rep(lambda, q))
+    }
+    else {
+        LX <- rep(0, p + q)
+        UX <- rep(Inf, p + q)
+    }
+    opro <- matrix(list(), nrow = 5, ncol = p)
+    opro[2,] <- 1:p
+    opro[5,] <- rep(0,p)
+    if (alpha == 1) {
+        opro[1, ] <- "ent"
+        opro[3, ] <- -dv
+        opro[4, ] <- rep(0, p)
+    }
+    else if (alpha == 0) {
+        opro[1, ] <- "log"
+        opro[3, ] <- dv
+        opro[4, ] <- as.list(rep(1, p))
+    }
+    else {
+        opro[1, ] <- "pow"
+        opro[3, ] <- -sign(beta) * dv
+        opro[4, ] <- rep(alpha, p)
+    }
+    P <- list(sense = "max")
+    P$c <- rep(0, p + q)
+    P$A <- cBind(Diagonal(p, x = dv), A)
+    P$bx <- rbind(LX, UX)
+    P$bc <- rbind(e, e)
+    P$scopt <- list(opro = opro)
+    P$dparam$intpnt_nl_tol_rel_gap <- rtol
+    if (length(control)) {
+        P$iparam <- control$iparam
+        P$dparam <- control$dparam
+        P$sparam <- control$sparam
+    }
+    z <- Rmosek::mosek(P, opts = list(verbose = verb))
+    status = z$sol$itr$solsta
+    if (status != "OPTIMAL") 
+        warning(paste("Solution status = ", status))
+    f <- z$sol$itr$xx[1:p]
+    if(is.finite(mass)) f <- mass * f/sum(d) 
+    #if (alpha == 1) 
+    #    logLik <- sum(log(g))
+    #else logLik <- NULL
+    z <- list(x = v, y = f, status = status)
+    class(z) <- "medde"
+    z
 }
-if(dimx != dimv) 
-	stop('x and v of different dimensions')
-if(dimx == 1)
-	mesh <- mesh1(x,v,Dorder)
-else if(dimx == 2){
-   if(Dorder != 1)
-	stop('Dorder must be 1 for bivariate data')
-   else {
-	stop("Bivariate smoothing not (yet) implemented for REBayes")
-	#mesh <- mesh2(x,v,merge)
-	#T <- mesh$T
-        }
-   }
-else
-   stop('x and v must be either 1d or 2d')
 
 
-XL <- mesh$XL
-XC <- mesh$XC
-XJ <- mesh$XJ
-XU <- mesh$XU
-
-n <- NROW(x)
-p <- NCOL(XJ)
-q <- NROW(XJ)
-H <- Diagonal(x = XC)
-C <- rep(0,p+q)
-if(lambda > -1)
-   A <- cbind(H , t(XJ))
-else {
-   A <- cbind(H , -t(XJ))
-   C[(p+1):(p+q)] <- rep(1,q)
-   }
-if(!length(w)) w <- rep(1,n)/n
-   L <- as.vector(XL %*% w)
-if(lambda > 0) { # TV Constraint
-   LX <- c(rep(0,p),  -rep(lambda,q))
-   UX <- c(rep(Inf,p), rep(lambda,q))
-   }
-else {  # Concavity/Convexity Constraint
-   LX <- rep(0,p+q)
-   UX <- rep(Inf,p+q)
-   }
-
-P <- list(sense = "min")
-P$c <- C
-P$A <- A
-P$bx <- rbind(LX,UX)
-P$bc <- rbind(L,L)
-
-opro <- matrix(list(),nrow = 5, ncol = p)
-rownames(opro) <- c(" type ", "j", "f", "g", "h")
-
-#switch solver case{'mosek'} # MOSEK solution  (For another day, only mosek for now)
-if(alpha == 1){ # Shannon
-    opro[1, ] <- as.list(rep("ent", p))
-    opro[2, ] <- as.list(1:p)
-    opro[3, ] <- as.list(XC)
-    opro[4, ] <- as.list(rep(0, p))
-    opro[5, ] <- as.list(rep(0, p))
-   }
-else if(alpha == 0.5){ # Hellinger
-    opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(1:p)
-    opro[3, ] <- as.list(-XC)
-    opro[4, ] <- as.list(rep(0.5, p))
-    opro[5, ] <- as.list(rep(0, p))
-   }
-else if(alpha == 0){ # EL
-    opro[1, ] <- as.list(rep("log", p))
-    opro[2, ] <- as.list(1:p)
-    opro[3, ] <- as.list(-XC)
-    opro[4, ] <- as.list(rep(1, p))
-    opro[5, ] <- as.list(rep(0, p))
-   }
-else if(alpha < 0){ # Quasi -- only tested for alpha == -1
-    opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(1:p)
-    opro[3, ] <- as.list(XC)
-    opro[4, ] <- as.list(rep(alpha, p))
-    opro[5, ] <- as.list(rep(0, p))
-   }
-else if(alpha == 2){ # Pearson
-    opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(1:p)
-    opro[3, ] <- as.list(-XC)
-    opro[4, ] <- as.list(rep(2, p))
-    opro[5, ] <- as.list(rep(0, p))
-   }
-else if(alpha == 3){ # Silverman for Good
-    opro[1, ] <- as.list(rep("pow", p))
-    opro[2, ] <- as.list(1:p)
-    opro[3, ] <- as.list(XC)
-    opro[4, ] <- as.list(rep(3, p))
-    opro[5, ] <- as.list(rep(0, p))
-   }
-else
-   stop('specified alpha not (yet) implemented')
-
-
-P$scopt <- list(opro = opro)
-P$dparam$intpnt_nl_tol_rel_gap <- rtol
-if(length(control)){
-    P$iparam <- control$iparam
-    P$dparam <- control$dparam
-    P$sparam <- control$sparam
-}
-z <- Rmosek::mosek(P, opts = list(verbose = verb))
-status = z$sol$itr$solsta
-if(status != "OPTIMAL") warning(paste("Solution status = ", status))
-f <- z$sol$itr$xx[1:p]
-g <- t(XL) %*% f
-o <- order(x)
-phi <- cbind(x[o],log(g[o]))
-if(alpha == 1) logLik <- sum(phi[,2])
-else logLik <- NULL
-z <- list(x = v, y = f, logLik = logLik, status = status)
-class(z) <- "medde"
-z
-}
 #' Plotting method for medde objects
 #'
 #' @param x object obtained from medde fitting
-#' @param xlab label for horizontal axis
-#' @param ylab label for vertical axis
 #' @param ... other parameters to be passed to plot method
-plot.medde <- function(x, xlab = "x", ylab = "f(x)", ...){
-	plot.default(x, type = "l", xlab = xlab, ylab = ylab, ...)
-	}
+#' @importFrom stats  approx
+#' @importFrom graphics contour
+#' @importFrom graphics plot
+plot.medde <- function(x, ...){
+    plot.default(x$x, x$y, type = "l", xlab = "x", ylab = "f(x)", ...)
+}
 
 
 #' Quantile function for medde estimate
@@ -404,6 +266,7 @@ qmedde <- function (p, medde) {
     }
     qs
 }
+
 #' Random number generation from a medde estimate
 #'
 #' @param n number of observations desired in calls to rmedde

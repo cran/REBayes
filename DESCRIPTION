@@ -3,7 +3,7 @@ Title: Empirical Bayes Estimation and Inference in R
 Description: Kiefer-Wolfowitz maximum likelihood estimation for mixture models
     and some other density estimation and regression methods based on convex
     optimization.
-Version: 0.73
+Version: 0.85
 Authors@R: c(
     person( "Roger", "Koenker", email=  "rkoenker@uiuc.edu", role =  c("aut", "cre")),
     person("Jiaying", "Gu", email =  "gu17@illinois.edu", role = "ctb"),
@@ -21,10 +21,10 @@ SystemRequirements: MOSEK (http://www.mosek.com) and MOSEK License for
 License: GPL (>= 2)
 URL: https://www.r-project.org
 NeedsCompilation: no
-RoxygenNote: 5.0.1
-Packaged: 2016-11-12 20:39:31 UTC; roger
+RoxygenNote: 6.0.1
+Packaged: 2017-05-03 14:44:39 UTC; roger
 Author: Roger Koenker [aut, cre],
   Jiaying Gu [ctb],
   Ivan Mizera [ctb]
 Repository: CRAN
-Date/Publication: 2016-11-13 10:14:21
+Date/Publication: 2017-05-04 08:23:44 UTC

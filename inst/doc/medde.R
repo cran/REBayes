@@ -43,32 +43,26 @@ velo.cap <- "Rotational velocity of stars with three quasi concave shape constra
     using the \\Renyi likelihood."
 
 ## ----velo, fig.height = 5, fig.width = 7, fig.cap = velo.cap, echo = FALSE----
-# Star velocity Hellinger plot in K&M Quasi paper
-# Note that observations at x = 0 have been dropped.  
+# Star velocity Hellinger plot in K&M Quasi paper Revisited
 
 data(velo)
 x <- velo
 x <- x[!(x == 0)]  # drop zero velocities
-v <- 0:460 + 0.05
-w <- tabulate(x)
-w <- w/sum(w)
-y <- 1:length(w)
 hist(x, 100, freq = FALSE, main = "")
-alphas <- c(0.5, 0, -1)
+alphas <- c(0.5, 0, -2)
 for(i in 1:3){
-    alpha <- alphas[i]
-    f <- medde(y, v = 1000, lambda = -0.5, alpha = alphas[i], w = w, rtol = 1e-8)
+    f <- medde(x, v = 1000, lambda = -0.5, alpha = alphas[i], rtol = 1e-8)
     lines(f$x, f$y, col = i+1)
 }
-leg <- as.expression(lapply(c(1/2,0,-1),function(x) bquote(alpha ==.(x))))
+leg <- as.expression(lapply(c(1/2,0,-2),function(x) bquote(alpha ==.(x))))
 legend(300, 0.025, leg, lty = 1, col = 2:4)
 
 ## ----Silsetup, include = FALSE-------------------------------------------
 Sil.cap <- "Gaussian histogram based on 500 observations and two penalized
 maximum likelihood estimates with total variation norm penalty
-and $\\lambda \\in \\{ 0.5 \\times 10^{-3}, 0.5 \\times 10^{-6} \\}$."
+and $\\lambda \\in \\{ 0.5 \\times 10^{-4}, 0.5 \\times 10^{-6} \\}$."
 
-## ----Silverman, fig.height = 5, fig.width = 7, fig.cap = Sil.cap, echo = FALSE----
+## ----Silverman, fig.height = 5, warning = FALSE, fig.width = 7, fig.cap = Sil.cap, echo = FALSE----
 # Silverman type total variation roughness penalty estimation in medde
 # Silverman BW (1982). On the Estimation of a Probability Density Function
 # by the Maximum Penalized Likelihood Method. Annals of Statistics, 10, 795-810
@@ -76,9 +70,9 @@ n <- 500
 set.seed <-18 
 x <- rnorm(n)
 hist(x, 70, freq = FALSE, main = "", col = grey(.95))
-f <- medde(x, Dorder = 2, lambda = 0.0005, verb = 0)
+f <- medde(x, Dorder = 2, lambda = 1, verb = 0)
 lines(f, col = "red")
-f <- medde(x, Dorder = 2, lambda = 0.0000005, verb = 0)
+f <- medde(x, Dorder = 2, lambda = 0.05, verb = 0)
 lines(f, col = "blue")
 
 ## ----lnormsetup, include = FALSE-----------------------------------------
@@ -122,9 +116,9 @@ x <- rlambda(500)
 hist(x, 200, freq = FALSE, border = "grey", main = "")
 z <- seq(0,max(x), length=2000)
 lines(z, dlambda(z), col = 2)
-f <- medde(x, lambda = 0.0005, Dorder = 2, alpha = 0)
+f <- medde(x, lambda = 0.5, Dorder = 2, alpha = 0)
 lines(f, col = "blue")
-f <- medde(x, lambda = 0.0005, Dorder = 2, alpha = 1)
+f <- medde(x, lambda = 0.05, Dorder = 2, alpha = 1)
 lines(f, col = "green")
 leg <- c("True", as.expression(lapply(c(0,1),function(x) bquote(alpha ==.(x)))))
 legend(15,0.4,leg, lty = 1, lwd = 1.5, col = c("red","blue","green"))

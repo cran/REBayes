@@ -1,15 +1,75 @@
+Brown <- function(x, v = 300, rtol = 1e-06, verb = 0, control = NULL){
+    # Monotone Bayes Rule Density Estimation for Gaussian Mixture Model
+    if(length(v) == 1){
+	eps <- ifelse(lambda < 0, 0.0001,1)
+	v <- seq(min(x) - eps, max(x) + eps, length = v)
+	}
+
+    n <- length(x)
+    p <- length(v)
+    k <- findInterval(x,v)
+    h <- diff(v)
+    ia <- c(1:n,1:n)
+    ja <- c(k+1,k)
+    ra <- c((x - v[k])/h[k], (v[k+1] - x)/h[k])
+    XL <- t(sparseMatrix(ia, ja, x = ra, dims = c(n,p)))
+    s <- 1/h
+    XC <- 0.5*(c(h, 0) + c(0,h))
+    q <-  p-2
+    IA <- c(1:(p-2), 1:(p-2), 1:(p-2))
+    JA <- c(1:(p-2), 2:(p-1), 3:p)
+    XA <- c(-s[1:(p-2)], s[1:(p-2)]+s[2:(p-1)], -s[2:(p-1)])
+    D  <- .5 * (h[1:(p-2)]+h[2:(p-1)])
+    XA <- XA / c(D, D, D)
+    XJ <- sparseMatrix(IA, JA, x = -XA, dims = c(q,p))
+    H <- Diagonal(x = XC)
+    C <- rep(0,p+q)
+    A <- cbind(H , -t(XJ))
+    C[(p+1):(p+q)] <- rep(1,q)
+    w <- rep(1,n)/n
+    L <- as.vector(XL %*% w)
+    LX <- rep(0,p+q)
+    UX <- rep(Inf,p+q)
+    opro <- matrix(list(),nrow = 5, ncol = p)
+    rownames(opro) <- c(" type ", "j", "f", "g", "h")
+    opro[1, ] <- as.list(rep("ent", p))
+    opro[2, ] <- as.list(1:p)
+    opro[3, ] <- as.list(XC)
+    opro[4, ] <- as.list(rep(0, p))
+    opro[5, ] <- as.list(rep(0, p))
+
+    P <- list(sense = "min")
+    P$c <- C
+    P$A <- A
+    P$bx <- rbind(LX,UX)
+    P$bc <- rbind(L,L)
+    P$scopt <- list(opro = opro)
+    P$dparam$intpnt_nl_tol_rel_gap <- rtol
+    if(length(control)){
+	P$iparam <- control$iparam
+	P$dparam <- control$dparam
+	P$sparam <- control$sparam
+    }
+z <- mosek(P, opts = list(verbose = verb))
+status = z$sol$itr$solsta
+if(status != "OPTIMAL") warning(paste("Solution status = ", status))
+f <- z$sol$itr$xx[1:p]
+z <- list(x = v, y = f, status = status)
+class(z) <- "merde"
+z
+}
 
 
 # Example 1 for monotonized Bayes rule estimator 
 
- require(REBayes)
+require(Rmosek)
  par(mfrow = c(1,2))
  set.seed(1984)
  n <- 100
  m <- runif(n,5,15)
  x <- rnorm(n,m)
  v <- 1:500/25
- f <- medde(x, v, lambda = -2, verb = 5)
+ f <- Brown(x, v, verb = 5)
  plot(f$x, f$y, type = "l",xlab = "x", ylab = "g(x)")
  x <- 1:200/10
  h <- function(x) (pnorm(15-x)-pnorm(5-x))/10 #da truth

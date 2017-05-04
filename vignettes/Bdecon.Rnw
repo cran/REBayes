@@ -1,0 +1,387 @@
+%\VignetteIndexEntry{Bayesian Deconvolution}
+%\VignetteEngine{knitr::knitr}
+\documentclass[mathserif,12pt]{amsart}
+
+%% additional packages
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide,graphicx,color,thumbpdf}
+\usepackage{hyperref}
+\usepackage{alltt}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{upquote}
+\usepackage{mdframed}
+\usepackage{xcolor}
+\usepackage{eulervm}
+
+%% BibTeX settings
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{jae}
+\bibpunct{(}{)}{,}{a}{,}{,}
+\newcommand{\doi}[1]{\href{http://dx.doi.org/#1}{\normalfont\texttt{doi:#1}}}
+
+%% markup commands for code/software
+\let\code=\texttt
+\let\pkg=\textbf
+\let\proglang=\textsf
+\newcommand{\file}[1]{`\code{#1}'}
+%\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+
+%% paragraph formatting
+\renewcommand{\baselinestretch}{1}
+
+%% \usepackage{Sweave} is essentially
+\RequirePackage[T1]{fontenc}
+\RequirePackage{ae,fancyvrb}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl}
+
+
+
+\def\RR{\mathbb{R}}
+\def\OO{\mathcal O}
+\def\PP{\mathbb{P}}
+\def\LL{\mathcal L}
+\def\II{\mathcal I}
+\def\EE{\mathbb E}
+\def\VB{\mathbb V}
+\def\FF{\mathcal F}
+\def\NN{\mathcal N}
+\def\XX{\mathcal X}
+\def\SS{\mathcal S}
+\def\GG{\mathcal G}
+\def\CC{\mathcal C}
+\def\AA{\mathcal A}
+\def\TT{\mathcal T}
+\def\HH{\mathcal H}
+\def\JJ{\mathcal J}
+\def\KK{\mathcal K}
+\def\PP{\mathcal{P}}
+\def\DD{\mathcal{D}}
+\def\LL{\mathcal L}
+\def\II{\mathcal I}
+\def\pperp{\perp\!\!\!\perp}
+
+\def\Polya{P\'olya }
+\def\Renyi{R\'enyi }
+\def\diag{\mbox{diag}}
+\def\sgn{\mbox{sgn}}
+\def\TV{\bigvee_\Omega }
+%\newtheorem{example}{Example}[section]
+\newtheorem{exmp}{Example}
+%\newtheorem{remark}{Remark}
+\renewcommand{\abstractname}{Abstract}
+\def\argmax{\text{argmax}}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\renewenvironment{proof}{\noindent {\bf Proof.\ }}{\hfill{\rule{2mm}{2mm}}}
+%\renewenvironment{remark}{\noindent {\bf Remark.\ }} {\hfill{ \rule{2mm}{2mm}}}
+%\renewenvironment{example}{\noindent {\bf Example.\ }}{\hfill{ \rule{2mm}{2mm}}}
+
+
+\begin{document}
+
+\bibliographystyle{jae}
+
+\title{Bayesian Deconvolution:\\ An R Vinaigrette}
+\author{Roger Koenker}
+\thanks{Version:  \today .  A genre manifesto for R Vinaigrettes is available
+at \url{http://davoidofmeaning.blogspot.com/2016/12/r-vinaigrettes.html}.
+It seemed appropriate that my first venture in this new genre should be
+samokritika (self-criticism) directed at the R package REBayes, \cite{REBayes}.
+Code to reproduce the computational results presented is available from
+\url{http://www.econ.uiuc.edu/~roger/research/ebayes/ebayes.html}, along
+with the pdf version of this note.  I would like to thank Jiaying Gu for
+very helpful comments on an earlier draft.
+}
+
+
+\begin{abstract}
+    Nonparametric maximum likelihood estimation of general mixture models
+    pioneered by the work of \cite{KW} has been recently reformulated as
+    an exponential family regression spline problem in \cite{Bdecon}.  
+    Both approaches yield a low dimensional estimate of the mixing distribution, 
+    $g$-modeling in the terminology of Efron.   Some casual empiricism suggests
+    that the Efron approach is preferable when the mixing distribution has a
+    smooth density, while Kiefer-Wolfowitz is preferable for discrete mixing
+    settings.  In the classical Gaussian deconvolution problem both maximum
+    likelihood methods appear to be preferable to (Fourier) kernel  methods.
+    Kernel smoothing of the Kiefer-Wolfowitz estimator appears to be competitive
+    with the Efron procedure for smooth alternatives.
+\end{abstract}
+
+\maketitle
+
+%\noindent {\bf Keywords:} 
+
+<<preliminaries, echo=FALSE, warning = FALSE, message = FALSE, results='hide'>>=
+require("REBayes")
+knitr::render_sweave()
+options(prompt = "R> ", continue = "+  ", digits = 3, show.signif.stars = FALSE)
+cleanup <- FALSE
+@
+
+
+\section{Introduction} \label{sec:intro}
+	\cite{Bdecon} has recently introduced the phrase ``Bayesian deconvolution''
+	to describe a maximum likelihood procedure for estimating mixture models
+	of the general form,
+	\[
+	f(y) = \int \varphi(y| \theta) dG(\theta),
+	\]
+	where $\varphi$ denotes a known parametric ``base'' model and $G$ denotes
+	an unknown, nonparametric mixing distribution.  Such models are fundemental
+	in empirical Bayes compound decision settings where we have the (iid)
+	hierarchical structure,
+	\[
+	Y_i \sim \varphi (y | \theta_i); \quad \theta_i \sim G.
+	\]
+	When $\theta$ is a location parameter, so $\varphi (y | \theta_i) =
+	\varphi (y - \theta_i)$ this is a conventional deconvolution problem
+	usually evoking characteristic function methods, however Efron's 
+	maximum likelihood procedure recalls the  NPMLE of \cite{KW} except
+	rather than producing a discrete estimate of $G$ it yields a smooth
+	estimate.
+
+	This note contrasts the foregoing methods in a very simple, special
+	case and argues that maximum likelihood offers considerable advantages
+	over prior (Fourier) deconvolution methods, perhaps most significantly
+	by extending the domain of applications beyond the location shift model.
+
+\section{The Kiefer-Wolfowitz NPMLE}
+
+In \cite{KM} we have advocated the Kiefer-Wolfowitz NPMLE approach to 
+estimating $G$ and constructing estimates of the $\theta_i$'s for compound
+decision problems.  In sharp contrast to finite dimensional mixture problems
+with highly multimodel likelihoods, discrete formulations of the general
+nonparametric mixture problem are strictly convex and therefore admit unique
+solutions.  Consider a grid $t_0, t_1, \cdots , t_m$ with associated masses
+$\{ g \in \RR^m | g_i \geq 0, \; \sum_{i=1}^m g_i \Delta t_i = 1 \}$, we
+can approximate the log likelihood by,
+\[
+\ell(G) = \sum_{i=1}^n \log f_i 
+\]
+where the $n$ vector $f = Ag$ and $A$ is the $n$ by $m$ matrix with typical
+element $\varphi (y_i , t_j)$.  As is well known from \cite{Laird} or \cite{Lindsay}
+the NPMLE, $\hat G$, has $p \leq n$ positive mass points, while in practice this
+$p$ is usually closer to $\log n$ than $n$.  Interior point methods for solving
+such problems are considerably more efficient than earlier EM approaches greatly
+facilitating the study of their performance in simulation experiments.  Unfortunately,
+little is known about their statistical efficiency from a theoretical perspective
+beyond the basic consistency results of \cite{KW} and \cite{Pfanzagl}.
+
+\section{Efron's NPMLE}
+
+\cite{Bdecon} has proposed an alternative approach to estimating $G$ that expresses
+its log derivative by a regression spline,
+\[
+g(y | \theta) = \exp \{ \sum_{j=1}^p \theta_j \psi_j (y) - \psi_0 (\theta) \},
+\]
+as in the pure density estimation methods of \cite{Stone} and \cite{Barron}.  We can
+maintain the same discretization for the support of $G$, and set,
+\[
+g = (g_j) = (g(t_j | \theta)),
+\]
+so the log likelihood can be expressed as above, except that now we are estimating
+a finite dimensional parameter $\theta$ of predetermined dimension.  Efron suggests
+natural splines for the $\psi_j$ functions and the penalization,
+\[
+\ell_n (G_\theta) + \lambda \| \theta \|
+\]
+by the Euclidean norm of the vector $\theta$, thereby shrinking $\theta$ toward the
+origin and $\hat G$ toward the uniform distribution. 
+
+A striking feature of both the Efron and Kiefer-Wolfowitz proposals is that neither
+depend upon the mixture model being a formal convolution.  Of course when $\theta$
+is a location parameter so $\varphi (y | \theta) = \varphi (y - \theta)$ then
+classical deconvolution methods are also applicable.  Efron compares  the performance
+of his procedure with the kernel deconvolution method of \cite{SC}, and concludes
+that the latter is ``too variable in the tails.''
+
+<<Xsetup, include = FALSE>>=
+X.cap <- "Four estimates of the mixing distributions $G$:  In the left panel the 
+true mixing distribution is smooth, in the left panel it is discrete as described
+in the text.  
+"
+@
+
+<<X, fig.height = 6, fig.width = 9, fig.cap = X.cap, cache = TRUE, message = FALSE, warnings = FALSE, echo = FALSE>>=
+KFE <- function(y, T = 300, lambda = 1/3){
+    # Kernel Fourier Estimator: Stefanski and Carroll (Statistics, 1990)
+    ks <- function(s,x) exp(s^2/2) * cos(s * x)
+    K <- function(t, y, lambda = 1/3){
+	k <- y
+	for(i in 1:length(y)){
+	    k[i] <- integrate(ks, 0, 1/lambda, x = (y[i] - t))$value/pi 
+	}
+	mean(k)
+    }
+    eps <- 1e-04
+    if(length(T) == 1) T <- seq(min(y)-eps, max(y)+eps, length = T)
+    g <- T
+    for(j in 1:length(T))
+	g[j] <- K(T[j], y, lambda = lambda)
+    list(x = T, y = g)
+}
+BDE <- function(y, T = 300, df = 5, c0 = 1){
+    # Bayesian Deconvolution Estimator: Efron (B'ka, 2016)
+    require(splines)
+    eps <- 1e-04
+    if(length(T) == 1) T <- seq(min(y)-eps, max(y)+eps, length = T)
+    X <- ns(T, df = df)
+    a0 <- rep(0, ncol(X))
+    A <- dnorm(outer(y,T,"-"))
+    qmle <- function(a, X, A, c0){
+	g <- exp(X %*% a)
+	g <- g/sum(g)
+	f <- A %*% g
+	-sum(log(f)) + c0 * sum(a^2)^.5
+    }
+    ahat <- nlm(qmle, a0, X=X, A=A, c0 = c0)$estimate
+    g <- exp(X %*% ahat)
+    g <- g/integrate(approxfun(T,g),min(T),max(T))$value
+    list(x = T,y = g)
+}
+W <- function(G, h, interp = FALSE, eps = 0.001){
+    #Wasserstein distance:  ||G-H||_W
+    H <- cumsum(h$y)
+    H <- H/H[length(H)]
+    W <- integrate(approxfun(h$x, abs(G(h$x) - H)),min(h$x),max(h$x))$value
+    list(W=W, H=H)
+}
+
+biweight <- function(x0, x, bw){
+    t <- (x - x0)/bw
+    (1-t^2)^2*((t> -1 & t<1)-0) *15/16
+}
+Wasser <- function(G, h, interp = FALSE, eps = 0.001, bw = 0.7){
+    #Wasserstein distance:  ||G-H||_W
+    if(interp == "biweight"){
+	yk = h$x
+	for (j in 1:length(yk))
+	    yk[j] = sum(biweight(h$x[j], h$x, bw = bw)*h$y/sum(h$y))
+	H <- cumsum(yk)
+	H <- H/H[length(H)]
+    }
+    else {
+	H <- cumsum(h$y)
+	H <- H/H[length(H)]
+    }
+    W <- integrate(approxfun(h$x, abs(G(h$x) - H)),min(h$x),max(h$x), subdivisions = 500)$value
+    list(W=W, H=H)
+}
+set.seed(1234)
+par(mfrow = c(1,2))
+for(i in 1:2){
+    if(i == 1){
+	G0 <- function(t) punif(t,0,6)/8 + 7 * pnorm(t, 0, 0.5)/8  
+	rf0 <- function(n){
+	    s <- sample(0:1, n, replace = TRUE, prob = c(1,7)/8)
+	    rnorm(n) + (1-s) * runif(n,0,6) + s * rnorm(n,0,0.5)
+	}
+    }
+    else{
+	G0 <- function(t) 0 + 7 * (t > 0)/8 + (t > 2)/8
+	rf0 <- function(n){
+	    s <- sample(0:1, n, replace = TRUE, prob = c(1,7)/8)
+	    rnorm(n) + (1-s) * 2 + s * 0
+	}
+    }
+    y <- rf0(1000)
+    t1 <- system.time(g1 <- BDE(y))
+    W1 <- Wasser(G0, g1)
+    t2 <- system.time(g2 <- GLmix(y))
+    W2 <- Wasser(G0, g2)
+    t3 <- system.time(g3 <- KFE(y))
+    W3 <- Wasser(G0, g3)
+    W4 <- Wasser(G0, g2, interp = "biweight")
+    plot(g1$x, G0(g1$x), type = "l", ylim = c(-0.1, 1.1), xlab = "x", ylab = "G(x)")
+    lines(g1$x, W1$H,col = 2)
+    lines(g2$x, W2$H, col = 3)
+    lines(g3$x, W3$H, col = 4)
+    lines(g2$x, W4$H, col = 5)
+    legend(x = "bottomright", legend= c("True", "Efron","KW", "SC", "KWs"), col = 1:5, lwd = 1.5)
+    title(paste("W(E) = ", round(W1$W,3), "; ", "W(KW) = ", round(W2$W,3), 
+	    "; ", "W(SC) = ", round(W3$W,3), "; ", "W(KWs) = ", round(W4$W,3), sep = ""), cex.main = 0.75)
+}
+@
+
+
+<<Y,  cache = TRUE, message = FALSE, warnings = FALSE, echo = FALSE>>=
+sim1 <- function(n, R = 10){
+    A <- matrix(0, 3, R)
+    G0 <- function(t) punif(t,0,6)/8 + 7 * pnorm(t, 0, 0.5)/8  
+    rf0 <- function(n){
+	s <- sample(0:1, n, replace = TRUE, prob = c(1,7)/8)
+	rnorm(n) + (1-s) * runif(n,0,6) + s * rnorm(n,0,0.5)
+    }
+    for(i in 1:R){
+	y <- rf0(n)
+	g <- BDE(y)
+	Wg <- Wasser(G0, g)
+	h <- GLmix(y)
+	Wh <- Wasser(G0, h)
+	Whs <- Wasser(G0, h, interp = "biweight")
+	A[,i] <- c(Wg$W, Wh$W, Whs$W)
+	}
+    A
+}
+set.seed(12)
+A <- sim1(1000,1000)
+a <- round(apply(A,1,mean),3)
+@
+
+\section{An Illustration}
+
+To compare performance of the three estimators of $G$ described above, I have
+considered a slight variant of the simulation setting of Efron.  The observed
+$Y_i$ are $\NN (\theta, 1)$ with $\theta_i$'s drawn iidly either a.) from the mixture of
+Gaussian and uniform distributions, 
+\[
+G(\theta) = (1 - \epsilon) \Phi (\theta/\sigma) + 
+	\epsilon \theta I(0 \geq \theta < M)/M
+\]
+with $\epsilon = 1/7$, $\sigma = 1/2$ and $M = 6$,  or from b.) the discrete mixing
+distribution with $\epsilon = 1/7$ and,
+\[
+G(\theta) = (1 - \epsilon)  I(0 \leq \theta) + \epsilon I(2 \leq \theta) 
+\]
+Figure 1 depicts typical
+realizations with sample size $n = 1000$.  Following Efron we have set the
+dimension of the natural spline model to $p = 5$, and his penalty parameter to one.
+The scaling parameter for the Stefanski-Carroll procedure was $1/3$, also 
+following Efron's suggetion.  For all three estimators the grid was equally
+spaced on the support of the observed $Y_i$ with $m = 300$ distinct values.
+Wasserstein distance, $L_1$ distance between distribution functions,  is reported
+above the figure for each of three estimates.
+
+The performance of Efron's estimator is very impressive, while the oscillation
+of the kernel method in the tails confirms Efron's criticism.  The Kiefer-Wolfowitz
+estimator is respectable, at least the estimated $\hat G$ stays within the [0,1]
+bounds, but it is clearly inferior to the smoother Efron procedure.  When the
+target $G$ is discrete with a small number of mass points, the performance
+advantage, not surprisingly is reversed.  One might count the lack of tuning parameters for the
+Kiefer-Wolfowitz NPMLE as an advantage over its competitors, or not, depending
+on one's outlook on minimalism.  
+
+In the spirit of competition, I couldn't resist trying to smooth the Kiefer Wolfowitz
+NPMLE to see whether one might be able to approach the performance of the Efron estimator,
+so the last (cyan) curve is a biweight kernel smooth with bandwidth equal 0.7.  This does almost
+as well as the default Efron procedure for our test case for the smooth alternative, but spoils
+the auspicious performance for the discrete case.  Encouraged by the former improvement I
+decided to wade a little further out in the water by replicating the experiment.  In 1000
+trials of the experiment with the smooth $G_0$ the mean Wasserstein error was \Sexpr{a[1]} 
+for the Efron estimator, \Sexpr{a[2]}
+for the unsmoothed KW-NPMLE and \Sexpr{a[3]} for the smoothed KW-NPMLE.  Of course, this
+result proves nothing at all, except perhaps that I'm acquainted with an excellent bandwidth
+oracle.
+
+
+
+
+\bibliography{Bdecon}
+
+\end{document}

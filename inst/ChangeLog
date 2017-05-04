@@ -235,4 +235,25 @@ Version 0.70
 
 2.  Added medde vignette
 
+Version 0.75
 
+1.  modified Cosslett to return log-likelihood 
+
+2.  Added a profile likelihood demo for Cosslett
+
+Version 0.80
+
+1.  Added the Bayesian Deconvolution vignette.
+
+2.  Updated medde vignette
+
+Version 0.82
+
+1.  Added option for bivariate medde fitting, highly experimental,
+since the triogram computation of the penalty contribution seems to be fishy.
+
+
+Version 0.85
+
+1.  Drastic rewrite of medde following closely Ivan's nddcc approach, at this
+point no bivariate option, but the 1d version seems to be much more stable.

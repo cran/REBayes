@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{alltt}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{upquote}
 \usepackage{mdframed}
 \usepackage{xcolor}
@@ -27,7 +28,7 @@
 %\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
 
 %% paragraph formatting
-\renewcommand{\baselinestretch}{1}
+%\renewcommand{\baselinestretch}{1.5}
 
 %% \usepackage{Sweave} is essentially
 \RequirePackage[T1]{fontenc}
@@ -67,17 +68,19 @@
 \def\diag{\mbox{diag}}
 \def\sgn{\mbox{sgn}}
 \def\TV{\bigvee_\Omega }
-\newtheorem{example}{Example}
-\newtheorem{remark}{Remark}
-\renewcommand{\abstractname}{Abstract}
+%\newtheorem{example}{Example}[section]
+\newtheorem{exmp}{Example}
+%\newtheorem{remark}{Remark}
+%\renewcommand{\abstractname}{Abstract}
+\renewcommand{\abstractname}{K\={o}an}
 \def\argmax{\text{argmax}}
 \newtheorem{lemma}{Lemma}
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proposition}{Proposition}
 \renewenvironment{proof}{\noindent {\bf Proof.\ }}{\hfill{\rule{2mm}{2mm}}}
-\renewenvironment{remark}{\noindent {\bf Remark.\ }} {\hfill{ \rule{2mm}{2mm}}}
-\renewenvironment{example}{\noindent {\bf Example.\ }}{\hfill{ \rule{2mm}{2mm}}}
+%\renewenvironment{remark}{\noindent {\bf Remark.\ }} {\hfill{ \rule{2mm}{2mm}}}
+%\renewenvironment{example}{\noindent {\bf Example.\ }}{\hfill{ \rule{2mm}{2mm}}}
 
 
 \begin{document}
@@ -254,14 +257,14 @@ criterion replacing log likelihood with a criterion based on \Renyi entropy.
 Why not stick with log likelihood and just modify the constraint, as suggested
 by \cite{SW.10}?  The pragmatic reason is that modifying both preserves an extremely
 convenient form of the convex optimization problem.  This motivation is further
-elablorated in \cite{KM.10}.  From a more theoretical perspective weaker concavity
+elaborated in \cite{KM.10}.  From a more theoretical perspective weaker concavity
 requirements pose difficulties for the standard likelihood formulation, \cite{DW.16}
 elaborate on these difficulties and demonstrate among many other things that 
 when imposing concavity constraints with $\alpha < 0$ the MLE fails to exist.
 
 
 \vspace{3mm}
-\begin{example}\label{ex.Guv}
+\begin{exmp}\label{ex.Guv}
 In \cite{KM.10} we stressed the (Hellinger) case that $\alpha = 1/2$, so
 $\beta = -1$, and $g = -1/\sqrt{f}$.  Since $g$ is constrained to be concave
 we conclude that the estimated density, $f$ is $\rho$-concave for $\rho = -1/2$,
@@ -313,6 +316,7 @@ lines(xx,zz,col = "red")
 plot(xx, yy,xlab = "x ~ log income annual increments", ylab = "f(x)", type = "l")
 lines(x,exp(y),col = "red")
 @
+\end{exmp}
 
 Permitting Cauchy tail behavior may be regarded as sufficiently indulgent for most
 statistical purposes, but the next example illustrates that more extreme \Renyi fitting
@@ -320,7 +324,7 @@ criteria with $\alpha < 1/2$ is sometimes needed to accommodate  sharp peaks in 
 target density.
 
 \vspace{3mm}
-\begin{example}\label{ex.velo}
+\begin{exmp}\label{ex.velo}
     We reconsider the rotational velocity of stars data considered previously in \cite{KM.10}.
     The data was taken originally from \cite{hofwar91} and is available from the R package
     {\pkg{REBayes}}.  Figure \ref{fig:velo} illustrates a histogram of the 3806 positive
@@ -328,39 +332,29 @@ target density.
     velocity observations, the histogram looks plausibly unimodal and we superimpose three
     distinct \Renyi shape constrained estimates.  The Hellinger ($\alpha = 1/2$) estimate
     is clearly incapable of capturing the sharp peak around $x = 18$, and even the fit for
-    $\alpha = 0$ fails to do so.  But pressing further, we see that setting $\alpha = -1$
-    provides an excellent fit by constraining $-1/f^2$ to be concave.  Inquiring minds
-    may wonder whether we could go even further.  Current numerical methods enable one to
-    go only a tiny bit further: with $\alpha = -1.1$ one gets a fit that matches the height of the
-    tallest histogram bar almost exactly, but venturing beyond this point fails to yield
-    a convergent solution to the fitting algorithm.
+    $\alpha = 0$ fails to do so.  But pressing further, we see that setting $\alpha = -2$
+    provides an excellent fit by constraining $-1/f^3$ to be concave.  
     
 <<velosetup, include = FALSE>>=
 velo.cap <- "Rotational velocity of stars with three quasi concave shape constrained density estimates 
     using the \\Renyi likelihood."
 @
 <<velo, fig.height = 5, fig.width = 7, fig.cap = velo.cap, echo = FALSE >>=
-# Star velocity Hellinger plot in K&M Quasi paper
-# Note that observations at x = 0 have been dropped.  
+# Star velocity Hellinger plot in K&M Quasi paper Revisited
 
 data(velo)
 x <- velo
 x <- x[!(x == 0)]  # drop zero velocities
-v <- 0:460 + 0.05
-w <- tabulate(x)
-w <- w/sum(w)
-y <- 1:length(w)
 hist(x, 100, freq = FALSE, main = "")
-alphas <- c(0.5, 0, -1)
+alphas <- c(0.5, 0, -2)
 for(i in 1:3){
-    alpha <- alphas[i]
-    f <- medde(y, v = 1000, lambda = -0.5, alpha = alphas[i], w = w, rtol = 1e-8)
+    f <- medde(x, v = 1000, lambda = -0.5, alpha = alphas[i], rtol = 1e-8)
     lines(f$x, f$y, col = i+1)
 }
-leg <- as.expression(lapply(c(1/2,0,-1),function(x) bquote(alpha ==.(x))))
+leg <- as.expression(lapply(c(1/2,0,-2),function(x) bquote(alpha ==.(x))))
 legend(300, 0.025, leg, lty = 1, col = 2:4)
 @
-\end{example}
+\end{exmp}
 
 \section{\Renyi likelihood and norm constrained density estimation}
 
@@ -402,10 +396,10 @@ squared $L_2$ norm.
 <<Silsetup, include = FALSE>>=
 Sil.cap <- "Gaussian histogram based on 500 observations and two penalized
 maximum likelihood estimates with total variation norm penalty
-and $\\lambda \\in \\{ 0.5 \\times 10^{-3}, 0.5 \\times 10^{-6} \\}$."
+and $\\lambda \\in \\{ 0.5 \\times 10^{-4}, 0.5 \\times 10^{-6} \\}$."
 @
 
-<<Silverman, fig.height = 5, fig.width = 7, fig.cap = Sil.cap, echo = FALSE>>=
+<<Silverman, fig.height = 5, warning = FALSE, fig.width = 7, fig.cap = Sil.cap, echo = FALSE>>=
 # Silverman type total variation roughness penalty estimation in medde
 # Silverman BW (1982). On the Estimation of a Probability Density Function
 # by the Maximum Penalized Likelihood Method. Annals of Statistics, 10, 795-810
@@ -413,16 +407,16 @@ n <- 500
 set.seed <-18 
 x <- rnorm(n)
 hist(x, 70, freq = FALSE, main = "", col = grey(.95))
-f <- medde(x, Dorder = 2, lambda = 0.0005, verb = 0)
+f <- medde(x, Dorder = 2, lambda = 1, verb = 0)
 lines(f, col = "red")
-f <- medde(x, Dorder = 2, lambda = 0.0000005, verb = 0)
+f <- medde(x, Dorder = 2, lambda = 0.05, verb = 0)
 lines(f, col = "blue")
 @
 
 
 
 \vspace{3mm}
-\begin{example}\label{ex.Silverman}
+\begin{exmp}\label{ex.Silverman}
 In Figure \ref{fig:Silverman} we illustrate a histogram based on 500 standard 
 Gaussian observations, and superimpose two fitted densities estimated by
 penalizaed maximum likelihood as solutions to
@@ -434,7 +428,7 @@ this problem conform to the parametric Gaussian MLE since the penalty forces
 the solution to take a Gaussian shape, but does not constrain the location or
 scale of the estimated density.  For smaller $\lambda$ we obtain a more
 oscillatory estimate than conforms more closely to the vagaries of the histogram.
-\end{example}
+\end{exmp}
 \vspace{3mm}
 
 Penalizing total variation of $\log f ''$ as in Figure \ref{fig:Silverman} raises
@@ -485,19 +479,18 @@ x <- rlambda(500)
 hist(x, 200, freq = FALSE, border = "grey", main = "")
 z <- seq(0,max(x), length=2000)
 lines(z, dlambda(z), col = 2)
-f <- medde(x, lambda = 0.0005, Dorder = 2, alpha = 0)
+f <- medde(x, lambda = 0.5, Dorder = 2, alpha = 0)
 lines(f, col = "blue")
-f <- medde(x, lambda = 0.0005, Dorder = 2, alpha = 1)
+f <- medde(x, lambda = 0.05, Dorder = 2, alpha = 1)
 lines(f, col = "green")
 leg <- c("True", as.expression(lapply(c(0,1),function(x) bquote(alpha ==.(x)))))
 legend(15,0.4,leg, lty = 1, lwd = 1.5, col = c("red","blue","green"))
 @
 
-\end{example}
 
 
 \vspace{3mm}
-\begin{example}\label{ex.lnormmix}
+\begin{exmp}\label{ex.lnormmix}
     Figure \ref{fig:lnormmix} illustrates a histogram based on 500 observations from
     the mixture of lognormals density depicted in red.  I have used this density for several years in class
     to illustrate how difficult it can be to choose an effective bandwidth for
@@ -521,7 +514,7 @@ legend(15,0.4,leg, lty = 1, lwd = 1.5, col = c("red","blue","green"))
     first mode, but at least does distinguish the second mode.  Both methods
     produce an excellent fit to the third mode, almost indistinguishable from
     the true density.
-\end{example}
+\end{exmp}
 
 \section{Discrete Implementation Details}
 \label{sec.medde}
@@ -535,7 +528,8 @@ package relies in turn on the \cite{Mosek} optimization system and its \cite{Rmo
 interface for the \proglang{R} language.  The current implementation in \code{medde}
 is restricted to univariate densities as we will do here as well.  \cite{KM.10} 
 describes some extensions to bivariate settings.  Most of the other functionality of
-the \pkg{REBayes} is devoted to empirical Bayes methods and described in \cite{KG.16}.
+the \pkg{REBayes} package is devoted to empirical Bayes methods and described 
+in \cite{KG.16}.
 
 For univariate densities convexity of piecewise linear functions can be enforced
 by  imposing linear inequality constraints on the set of function values
@@ -612,9 +606,10 @@ constrain $\| D^\top \eta \|_\infty \leq \lambda$,  and similarly for
 total variation ($L_1$ norm) constraints on higher order derivatives.
 
 Code to reproduce each of the figures appearing above is available from
-the author on request.  Readers are cautioned that although all of the
+\pkg{REBayes} package in the file \code{medde.Rnw} located in the 
+\code{vignettes} directory.  Readers are cautioned that although all of the
 computational problems described above are strictly convex and therefore
-possess a unique solution, extreme choices of the penalty parameters can
+possess unique solutions, extreme choices of the parameters can
 stress even the excellent optimization software provided by Mosek.  In
 Example \ref{ex.velo} we have seen that attempts to push the \Renyi $\alpha$
 parameter much below -1, cause difficulty.  In Example \ref{ex.Silverman} 
