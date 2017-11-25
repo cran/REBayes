@@ -43,7 +43,11 @@ independent variance components with weighted longitudinal data.
 See Gu and Koenker (2012?)
 }
 \references{
-Gu Y. and R. Koenker (2012) Empirical Bayesball
+Gu Y. and R. Koenker (2017) Empirical Bayesball Remixed:  Empirical
+Bayes Methods for Longitudinal Data, \emph{J. of Applied Econometrics}, 32, 575-599.
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \author{
 R. Koenker

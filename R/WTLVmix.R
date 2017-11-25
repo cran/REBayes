@@ -21,7 +21,8 @@
 #' 	\item{status}{Mosek convergence status}
 #' @author J. Gu and R. Koenker
 #' @seealso WGLVmix for a more general bivariate mixing distribution version
-#' @references Gu, J. and R. Koenker (2015) Empirical Bayesball Remixed, preprint
+#' @references  Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical 
+#' Bayes Mixture Methods, \emph{Journal of Statistical Software}, 82, 1--26.
 #' @keywords nonparametric
 #' @export
 WTLVmix <- function(y, id, w, u = 300, v = 300, ...) {

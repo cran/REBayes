@@ -48,6 +48,9 @@ exp(-(lambda * t)^alpha * exp(v)); shape = alpha; scale = lambda^(-1) * (exp(v))
 Kiefer, J. and J. Wolfowitz Consistency of the Maximum
 Likelihood Estimator in the Presence of Infinitely Many Incidental
 Parameters \emph{Ann. Math. Statist}. Volume 27, Number 4 (1956), 887-906.
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
 \code{Gompertzmix}

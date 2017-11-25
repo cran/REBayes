@@ -12,6 +12,7 @@ liktest	Likelihood Evaluation for Gaussian Variance Mixtures Test
 Cosslett1  Binary response with Gaussian link
 Cosslett2  Binary response with discrete link
 Cosslett3  Profile likelihood for Binary response with discrete link
+Coss2	Bivariate Cosslett example
 tannenbaum Convergence tolerances do matter (sometimes)
 comparelcd Comparison of medde and logcondens log concave estimation
 predict prediction for GLmix problems, to be extended eventually

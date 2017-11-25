@@ -46,6 +46,9 @@ Parameters \emph{Ann. Math. Statist}.  27, (1956), 887-906.
 
 Jiang, Wenhua and Cun-Hui Zhang General maximum likelihood empirical Bayes
 estimation of normal means \emph{Ann. Statist.}, 37, (2009), 1647-1684.
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
 GLmix for Gaussian version

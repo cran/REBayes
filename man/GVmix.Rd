@@ -37,7 +37,10 @@ Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 
 Gu J. and R. Koenker (2014) Unobserved heterogeneity in 
-income dynamics: an empirical Bayes perspective, \emph{JBES}, forthcoming.
+income dynamics: an empirical Bayes perspective, \emph{JBES}, 35, 1-16. 
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
 Gammamix for a general implementation for Gamma mixtures

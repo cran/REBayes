@@ -36,7 +36,7 @@ or 0, or posterior quantiles if \code{Loss} is in (0,1).
  In the default case \code{exposure = 1} it is assumed that
 \code{x} contains individual observations that are aggregated into
 count bins via \code{table}.  When \code{exposure} has the same length as
-code{x} then it is presumed to be individual specific risk exposure and
+\code{x} then it is presumed to be individual specific risk exposure and
 the Poisson mixture is taken to be \eqn{x | v ~ Poi(v * exposure)} and the
 is not aggregated.  See for example the analysis of the Norberg data in
 Koenker and Gu (2016).
@@ -46,7 +46,8 @@ Kiefer, J. and J. Wolfowitz Consistency of the Maximum
 Likelihood Estimator in the Presence of Infinitely Many Incidental
 Parameters \emph{Ann. Math. Statist}. Volume 27, Number 4 (1956), 887-906.
 
-Koenker R. and J. Gu (2016) "REBayes:  An R Package for Empirical Bayes Mixture Methods"
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \author{
 Roger Koenker and Jiaying Gu

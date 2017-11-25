@@ -26,7 +26,9 @@
 #' @references Kiefer, J. and J. Wolfowitz Consistency of the Maximum
 #' Likelihood Estimator in the Presence of Infinitely Many Incidental
 #' Parameters \emph{Ann. Math. Statist}.  27, (1956), 887-906.
-#' 
+#'
+#' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+#' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @seealso GLmix for Gaussian version
 #' @keywords nonparametric
 #' @export

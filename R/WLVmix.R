@@ -24,7 +24,11 @@
 #' @author J. Gu and R. Koenker
 #' @seealso WGLVmix for a more general bivariate mixing distribution version and
 #' 	WTLVmix for an alternative estimator exploiting a Student/Gamma decomposition
-#' @references Gu, J. and R. Koenker (2015) Empirical Bayesball Remixed, preprint
+#' @references Gu, J. and R. Koenker (2015)  Empirical Bayesball Remixed:  Empirical
+#' Bayes Methods for Longitudinal Data, \emph{J. Applied Econometrics}, 32, 575-599.
+#'
+#' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+#' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @keywords nonparametric
 #' @export
 WLVmix <- function (y, id, w, u = 300, v = 300, eps = 1e-4, maxit = 2, ...) {

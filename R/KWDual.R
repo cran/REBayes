@@ -55,6 +55,9 @@
 #' 
 #' Fougner, C. and S. Boyd, (2015) Parameter Selection and Pre-Conditioning for a
 #' Graph Form Solver, Stanford Technical Report.
+#'
+#' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+#' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @keywords nonparametrics
 #' @importFrom methods as new
 #' @export

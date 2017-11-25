@@ -1,9 +1,11 @@
 Package: REBayes
-Title: Empirical Bayes Estimation and Inference in R
+Title: Empirical Bayes Estimation and Inference
 Description: Kiefer-Wolfowitz maximum likelihood estimation for mixture models
     and some other density estimation and regression methods based on convex
-    optimization.
-Version: 0.85
+    optimization.  See Koenker and Gu (2017) REBayes: An R Package for Empirical
+    Bayes Mixture Methods, Journal of Statistical Software, 82, 1--26, 
+    <DOI: 10.18637/jss.v082.i08>.
+Version: 1.1
 Authors@R: c(
     person( "Roger", "Koenker", email=  "rkoenker@uiuc.edu", role =  c("aut", "cre")),
     person("Jiaying", "Gu", email =  "gu17@illinois.edu", role = "ctb"),
@@ -22,9 +24,9 @@ License: GPL (>= 2)
 URL: https://www.r-project.org
 NeedsCompilation: no
 RoxygenNote: 6.0.1
-Packaged: 2017-05-03 14:44:39 UTC; roger
+Packaged: 2017-11-25 16:41:59 UTC; roger
 Author: Roger Koenker [aut, cre],
   Jiaying Gu [ctb],
   Ivan Mizera [ctb]
 Repository: CRAN
-Date/Publication: 2017-05-04 08:23:44 UTC
+Date/Publication: 2017-11-25 17:05:05 UTC

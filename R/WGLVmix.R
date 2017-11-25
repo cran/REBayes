@@ -21,7 +21,10 @@
 #' 	\item{status}{Mosek convergence status}
 #' @author R. Koenker and J. Gu
 #' @references Gu, J. and R. Koenker (2014) Heterogeneous Income Dynamics: An
-#' Empirical Bayes Perspective, \emph{JBES}, forthcoming.
+#' Empirical Bayes Perspective, \emph{JBES},35, 1-16. 
+#'
+#' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+#' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @seealso WTLVmix for an implementation assuming independent heterogeneity
 #' @keywords nonparametric
 #' @export

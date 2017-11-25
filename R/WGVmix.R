@@ -22,7 +22,11 @@
 #' the log likelihood at the solution} \item{status}{the mosek convergence
 #' status.}
 #' @author R. Koenker
-#' @references Gu Y. and R. Koenker (2012) Empirical Bayesball
+#' @references Gu Y. and R. Koenker (2017) Empirical Bayesball Remixed:  Empirical
+#' Bayes Methods for Longitudinal Data, \emph{J. of Applied Econometrics}, 32, 575-599.
+#'
+#' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+#' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @keywords nonparametric
 WGVmix <- function(y, id, w, v, pv = 300, eps = 1e-6, rtol = 1.0e-6, 
 		   verb=0, control = NULL){

@@ -36,7 +36,8 @@ independent mean and variance components with weighted longitudinal data.
 This version exploits a Student t decomposition of the likelihood.
 }
 \references{
-Gu, J. and R. Koenker (2015) Empirical Bayesball Remixed, preprint
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical 
+Bayes Mixture Methods, \emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
 WGLVmix for a more general bivariate mixing distribution version

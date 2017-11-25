@@ -32,7 +32,10 @@ A Kiefer-Wolfowitz MLE for Gamma mixture models
 }
 \references{
 Gu J. and R. Koenker (2014) Unobserved heterogeneity in 
-income dynamics: an empirical Bayes perspective, \emph{JBES}, forthcoming.
+income dynamics: an empirical Bayes perspective, \emph{JBES}, 35, 1-16.
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
 Gammamix for a general implementation for Gamma mixtures

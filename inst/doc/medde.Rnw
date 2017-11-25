@@ -237,10 +237,13 @@ to $f$ is equivalent to maximizing, for fixed $\alpha < 1$,
 \[
 \alpha^{-1}  \int f^\alpha (x) dx.  
 \]
-This yields the new  pairing of primal and dual problems:
+This yields the new  pairing of primal and dual problems:\footnote{The primal 
+version of this pairing corrects an error in formula (3.7) of \cite{KM.10}
+in the event that $\alpha < 0$.}
 \begin{equation}
 \label{mleR}
-\min_g  \Bigl\{ \sum_{i=1}^n g(X_i) + \frac{1}{\beta} \int g^\beta \,dx \; \vert \:  g \in \KK(X)  \Bigr\},
+\min_g  \Bigl\{ \sum_{i=1}^n g(X_i) + 
+\frac{|1 - \alpha|}{\alpha} \int g^\beta \,dx \; \vert \:  g \in \KK(X)  \Bigr\},
 \tag{$\PP_\alpha$}
 \end{equation}
 and

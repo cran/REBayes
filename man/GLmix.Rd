@@ -66,6 +66,9 @@ estimation of normal means \emph{Ann. Statist.}, Volume 37, Number 4 (2009),
 
 Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \author{
 Roger Koenker

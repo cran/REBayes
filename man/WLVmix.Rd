@@ -40,7 +40,11 @@ independent mean and variance prior components with weighted longitudinal data.
 This version iterates back and forth from Gamma and Gaussian forms of the likelihood.
 }
 \references{
-Gu, J. and R. Koenker (2015) Empirical Bayesball Remixed, preprint
+Gu, J. and R. Koenker (2015)  Empirical Bayesball Remixed:  Empirical
+Bayes Methods for Longitudinal Data, \emph{J. Applied Econometrics}, 32, 575-599.
+
+Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
+\emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
 WGLVmix for a more general bivariate mixing distribution version and
