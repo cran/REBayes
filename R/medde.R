@@ -182,6 +182,8 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
         P$sparam <- control$sparam
     }
     z <- Rmosek::mosek(P, opts = list(verbose = verb))
+    if(z$response$code != 0)
+	stop(paste("Mosek error: ", z$response$msg))
     status = z$sol$itr$solsta
     if (status != "OPTIMAL") 
         warning(paste("Solution status = ", status))

@@ -3,9 +3,8 @@
 #' Interface function for calls to optimizer from various REBayes functions
 #' There are currently two options for the optimization:  Mosek (the default)
 #' is the original, preferred option and uses interior point methods.
-#' It relies on the \pkg{Rmosek} interface to R available from 
-#' \url{http://rmosek.r-forge.r-project.org} 
-#' See userguide for Rmosek for further details.  A more experimental option
+#' It relies on the \pkg{Rmosek} interface to R see installation instructions at
+#' \url{https://github.com/MOSEK/Rmosek}.  A more experimental option
 #' employs the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
 #' and employs an ADMM (Alternating Direction Method of Multipliers) approach.
 #' 
@@ -48,7 +47,7 @@
 #' Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 #'
 #' Mosek Aps (2015) Users Guide to the R-to-Mosek Optimization Interface, 
-#' \url{http://rmosek.r-forge.r-project.org}.
+#' \url{https://github.com/MOSEK/Rmosek}.  
 #' 
 #' Fougner, C. (2015) POGS: Proximal Operator Graph Solver, R Package available from
 #' \url{http://foges.github.io/pogs}.
@@ -146,7 +145,11 @@ if(length(control)){
     P$sparam <- control$sparam
 }
 z <- Rmosek::mosek(P, opts = list(verbose = verb))
+if(z$response$code != 0)
+    stop(paste("Mosek error: ", z$response$msg))
 status <- z$sol$itr$solsta
+if (status != "OPTIMAL")
+        warning(paste("Solution status = ", status))
 f <- z$sol$itr$suc
 if(min(f) < 0) warning("estimated mixing distribution has some negative values:
 		       consider reducing rtol")

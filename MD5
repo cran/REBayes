@@ -1,4 +1,4 @@
-dd65f5ad8bca8a1edf43463751343467 *DESCRIPTION
+c9da96f343ba547babc689af6188a9b7 *DESCRIPTION
 19abd8f0ff2720924e61ad179ebae065 *NAMESPACE
 8f4c294d4a4d6e987d45ef038aeb40e5 *R/Bmix.R
 3f95d1711b4c2efb5adc0aa161c8f730 *R/Cosslett.R
@@ -8,7 +8,7 @@ dd65f5ad8bca8a1edf43463751343467 *DESCRIPTION
 93555150fd6c40be1ccb7bd00d65518d *R/Gompertzmix.R
 b054a2fa2d985fa86554cde50ecf34db *R/Gosset.R
 cfcc512a9cee7967c4af6fa82981fa19 *R/Guvenen.R
-e801c78f0fd1633a5792d4fcfe0e86e5 *R/KWDual.R
+f4b1c06e9d4462b4cbcc9115676b591e *R/KWDual.R
 1c1076ae59ede11ffed76f08c986806b *R/Norberg.R
 e7c8b6b428ff9f0d9b98d14c341d84a9 *R/Pmix.R
 906a9c23e4205826c7b943cbbc9f5155 *R/Rxiv.R
@@ -21,7 +21,7 @@ ded3678dcf9f7b685b413bebe50184a7 *R/WLVmix.R
 2d8bf106a681d3300fac0633855e3bd3 *R/Weibullmix.R
 7c6f84c7659d6d4bc1d6ac50eb18d0d6 *R/bball.R
 39c001a6b770fdaaca4f4dd8cda2af42 *R/flies.R
-0c76eb17e5bf2ca59f0454a4743c31a3 *R/medde.R
+3a0b4f523f2c1b5e67e6ef3b316a53c3 *R/medde.R
 2791d2f46889cc8a0bb67e6379784785 *R/misc.R
 94b1537520628448a82ac600b4536cad *R/predict.Bmix.R
 fd7442fbe9a66f4a44f4a0a3c3b28f13 *R/predict.GLmix.R
@@ -60,15 +60,15 @@ c72f25c9d7f91fadeb1bb8d4bee5de09 *demo/velo.R
 fa41cac0eaf99e529a546484621a2f59 *inst/CITATION
 c7f3307901d63bd0c28652dde21b4d73 *inst/ChangeLog
 532942a867f55828cb5c67d212cec34b *inst/Readme
-26495898d42d1295aabc8cda32d35856 *inst/doc/Bdecon.R
-d9391ef13263c79688d62cf5305c7bd6 *inst/doc/Bdecon.Rnw
-5d1e67262fc74cf2ea8fde5fd09b6e34 *inst/doc/Bdecon.pdf
+085e5570f59c31156de91d0d3e4f6fa2 *inst/doc/Bdecon.R
+1713ad240d0c6d046a5861ad34387661 *inst/doc/Bdecon.Rnw
+e9503f185fecff6ee437965f4c2e46d5 *inst/doc/Bdecon.pdf
 0fc60add40578d54c721344303edb292 *inst/doc/medde.R
 ca566322b4de516c757548c6658149c5 *inst/doc/medde.Rnw
-8ecb3dd08b8fe0e217811863414940a3 *inst/doc/medde.pdf
+36d7f59b8cf216007b2a38a42dc13d42 *inst/doc/medde.pdf
 4407a3872fb0a798f110884f0ab2d943 *inst/doc/rebayes.R
 a05b73e9f666e8abd413e7b29b1b673e *inst/doc/rebayes.Rnw
-64e65c9248fc2355489810b78c6884f8 *inst/doc/rebayes.pdf
+273d5680f2da2ce320ca4a3ab214a11e *inst/doc/rebayes.pdf
 ed88cc7df57cbc1224bdec03dcbf8b13 *man/Bmix.Rd
 1613e455b9aba977311b71b740f2ed88 *man/Cosslett.Rd
 8cff29d4c973fa1d7f772b5e96c4730f *man/GLmix.Rd
@@ -77,7 +77,7 @@ f3fa44d962e2057478b2595008fdd134 *man/Gammamix.Rd
 00624d00cb374773add5a06fd7c0500a *man/Gompertzmix.Rd
 e9c0b922a336ab3df00e60293cc31509 *man/Gosset.Rd
 607b296c3abcfc99edc9120c557009a3 *man/Guvenen.Rd
-a815c19e3ea3e89496b5ee96154954e5 *man/KWDual.Rd
+f9425a91ec4ab9e96289e53a88b8fe8c *man/KWDual.Rd
 9605d41744735d6b53b6f06e33afa706 *man/L1norm.Rd
 6a210e5a5809b26538ecf781672800eb *man/Norberg.Rd
 9bf1ab5bafe42443bcd29ab8a17b978b *man/Pmix.Rd
@@ -102,7 +102,7 @@ f748ceaa5d0892530dfba5516f9e5b92 *man/tacks.Rd
 ffae7c784914fc9f08baf7af125ac67f *man/tannenbaum.Rd
 732aeefdd318ec1f26050d43598c7631 *man/traprule.Rd
 6321e2bd3bc12dc96a695201dc97750e *man/velo.Rd
-d9391ef13263c79688d62cf5305c7bd6 *vignettes/Bdecon.Rnw
+1713ad240d0c6d046a5861ad34387661 *vignettes/Bdecon.Rnw
 5817745de821499fa5720e4b5c9192f3 *vignettes/Bdecon.bib
 ca566322b4de516c757548c6658149c5 *vignettes/medde.Rnw
 702265d3770bb5eb3910fdfa01880319 *vignettes/medde.bib

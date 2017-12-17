@@ -130,6 +130,6 @@ sim1 <- function(n, R = 10){
     A
 }
 set.seed(12)
-A <- sim1(1000,1000)
+A <- sim1(1000)
 a <- round(apply(A,1,mean),3)
 

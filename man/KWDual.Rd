@@ -50,9 +50,8 @@ evaluated at the data points} \item{logLik}{log likelihood}
 Interface function for calls to optimizer from various REBayes functions
 There are currently two options for the optimization:  Mosek (the default)
 is the original, preferred option and uses interior point methods.
-It relies on the \pkg{Rmosek} interface to R available from 
-\url{http://rmosek.r-forge.r-project.org} 
-See userguide for Rmosek for further details.  A more experimental option
+It relies on the \pkg{Rmosek} interface to R see installation instructions at
+\url{https://github.com/MOSEK/Rmosek}.  A more experimental option
 employs the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
 and employs an ADMM (Alternating Direction Method of Multipliers) approach.
 }
@@ -61,7 +60,7 @@ Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 
 Mosek Aps (2015) Users Guide to the R-to-Mosek Optimization Interface, 
-\url{http://rmosek.r-forge.r-project.org}.
+\url{https://github.com/MOSEK/Rmosek}.  
 
 Fougner, C. (2015) POGS: Proximal Operator Graph Solver, R Package available from
 \url{http://foges.github.io/pogs}.
