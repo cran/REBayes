@@ -1,6 +1,6 @@
+\documentclass[mathserif,12pt]{amsart}
 %\VignetteIndexEntry{Bayesian Deconvolution}
 %\VignetteEngine{knitr::knitr}
-\documentclass[mathserif,12pt]{amsart}
 
 %% additional packages
 \usepackage[latin1]{inputenc}

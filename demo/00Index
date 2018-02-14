@@ -16,3 +16,4 @@ Coss2	Bivariate Cosslett example
 tannenbaum Convergence tolerances do matter (sometimes)
 comparelcd Comparison of medde and logcondens log concave estimation
 predict prediction for GLmix problems, to be extended eventually
+meddep	primal version of 1d Renyi estimation

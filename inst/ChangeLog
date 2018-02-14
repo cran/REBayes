@@ -262,3 +262,10 @@ Version 0.86
 
 1.  Fixed formula for the primal problem P_\alpha in the vignette as noted
 by Ivan (email May 9, 2017).
+
+Version 1.2
+
+1.  Updated some references due to publication of the JSS vignette.
+
+2.  Added demo meddep that illustrates that the primal and dual solutions
+overplot.

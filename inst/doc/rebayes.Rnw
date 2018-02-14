@@ -1,6 +1,6 @@
+\documentclass[12pt]{amsart}
 %\VignetteIndexEntry{REBayes:  Empirical Bayes for Mixtures}
 %\VignetteEngine{knitr::knitr}
-\documentclass[12pt]{amsart}
 
 %% additional packages
 \usepackage[latin1]{inputenc}
