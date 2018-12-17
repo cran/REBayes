@@ -16,6 +16,7 @@
 #' @return A vector of predictions
 #' @author Jiaying Gu
 #' @keywords nonparametric
+#' @importFrom stats dpois
 #' @export
 predict.Pmix <- function(object, newdata, Loss = 2, newexposure = NULL, ...) {
     x <- newdata

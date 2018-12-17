@@ -269,3 +269,15 @@ Version 1.2
 
 2.  Added demo meddep that illustrates that the primal and dual solutions
 overplot.
+
+Version 1.3
+
+1. Modified some fitting functions to address the observation of Dave Zhao
+that we should always set d = 1, reflecting that we are estimating a discrete
+df, rather than a histogram-type density.
+
+Version 1.4
+
+1.  Modified the Pmix function to allow truncation as illustrated in the
+added demo Shakespeare.R which is described further in our comment on Efron's
+2019 Statistical Science paper.

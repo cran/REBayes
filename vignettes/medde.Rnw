@@ -95,7 +95,9 @@ the kernel density estimate reconsidered in Example \ref{ex.Guv}.
 All of the computational experience reported here was conducted in the R
 language with the package \pkg{REBayes}, \cite{REBayes}.  Code for all of the
 reported computation may be found in the vignette {\tt medde.Rnw} that
-appears as part of that package.}
+appears as part of that package.  This vignette is a very preliminary version
+of a much more fully baked paper titled ``Shape Constrained Density Estimation via
+Penalized Renyi Divergence'' that is now forthcoming in {\emph{Statistical Science}}}
 
 
 \begin{abstract}

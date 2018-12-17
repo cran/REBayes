@@ -4,13 +4,16 @@
 \alias{Pmix}
 \title{Poisson mixture estimation via Kiefer Wolfowitz MLE}
 \usage{
-Pmix(x, v = 300, exposure = NULL, ...)
+Pmix(x, v = 300, support = NULL, exposure = NULL, ...)
 }
 \arguments{
 \item{x}{Data: Sample observations (integer valued)}
 
 \item{v}{Grid Values for the mixing distribution defaults to equal
 spacing of length v when v is specified as a scalar}
+
+\item{support}{a 2-vector containing the lower and upper support points
+of sample observations to account for possible truncation.}
 
 \item{exposure}{observation specific exposures to risk see details}
 

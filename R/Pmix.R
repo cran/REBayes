@@ -9,6 +9,8 @@
 #' @param x Data: Sample observations (integer valued)
 #' @param v Grid Values for the mixing distribution defaults to equal
 #' spacing of length v when v is specified as a scalar
+#' @param support a 2-vector containing the lower and upper support points
+#' of sample observations to account for possible truncation.
 #' @param exposure observation specific exposures to risk see details
 #' @param ... other parameters passed to KWDual to control optimization
 #' @return An object of class density with components: 
@@ -34,7 +36,8 @@
 #' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @keywords nonparametric
 #' @export
-Pmix <- function (x, v = 300, exposure = NULL, ...) 
+#' @importFrom stats ppois dpois
+Pmix <- function (x, v = 300, support = NULL, exposure = NULL, ...) 
 {
     n <- length(x)
     eps <- 1e-04
@@ -42,18 +45,22 @@ Pmix <- function (x, v = 300, exposure = NULL, ...)
 	exposure <- 1
     if (length(v) == 1) 
         v <- seq(max(2 * eps, min(x/exposure)) - eps, max(x/exposure) + eps, length = v)
+    dtpois <- function(x, v)
+	dpois(x, v)/(ppois(support[2], v) - ppois(support[1], v))
     m <- length(v)
-    d <- diff(v)
-    v <- (v[-1] + v[-m])/2
+    d <- rep(1, length(v))
     if (length(exposure) == 1) {
         y <- table(x)
         w <- y/sum(y)
         x <- as.integer(unlist(dimnames(y)))
-        A <- outer(x, v, "dpois")
+        if(length(support))
+	    A <- outer(x, v, "dtpois")
+	else
+	    A <- outer(x, v, "dpois")
     }
     else if (length(exposure) == n) {
         w <- rep(1, n)/n
-        A <- matrix(0, n, (m - 1))
+        A <- matrix(0, n, m)
         for (i in 1:n) A[i, ] = sapply(x[i], v * exposure[i], FUN = dpois)
     }
     else

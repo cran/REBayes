@@ -100,7 +100,6 @@
 #' @keywords nonparametric
 #' @export
 #' @import Matrix
-#' @importFrom stats dpois
 #' @examples
 #' 
 #' #Maximum Likelihood Estimation of a Log-Concave Density
@@ -171,7 +170,7 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
     }
     P <- list(sense = "max")
     P$c <- rep(0, p + q)
-    P$A <- cBind(Diagonal(p, x = dv), A)
+    P$A <- cbind2(Diagonal(p, x = dv), A)
     P$bx <- rbind(LX, UX)
     P$bc <- rbind(e, e)
     P$scopt <- list(opro = opro)
