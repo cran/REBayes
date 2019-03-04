@@ -49,8 +49,7 @@ wsum <- tapply(w, id, "sum")
 s <- (tapply(w * y^2, id, "sum") - tapply(w * y, id, sum)^2/wsum)/(m-1)
 if(missing(v)) v <- seq(min(s) - eps, max(s) + eps, length = pv)
 pv <- length(v)
-dv <- diff(v)
-dv <- c(dv[1],dv)
+dv <- rep(1,pv)
 wv <- rep(1,n)/n
 
 # Note that 2*r*s/theta ~ chisq_2r  so A needs to be an n by p matrix with entries

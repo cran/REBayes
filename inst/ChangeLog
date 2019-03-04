@@ -281,3 +281,16 @@ Version 1.4
 1.  Modified the Pmix function to allow truncation as illustrated in the
 added demo Shakespeare.R which is described further in our comment on Efron's
 2019 Statistical Science paper.
+
+Version 1.5
+
+1.  Modified all the XXmix functions to specify d == 1, rather than d =
+diff(v) as in prior versions.  This reflects discussions with Dave Zhao
+(UIUC) and the realization that KW is really estimating a CDF not a pdf.
+This may have unintended consequences for some old code that explicitly
+renormalized the solution for f.  Check sum(fit$y) as an initial sanity check.
+
+2.  Modified the KWDual function to (optionally) use the Mosek V9 exponential
+cone constraint formulation.  This option is done automatically based on
+a test of packageVersion("Rmosek") that reveals which version of Mosek is
+installed.

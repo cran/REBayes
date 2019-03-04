@@ -5,7 +5,7 @@ Description: Kiefer-Wolfowitz maximum likelihood estimation for mixture models
     optimization.  See Koenker and Gu (2017) REBayes: An R Package for Empirical
     Bayes Mixture Methods, Journal of Statistical Software, 82, 1--26, 
     <DOI:10.18637/jss.v082.i08>.
-Version: 1.4
+Version: 1.8
 Authors@R: c(
     person( "Roger", "Koenker", email=  "rkoenker@uiuc.edu", role =  c("aut", "cre")),
     person("Jiaying", "Gu", email =  "gu17@illinois.edu", role = "ctb"),
@@ -13,20 +13,18 @@ Authors@R: c(
     )
 Maintainer: Roger Koenker <rkoenker@uiuc.edu>
 Depends: R (>= 2.10), Matrix
-Imports: Rmosek, methods, reliaR
-Suggests: knitr, digest
+Imports: methods, utils, reliaR
+Suggests: Rmosek, knitr, digest
 LazyData: TRUE
 VignetteBuilder: knitr
-SystemRequirements: MOSEK (http://www.mosek.com) and MOSEK License for
-        use of Rmosek, optional use of the pogs optimizer may require
-        CUDA/GPU accoutrements.
+SystemRequirements: MOSEK (http://www.mosek.com) and MOSEK license.
 License: GPL (>= 2)
 URL: https://www.r-project.org
 NeedsCompilation: no
 RoxygenNote: 6.0.1
-Packaged: 2018-12-17 09:55:08 UTC; roger
+Packaged: 2019-02-21 14:20:28 UTC; roger
 Author: Roger Koenker [aut, cre],
   Jiaying Gu [ctb],
   Ivan Mizera [ctb]
 Repository: CRAN
-Date/Publication: 2018-12-17 11:40:03 UTC
+Date/Publication: 2019-03-04 09:40:02 UTC

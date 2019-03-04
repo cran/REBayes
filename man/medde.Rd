@@ -86,6 +86,7 @@ Mizera (2013).
 }
 \examples{
 
+\dontrun{
 #Maximum Likelihood Estimation of a Log-Concave Density
 set.seed(1968)
 x <- rgamma(50,10)
@@ -93,7 +94,9 @@ m <- medde(x, v = 50, lambda = -.5, verb = 5)
 plot(m, type = "l", xlab = "x", ylab = "f(x)")
 lines(m$x,dgamma(m$x,10),col = 2)
 title("Log-concave Constraint")
+}
 
+\dontrun{
 #Maximum Likelihood Estimation of a Gamma Density with TV constraint
 set.seed(1968)
 x <- rgamma(50,5)
@@ -102,7 +105,7 @@ plot(f, type = "l", xlab = "x", ylab = "f(x)")
 lines(f$x,dgamma(f$x,5),col = 2)
 legend(10,.15,c("ghat","true"),lty = 1, col = 1:2)
 title("Total Variation Norm Constraint")
-
+}
 
 }
 \references{

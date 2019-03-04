@@ -1,4 +1,17 @@
 ## ----preliminaries, echo=FALSE, warning = FALSE, message = FALSE, results='hide'----
+hasMosek <- requireNamespace("Rmosek", quietly = TRUE)                
+if(hasMosek) 
+    hasMosek <- tryCatch(example(mosek)$value$response$code == 0,
+			   warning = function(c) 0,
+			   error = function(c) 0)
+if (!hasMosek) {                                                                     
+                knitr::opts_chunk$set(eval = FALSE)                                   
+                msg <- paste("This vignette requires Mosek, but this system",
+                             "does not have Mosek",
+                             "installed, so code examples will not be evaluated.")
+                msg <- paste(strwrap(msg), collapse="\n")
+                message(msg) 
+            }
 require("REBayes")
 knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", digits = 2, show.signif.stars = FALSE)
@@ -140,7 +153,7 @@ W02.cap = "Initial Cage Density Effect in the Weibull Mixture Model:
 Profile Log Likelihood (in 1000's) for the  cage density effect with
 0.95 (Wilks) confidence interval in blue."
 
-## ----W02, fig.height = 4, fig.width = 6, cache = TRUE, fig.cap = W02.cap----
+## ----W02, fig.height = 4, fig.width = 6, cache = TRUE, warning = FALSE, fig.cap = W02.cap----
 # Profile likelihood estimation of initial cage density effect
 counts <- tapply(num,list(age, begin),"sum")
 freq <- c(counts)

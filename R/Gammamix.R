@@ -32,8 +32,7 @@ Gammamix <- function(x, v = 300, shape = 1, weights = NULL, ...){
     if (length(v) == 1)
 	v <- seq(min(x/shape) - eps, max(x/shape) + eps, length = v)
     p <- length(v)
-    d <- diff(v)
-    v = (v[-1]+v[-p])/2
+    d <- rep(1,p)
     if(length(weights)) w <- weights
     else w <- rep(1, n)/n
     A <- outer(x, 1/v, FUN = dgamma, shape = shape)

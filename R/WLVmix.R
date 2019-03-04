@@ -50,9 +50,7 @@ WLVmix <- function (y, id, w, u = 300, v = 300, eps = 1e-4, maxit = 2, ...) {
     if (length(v) == 1) 
         v <- seq(min(s) - eps, max(s) + eps, length = v)
     pu <- length(u)
-    du <- diff(u)
-    dv <- diff(v)
-    u <- (u[-1] + u[-pu])/2
+    du <- rep(1,pu)
     pu <- length(u)
     wu <- rep(1, n)/n
     FV0 <- GVmix(s, m, v = v, ...)

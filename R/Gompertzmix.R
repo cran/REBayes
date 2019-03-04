@@ -50,8 +50,7 @@ Gompertzmix <- function(x, v = 300, u = 300, alpha, theta, hist = FALSE, weights
     }
     if(length(weights)) w <- weights
     else w <- rep(1,n)/n
-    d <- diff(v)
-    v <- (v[-1] + v[-m])/2
+    d <- rep(1,m)
     A <- outer(x,theta *exp(v),FUN=reliaR::dgompertz,alpha=alpha)
     f = KWDual(A, d, w, ...)
     logLik <- n * sum(w * log(f$g))

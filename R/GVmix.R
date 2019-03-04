@@ -36,8 +36,7 @@ GVmix <- function(x, m, v = 300, weights = NULL, ...){
     if (length(v) == 1)
         v <- seq(min(x) - eps, max(x) + eps, length = v)
     p <- length(v)
-    d <- diff(v)
-    v = (v[-1]+v[-p])/2
+    d <- rep(1,p)
     p <- length(v)
     if(length(weights)) w <- weights
     else w <- rep(1, n)/n

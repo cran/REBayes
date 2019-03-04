@@ -42,13 +42,11 @@ WGLVmix <- function(y, id, w, u = 30, v = 30, ...){
     if(length(u) == 1) u <- seq(min(t) - eps, max(t) + eps, length = u)
     if(length(v) == 1) v <- seq(min(s) - eps, max(s) + eps, length = v)
     pu <- length(u)
-    du <- diff(u)
-    u <- (u[-1] + u[-pu])/2
+    du <- rep(1,pu)
     pu <- length(u)
     wu <- rep(1,n)/n
     pv <- length(v)
-    dv <- diff(v)
-    v <- (v[-1] + v[-pv])/2
+    dv <- rep(1,pv)
     pv <- length(v)
     
     R <- outer(r*s,v,"/")  

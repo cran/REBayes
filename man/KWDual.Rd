@@ -17,16 +17,6 @@ KWDual(A, d, w, ...)
 include \code{rtol} the relative tolerance for dual gap convergence criterion,
 \code{verb} to control verbosity desired from mosek, \code{verb = 0} is quiet,
 \code{verb = 5} produces a fairly detailed iteration log,
-\code{method} controls the choice of optimizer:  by default this is "mosek"
-which employs interior point methods, however if \code{method = "pogs"} then
-optimization is carried out by the ADMM methods described in Fougner and
-Boyd (2015).  This is a first order descent method most suitable for large
-problems for which parallelization is desirable.  For most REBayes applications
-the default "mosek" method is appropriate and "pogs" should be considered
-experimental.  Note that there is not yet a "pogs" implementation for \code{medde} problems.
-Note also that \code{method = "pogs"} assumes a distinct control list.
-Users are responsible for specifying correctly named control variables for each method.
-The most advantageous implementation of "pogs" requires (CUDA) GPU hardware.
 \code{control} is a control list consisting of sublists \code{iparam},
 \code{dparam}, and \code{sparam}, containing elements of various mosek
 control parameters.  See the Rmosek and Mosek manuals for further details.
@@ -48,12 +38,14 @@ evaluated at the data points} \item{logLik}{log likelihood}
 }
 \description{
 Interface function for calls to optimizer from various REBayes functions
-There are currently two options for the optimization:  Mosek (the default)
-is the original, preferred option and uses interior point methods.
-It relies on the \pkg{Rmosek} interface to R see installation instructions at
-\url{https://docs.mosek.com/8.1/rmosek/install-interface.html}.  A more experimental option
-employs the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
-and employs an ADMM (Alternating Direction Method of Multipliers) approach.
+There is currently only one options for the optimization that based on  Mosek. 
+It relies on the \pkg{Rmosek} interface to R see installation instructions in
+the Readme file in the inst directory of this package.  This version of the function
+is intended to work with versions of Mosek after 7.0.  A more experimental option
+employing the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
+and employing an ADMM (Alternating Direction Method of Multipliers) approach has
+been deprecated, those interested could try installing version 1.4 of REBayes, and
+following the instructions provided there.
 }
 \references{
 Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
@@ -61,12 +53,6 @@ Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
 
 Mosek Aps (2015) Users Guide to the R-to-Mosek Optimization Interface, 
 \url{https://docs.mosek.com/8.1/rmosek/index.html}.  
-
-Fougner, C. (2015) POGS: Proximal Operator Graph Solver, R Package available from
-\url{http://foges.github.io/pogs}.
-
-Fougner, C. and S. Boyd, (2015) Parameter Selection and Pre-Conditioning for a
-Graph Form Solver, Stanford Technical Report.
 
 Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
 \emph{Journal of Statistical Software}, 82, 1--26.

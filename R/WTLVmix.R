@@ -42,17 +42,12 @@ WTLVmix <- function(y, id, w, u = 300, v = 300, ...) {
 	v <- seq(min(s) - eps, max(s) + eps, length = v)
     pu <- length(u)    
     pv <- length(v)    
-    du <- diff(u)
-    u <- (u[-1] + u[-pu])/2
+    du <- rep(1,pu)
     wu <- rep(1,n)/n
-    pu <- length(u)    
-
     Au <- dt(outer(t, u, "-") * outer(sqrt(wsum/s), rep(1, pu)), df = m - 1)
     Au <- Au/outer(sqrt(s/wsum), rep(1, pu))
     f <- GVmix(s, m, v = v, ...)
-    dv <- diff(v)
-    v <- (v[-1] + v[-pv])/2
-    pv <- length(v)    
+    dv <- rep(1,pv)
     fv <- f$y
     status <- f$status
     f <- KWDual(Au, du, wu, ...)

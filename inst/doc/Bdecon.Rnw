@@ -118,6 +118,19 @@ very helpful comments on an earlier draft.
 %\noindent {\bf Keywords:} 
 
 <<preliminaries, echo=FALSE, warning = FALSE, message = FALSE, results='hide'>>=
+hasMosek <- require("Rmosek", quietly = TRUE)                
+if(hasMosek) 
+    hasMosek <- tryCatch(example(mosek)$value$response$code == 0,
+			   warning = function(c) 0,
+			   error = function(c) 0)
+if (!hasMosek) {                                                                     
+                knitr::opts_chunk$set(eval = FALSE)                                   
+                msg <- paste("This vignette requires Mosek, but this system",
+                             "does not have Mosek",
+                             "installed, so code examples will not be evaluated.")
+                msg <- paste(strwrap(msg), collapse="\n")
+                message(msg) 
+            }
 require("REBayes")
 knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", digits = 3, show.signif.stars = FALSE)
@@ -373,9 +386,9 @@ so the last (cyan) curve is a biweight kernel smooth with bandwidth equal 0.7.  
 as well as the default Efron procedure for our test case for the smooth alternative, but spoils
 the auspicious performance for the discrete case.  Encouraged by the former improvement I
 decided to wade a little further out in the water by replicating the experiment.  In 1000
-trials of the experiment with the smooth $G_0$ the mean Wasserstein error was \Sexpr{a[1]} 
-for the Efron estimator, \Sexpr{a[2]}
-for the unsmoothed KW-NPMLE and \Sexpr{a[3]} for the smoothed KW-NPMLE.  Of course, this
+trials of the experiment with the smooth $G_0$ the mean Wasserstein error was  0.188
+for the Efron estimator, 0.343
+for the unsmoothed KW-NPMLE and 0.190 for the smoothed KW-NPMLE.  Of course, this
 result proves nothing at all, except perhaps that I'm acquainted with an excellent bandwidth
 oracle.
 

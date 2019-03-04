@@ -103,8 +103,7 @@ GLmix <- function (x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = N
       }
     }
     if(!length(w)) w <- rep(1, n)/n
-    d <- diff(v)
-    v <- (v[-1] + v[-m])/2
+    d <- rep(1, length(v))
     A <- dnorm(outer(x, v, "-"), sd = sigma)
     f <- KWDual(A, d, w, ...)
     y <- f$f

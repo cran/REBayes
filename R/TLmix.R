@@ -51,8 +51,7 @@ TLmix <- function(x, v = 300, u = 300, df = 1, hist = FALSE, weights = NULL, ...
    if(length(weights)) w <- weights
    else w <- rep(1,n)/n
    m <- length(v)
-   d <- diff(v)
-   v <- (v[-1] + v[-m])/2
+   d <- rep(1,m)
    A <- dt(outer(x,v,"-"),df = df) 
    f = KWDual(A, d, w, ...)
    logLik <- n * sum(w * log(f$g))

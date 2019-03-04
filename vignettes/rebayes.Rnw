@@ -92,6 +92,19 @@ that employ related computational methods.
 %\noindent {\bf Keywords:} 
 
 <<preliminaries, echo=FALSE, warning = FALSE, message = FALSE, results='hide'>>=
+hasMosek <- requireNamespace("Rmosek", quietly = TRUE)                
+if(hasMosek) 
+    hasMosek <- tryCatch(example(mosek)$value$response$code == 0,
+			   warning = function(c) 0,
+			   error = function(c) 0)
+if (!hasMosek) {                                                                     
+                knitr::opts_chunk$set(eval = FALSE)                                   
+                msg <- paste("This vignette requires Mosek, but this system",
+                             "does not have Mosek",
+                             "installed, so code examples will not be evaluated.")
+                msg <- paste(strwrap(msg), collapse="\n")
+                message(msg) 
+            }
 require("REBayes")
 knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", digits = 2, show.signif.stars = FALSE)
@@ -700,10 +713,8 @@ g(X_i | E_i) &= \int \frac{(\theta E_i)^{X_i} \exp(-\theta E_i)}{X_{i}!}
 & = \binom{X_{i}+\alpha - 1}{X_i} \left (\frac{\beta}{E_i + \beta}\right )^{\alpha} 
 \left (\frac{E_i}{E_i + \beta}\right )^{X_i}
 \end{align*}
-%The maximum likelihood estimates are $\alpha = \Sexpr{z[1]} \pm \Sexpr{2 * sez[1]} $ 
-%and  $ \beta  = \Sexpr{z[2]} \pm \Sexpr{2 * sez[2]}$.
-The maximum likelihood estimates are $\alpha = \Sexpr{z[1]}$ 
-and  $ \beta  = \Sexpr{z[2]}$.
+The maximum likelihood estimates are $\alpha = 6.02$ 
+and  $ \beta  = 5.25$.
 The credibility estimator of the risk per exposure leads to 
 \[
 \hat \theta_i  = \delta_i X_i/E_i + (1- \delta_i) \EE(\theta)
@@ -883,7 +894,7 @@ Profile Log Likelihood (in 1000's) for the  cage density effect with
 0.95 (Wilks) confidence interval in blue."
 @ 
 
-<<W02, fig.height = 4, fig.width = 6, cache = TRUE, fig.cap = W02.cap >>=
+<<W02, fig.height = 4, fig.width = 6, cache = TRUE, warning = FALSE, fig.cap = W02.cap >>=
 # Profile likelihood estimation of initial cage density effect
 counts <- tapply(num,list(age, begin),"sum")
 freq <- c(counts)
@@ -987,7 +998,7 @@ legend("topright", c("NPMLE", "Gamma"), col = 2:1, lty = 1:2)
 
 Estimating the parametric gamma fraility
 model by maximum likelihood  is straightforward as indicated in the code above, 
-giving $(\hat \alpha, \hat \beta, \hat \delta) = ( \Sexpr{z$par[1]}, \Sexpr{z$par[2]}, \Sexpr{z$par[3]})$, and
+giving $(\hat \alpha, \hat \beta, \hat \delta) = (3.08, 21.12, 0.41)$, and
 yielding the hazard function shown in Figure \ref{fig:W03}.  We superimpose the raw 
 mortality rates and the hazard function based on our Kiefer-Wolfowitz NPMLE based
 on the full sample without distinguishing medfly gender.  While the parametric

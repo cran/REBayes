@@ -1,12 +1,32 @@
 
 			Advice to Those Installing REBayes
 
-The REBayes package is now available from CRAN.  However, unlike most R packages
+The REBayes package is available from CRAN.  However, unlike most R packages
 it requires some further installation actions.  In an ideal world, CRAN would
 automagically install the Rmosek package as well.  Installation of dependencies
 usually work fine, but Rmosek requires some tweaking at install time.  Rmosek
 is an interface to the Mosek environment of Erling Andersen.  You should install
 Mosek first, along with its license file before trying to use REBayes.
+Rmosek is now available from CRAN so it can be installed with the usual 
+invocation of install.packages("Rmosek"), however the version of the Rmosek
+package available on CRAN is really just a skeleton intended to facilitate
+installation of the real Rmosek package from the Mosek website; the advantage
+of this over prior schemes is that it automates the configuration and ensures
+that the Rmosek setup is compatible with the installed version of Mosek.
+
+After installing Rmosek from CRAN the following steps should be taken:
+
+library(Rmosek)
+mosek_attachbuilder()
+install.rmosek() #this installs a version of rmosek replacing the CRAN  one
+
+then it is recommended to quit the R session, restart R and try
+
+library(Rmosek)
+example(mosek)
+
+This should produce output for a trivial example.
+
 
 The academic license for Mosek is freely downloadable from 
 https://www.mosek.com/products/academic-license and is good for one year.
@@ -29,12 +49,8 @@ demo(GLmix1)
 Considerable further detail is available from the mosek and Rmosek documentation.
 And the vignettes for the REBayes package. 
 
-Installation on windows is more challenging, but can be done with enough patience,
-provided that you have compilers etc for Rmosek.
-
-The above instructions are intended for Version 8 of Mosek.  Sometime in 2018 there
-is a planned release of Version 9 that entails a replacement of the scopt functions
-now employed by the KWDual and medde  functions in REBayes by exponential cone and
-power cone formulations.  When this happens REBayes will be modified accordingly.
-This change is expected to produce some efficiency improvement in performance.
+These instructions should work for any installed version of Mosek, in
+particular most of the REBayes code was developed for Mosek V8, however
+Mosek V9 is now available in betatest and limited testing has confirmed
+that this is typically more efficient.
 See https://themosekblog.blogspot.co.uk/2018/01/version-9-roadmap_31.html

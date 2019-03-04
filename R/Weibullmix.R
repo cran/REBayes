@@ -55,8 +55,7 @@ Weibullmix <- function(x, v = 300, u = 300, alpha, lambda = 1, hist = FALSE, wei
     }
     if(!length(w)) w <- rep(1,n)/n
     m <- length(v)
-    d <- diff(v)
-    v <- (v[-1]+v[-m])/2
+    d <- rep(1,m)
     if(length(lambda) == 1)
         A <- outer(x, (1/lambda) * (exp(v))^(-1/alpha), FUN = dweibull, shape = alpha)
     else if(length(lambda) == n){

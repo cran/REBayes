@@ -52,8 +52,7 @@ Bmix <- function(x, k, v = 300, collapse = TRUE, weights = NULL, ...){
    eps <- 1e-4
    if(length(v) == 1) v <- seq(eps, 1 - eps, length = v)
    m <- length(v)
-   d <- diff(v)
-   v <- (v[-1] + v[-m])/2
+   d <- rep(1,m)
    A <- outer(x,v,function(x, v, k) dbinom(x,size = k, prob = v), k = k)
    z <- KWDual(A, d, w, ...)
    g <- z$g

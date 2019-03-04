@@ -102,6 +102,7 @@
 #' @import Matrix
 #' @examples
 #' 
+#' \dontrun{
 #' #Maximum Likelihood Estimation of a Log-Concave Density
 #' set.seed(1968)
 #' x <- rgamma(50,10)
@@ -109,7 +110,9 @@
 #' plot(m, type = "l", xlab = "x", ylab = "f(x)")
 #' lines(m$x,dgamma(m$x,10),col = 2)
 #' title("Log-concave Constraint")
+#' }
 #' 
+#' \dontrun{
 #' #Maximum Likelihood Estimation of a Gamma Density with TV constraint
 #' set.seed(1968)
 #' x <- rgamma(50,5)
@@ -118,7 +121,7 @@
 #' lines(f$x,dgamma(f$x,5),col = 2)
 #' legend(10,.15,c("ghat","true"),lty = 1, col = 1:2)
 #' title("Total Variation Norm Constraint")
-#' 
+#' }
 #' 
 
 medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, 
@@ -150,31 +153,79 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
         LX <- rep(0, p + q)
         UX <- rep(Inf, p + q)
     }
-    opro <- matrix(list(), nrow = 5, ncol = p)
-    opro[2,] <- 1:p
-    opro[5,] <- rep(0,p)
-    if (alpha == 1) {
-        opro[1, ] <- "ent"
-        opro[3, ] <- -dv
-        opro[4, ] <- rep(0, p)
-    }
-    else if (alpha == 0) {
-        opro[1, ] <- "log"
-        opro[3, ] <- dv
-        opro[4, ] <- as.list(rep(1, p))
+     if (utils::packageVersion("Rmosek") < 9) {
+        opro <- matrix(list(), nrow = 5, ncol = p)
+        opro[2, ] <- 1:p
+        opro[5, ] <- rep(0, p)
+        if (alpha == 1) {
+            opro[1, ] <- "ent"
+            opro[3, ] <- -dv
+            opro[4, ] <- rep(0, p)
+        }
+        else if (alpha == 0) {
+            opro[1, ] <- "log"
+            opro[3, ] <- dv
+            opro[4, ] <- as.list(rep(1, p))
+        }
+        else {
+            opro[1, ] <- "pow"
+            opro[3, ] <- -sign(beta) * dv
+            opro[4, ] <- rep(alpha, p)
+        }
+        P <- list(sense = "max")
+        P$c <- rep(0, p + q)
+        P$A <- cbind2(Diagonal(p, x = dv), A)
+        P$bx <- rbind(LX, UX)
+        P$bc <- rbind(e, e)
+        P$scopt <- list(opro = opro)
+        P$dparam$intpnt_nl_tol_rel_gap <- rtol
     }
     else {
-        opro[1, ] <- "pow"
-        opro[3, ] <- -sign(beta) * dv
-        opro[4, ] <- rep(alpha, p)
+	P <- list(sense = "max")
+        P$A <- cbind(Diagonal(p, x = dv), A, Matrix(0, p, p))
+        P$bx <- rbind(c(LX, rep(-Inf,p)), c(UX, rep(Inf,p)))
+        P$bc <- rbind(e, e)
+        P$dparam$intpnt_co_tol_rel_gap <- rtol
+        if (alpha == 0) { # log case
+            P$c <- c(rep(0, p + q), dv)
+            P$F <- sparseMatrix(c(seq(1, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 
+				c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+            P$g <- rep(c(0, 1, 0), p)
+            P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = p)
+            rownames(P$cones) <- c("type", "dim", "conepar")
+        }
+	else if (alpha == 1) { # Entropy case
+            P$c <- c(rep(0, p + q), dv)
+            P$F <- sparseMatrix(c(seq(2, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 
+				c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+            P$g <- rep(c(0, 1, 0), p)
+            P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = p)
+            rownames(P$cones) <- c("type", "dim", "conepar")
+        }
+        else { # Power Cone Cases
+            P$c <- c(rep(0, p + q), -sign(beta) * dv)
+	    if(alpha > 1){
+		alpha <- 1/alpha
+		P$F <- sparseMatrix(c(seq(3, 3 * p, by = 3), seq(1, 3 * p, by = 3)), 
+				    c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+		P$g <- rep(c(0, 1, 0), p)
+		}
+	    else if(alpha  < 0 ){
+		alpha <- 1/(1 - alpha)
+		P$F <- sparseMatrix(c(seq(2, 3 * p, by = 3), seq(1, 3 * p, by = 3)), 
+				    c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+		P$F <- rbind(P$F,0)
+		P$g <- rep(c(0, 0, 1), p)
+		}
+	    else{
+		P$F <- sparseMatrix(c(seq(1, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 
+				    c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+		P$g <- rep(c(0, 1, 0), p)
+		}
+            P$cones <- matrix(list("PPOW", 3, c(alpha, 1 - alpha)), nrow = 3, ncol = p)
+            rownames(P$cones) <- c("type", "dim", "conepar")
+        }
     }
-    P <- list(sense = "max")
-    P$c <- rep(0, p + q)
-    P$A <- cbind2(Diagonal(p, x = dv), A)
-    P$bx <- rbind(LX, UX)
-    P$bc <- rbind(e, e)
-    P$scopt <- list(opro = opro)
-    P$dparam$intpnt_nl_tol_rel_gap <- rtol
     if (length(control)) {
         P$iparam <- control$iparam
         P$dparam <- control$dparam
@@ -188,15 +239,10 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
         warning(paste("Solution status = ", status))
     f <- z$sol$itr$xx[1:p]
     if(is.finite(mass)) f <- mass * f/sum(d) 
-    #if (alpha == 1) 
-    #    logLik <- sum(log(g))
-    #else logLik <- NULL
     z <- list(x = v, y = f, status = status)
     class(z) <- "medde"
     z
 }
-
-
 #' Plotting method for medde objects
 #'
 #' @param x object obtained from medde fitting

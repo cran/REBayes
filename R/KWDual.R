@@ -1,12 +1,14 @@
 #' Dual optimization for Kiefer-Wolfowitz problems
 #' 
 #' Interface function for calls to optimizer from various REBayes functions
-#' There are currently two options for the optimization:  Mosek (the default)
-#' is the original, preferred option and uses interior point methods.
-#' It relies on the \pkg{Rmosek} interface to R see installation instructions at
-#' \url{https://docs.mosek.com/8.1/rmosek/install-interface.html}.  A more experimental option
-#' employs the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
-#' and employs an ADMM (Alternating Direction Method of Multipliers) approach.
+#' There is currently only one options for the optimization that based on  Mosek. 
+#' It relies on the \pkg{Rmosek} interface to R see installation instructions in
+#' the Readme file in the inst directory of this package.  This version of the function
+#' is intended to work with versions of Mosek after 7.0.  A more experimental option
+#' employing the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
+#' and employing an ADMM (Alternating Direction Method of Multipliers) approach has
+#' been deprecated, those interested could try installing version 1.4 of REBayes, and
+#' following the instructions provided there.
 #' 
 #' @param A Linear constraint matrix
 #' @param d constraint vector
@@ -15,16 +17,6 @@
 #' include \code{rtol} the relative tolerance for dual gap convergence criterion,
 #' \code{verb} to control verbosity desired from mosek, \code{verb = 0} is quiet,
 #' \code{verb = 5} produces a fairly detailed iteration log,
-#' \code{method} controls the choice of optimizer:  by default this is "mosek"
-#' which employs interior point methods, however if \code{method = "pogs"} then
-#' optimization is carried out by the ADMM methods described in Fougner and
-#' Boyd (2015).  This is a first order descent method most suitable for large
-#' problems for which parallelization is desirable.  For most REBayes applications
-#' the default "mosek" method is appropriate and "pogs" should be considered
-#' experimental.  Note that there is not yet a "pogs" implementation for \code{medde} problems.
-#' Note also that \code{method = "pogs"} assumes a distinct control list.
-#' Users are responsible for specifying correctly named control variables for each method.
-#' The most advantageous implementation of "pogs" requires (CUDA) GPU hardware.
 #' \code{control} is a control list consisting of sublists \code{iparam},
 #' \code{dparam}, and \code{sparam}, containing elements of various mosek
 #' control parameters.  See the Rmosek and Mosek manuals for further details.
@@ -49,12 +41,6 @@
 #' Mosek Aps (2015) Users Guide to the R-to-Mosek Optimization Interface, 
 #' \url{https://docs.mosek.com/8.1/rmosek/index.html}.  
 #' 
-#' Fougner, C. (2015) POGS: Proximal Operator Graph Solver, R Package available from
-#' \url{http://foges.github.io/pogs}.
-#' 
-#' Fougner, C. and S. Boyd, (2015) Parameter Selection and Pre-Conditioning for a
-#' Graph Form Solver, Stanford Technical Report.
-#'
 #' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
 #' \emph{Journal of Statistical Software}, 82, 1--26.
 #' @keywords nonparametrics
@@ -78,43 +64,14 @@ KWDual <- function(A, d, w, ...){
 # First version:24 Feb 2012  
 # Revised:	10 Jun 2015 # Simplified signature
 # Revised:	 2 Jul 2015 # Added pogs method
-
-KWpogs <- function (A, d, w, control) { # POGS implementation of KWDual
-    n <- nrow(A)
-    m <- ncol(A)
-    # Uncomment the next two lines if you want to use pogs
-    #f <- list(h = pogs::kIndBox01(n), c = d)
-    #g <- list(h = pogs::kNegLog(m), c = w)
-    pogs.control <- function(rel_tol=1e-4, abs_tol=1e-4, rho=1.0,
-       max_iter=1000, verbose = 1, adaptive_rho=TRUE)
-       list(rel_tol=rel_tol, abs_tol=abs_tol, rho=rho,
-          max_iter=max_iter, verbose=verbose, adaptive_rho=adaptive_rho)
-    params <- pogs.control()
-    if(length(control)){
-	control <- as.list(control)
-	params[names(control)] <- control
-    }
-    # Uncomment the next line if you want to use pogs
-    #z <- pogs::pogs(A, f, g, params)
-    # This abuse of notation is needed to conform to KWDual
-    f <- z$v/d
-    g <- as.vector(t(A) %*% (f * d))
-    list(f = f, g = g, status = z$status)
-}
+# Revised	30 Jan 2019 # Removed pogs method, added Mosek V9 option
 
 n <- nrow(A)
 m <- ncol(A)
 A <- t(A) 
+A <- Matrix::Matrix(A, sparse = TRUE)
 
 dots <- list(...)
-
-if(length(dots$method))
-    if(dots$method == "pogs") {
-	dots$method <- NULL
-	return(KWpogs(A, d, w, control = dots))
-    }
-    else if(!dots$method == "mosek") 
-	stop(paste("No applicable KWDual method: ", dots$method))
 
 # Default mosek method
 rtol <- ifelse(length(dots$rtol), dots$rtol, 1e-6)
@@ -122,23 +79,37 @@ verb <- ifelse(length(dots$verb), dots$verb, 0)
 if(length(dots$control)) control <- dots$control
 else control <- NULL
 
-
-C <- rep(0,n)
-P <- list(sense = "min")
-P$c <- C
-P$A <- Matrix::Matrix(A, sparse = TRUE)
-P$bc <- rbind(rep(0,m),d)
-P$bx <- rbind(rep(0,n),rep(Inf,n))
-opro <- matrix ( list (), nrow =5, ncol = n)
-rownames ( opro ) <- c(" type ","j","f","g","h")
-
-opro[1,] <-  as.list(rep('log',n))
-opro[2,] <-  as.list(1:n)
-opro[3,] <-  as.list(-w)
-opro[4,] <-  as.list(rep(1,n))
-opro[5,] <-  as.list(rep(0,n))
-P$scopt<- list(opro = opro)
-P$dparam$intpnt_nl_tol_rel_gap <- rtol
+if(utils::packageVersion("Rmosek") < 9){
+    P <- list(sense = "min")
+    P$c <- rep(0, n)
+    P$A <- A
+    P$bc <- rbind(rep(0,m),d)
+    P$bx <- rbind(rep(0,n),rep(Inf,n))
+    opro <- matrix ( list (), nrow =5, ncol = n)
+    rownames ( opro ) <- c(" type ","j","f","g","h")
+    
+    opro[1,] <-  as.list(rep('log',n))
+    opro[2,] <-  as.list(1:n)
+    opro[3,] <-  as.list(-w)
+    opro[4,] <-  as.list(rep(1,n))
+    opro[5,] <-  as.list(rep(0,n))
+    P$scopt<- list(opro = opro)
+    P$dparam$intpnt_nl_tol_rel_gap <- rtol
+}
+else { #Mosek Version > 9
+    P <- list(sense = "min")
+    A0 <- Matrix::Matrix(0, m, n)
+    P$c <- c(rep(0,n), -w)
+    P$A <- cbind(A, A0)
+    P$bc <- rbind(rep(0, m), d)
+    P$bx <- rbind(c(rep(0, n), rep(-Inf,n)), rep(Inf, 2*n))
+    P$F <- sparseMatrix(c(seq(1,3*n, by = 3), seq(3, 3*n, by = 3)),
+		 c(1:n, (n+1):(2*n)), x = rep(1,2*n))
+    P$g <- rep(c(0,1,0), n)
+    P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = n)
+    rownames(P$cones) <- c("type", "dim", "conepar")
+    P$dparam$intpnt_co_tol_rel_gap <- rtol
+}
 if(length(control)){
     P$iparam <- control$iparam
     P$dparam <- control$dparam
@@ -151,8 +122,8 @@ status <- z$sol$itr$solsta
 if (status != "OPTIMAL")
         warning(paste("Solution status = ", status))
 f <- z$sol$itr$suc
-if(min(f) < 0) warning("estimated mixing distribution has some negative values:
-		       consider reducing rtol")
+if(min(f) < -rtol) warning("estimated mixing distribution has some negative values: consider reducing rtol")
+else f[f < 0] <- 0
 g <- as.vector(t(A) %*% (f * d))
 list(f = f, g = g, status = status)
 }
