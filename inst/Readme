@@ -4,9 +4,9 @@
 The REBayes package is available from CRAN.  However, unlike most R packages
 it requires some further installation actions.  In an ideal world, CRAN would
 automagically install the Rmosek package as well.  Installation of dependencies
-usually work fine, but Rmosek requires some tweaking at install time.  Rmosek
-is an interface to the Mosek environment of Erling Andersen.  You should install
-Mosek first, along with its license file before trying to use REBayes.
+usually works fine, but Rmosek requires some tweaking at install time.  Rmosek
+is an interface to the Mosek environment of Erling Andersen and collaborators.  
+You should install Mosek first, along with its license file before trying to use REBayes.
 Rmosek is now available from CRAN so it can be installed with the usual 
 invocation of install.packages("Rmosek"), however the version of the Rmosek
 package available on CRAN is really just a skeleton intended to facilitate
@@ -37,8 +37,7 @@ in MOSEKHOME.  Of course you need to verify that the mosek executable is in
 your path:  try mosek from the shell command line to check this.  It used to
 be necessary to define the location of the license file as a shell variable
 but this no longer seems necessary either.  Once mosek is installed, the next
-step is to install the R package Rmosek.  Installation instructions and other
-documentation for Rmosek is available at https://docs.mosek.com/8.1/rmosek/index.html.
+step is to install the R package Rmosek.  
 
 Now install REBayes also from CRAN (or source) and all should be well, 
 to test you might try as an initial step:
@@ -51,6 +50,11 @@ And the vignettes for the REBayes package.
 
 These instructions should work for any installed version of Mosek, in
 particular most of the REBayes code was developed for Mosek V8, however
-Mosek V9 is now available in betatest and limited testing has confirmed
+Mosek V9 is now available and limited testing has confirmed
 that this is typically more efficient.
 See https://themosekblog.blogspot.co.uk/2018/01/version-9-roadmap_31.html
+Mosek V9 constituted a fairly dramatic reformulation of the problems
+appearing in REBayes, nonlinear terms in the objective function are
+transformed into convex cone constraints.  Some notes about this
+transformation focused primarily on the implications for the fitting function
+medde() in the REBayes package are available 

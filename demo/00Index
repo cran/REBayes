@@ -4,6 +4,7 @@ GLmix2	Gaussian Location Mixtures Mosek vs POGS implementations
 GVmix1  Gaussian Scale Mixtures for Panel Data
 WGLVmix1 Gaussian Location-Scale Mixtures for Panel Data
 WTLVmix1 Student Location-Scale Mixtures for Panel Data
+Pmix1	Poisson mixture prediction with weighted quadratic loss
 Shakespeare	Shakespeare vocabulary truncated Poisson Fitting
 Silverman	Silverman penalized density estimation via medde
 velo	Quasi concave density estimation of rotational velocity of stars
@@ -14,4 +15,5 @@ Cosslett2  Binary response with discrete link
 Cosslett3  Profile likelihood for Binary response with discrete link
 tannenbaum Convergence tolerances do matter (sometimes)
 predict prediction for GLmix problems, to be extended eventually
-meddep	primal version of 1d Renyi estimation
+medde1	Comparison of 1d Renyi estimates
+Grenander	Three equivalent ways to compute the Grenander estimator

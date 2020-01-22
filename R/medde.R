@@ -48,14 +48,16 @@
 #' @param x Data: either univariate or bivariate, the latter is highly experimental 
 #' @param v Undata: either univariate or bivariate, univariate default is an
 #' equally spaced grid of 300 values, for bivariate data there is not (yet) a default.
-#' @param lambda total variation penalty parameter, if lambda is in [-1,0], a
-#' concavity constraint is imposed. see Koenker and Mizera (2010) for
-#' further details on the concavity constrained options.  
+#' @param lambda total variation penalty smoothing parameter, if lambda is in [-1,0], a
+#' shape constraint is imposed. see Koenker and Mizera (2010)  for further details.
+#' When Dorder = 0, the shape constraint imposes that the density is monotonically
+#' decreasing, when Dorder = 1 it imposes a concavity constraint.
 #' @param alpha Renyi entropy parameter characterizing fidelity criterion
 #' by default 1 is log-concave and 0.5 is Hellinger.
 #' @param Dorder Order of the derivative operator for the penalty
 #' default is Dorder = 1, corresponding to TV norm constraint on the first derivative,
-#' or a concavity constraint on some transform of the density.
+#' or a concavity constraint on some transform of the density.  Dorder = 0 imposes
+#' a TV penalty on the function itself, or when lambda < 0 a monotonicity constraint.
 #' @param w weights associated with x,
 #' @param mass  normalizing constant for fitted density,
 #' @param rtol Convergence tolerance for Mosek algorithm,
@@ -196,8 +198,8 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
         }
 	else if (alpha == 1) { # Entropy case
             P$c <- c(rep(0, p + q), dv)
-            P$F <- sparseMatrix(c(seq(2, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 
-				c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+            P$F <- sparseMatrix(c(seq(3, 3 * p, by = 3), seq(1, 3 * p, by = 3)), 
+				c(1:p, (p + q + 1):(2 * p + q)), x = rep(-1, 2 * p))
             P$g <- rep(c(0, 1, 0), p)
             P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = p)
             rownames(P$cones) <- c("type", "dim", "conepar")
@@ -212,10 +214,9 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
 		}
 	    else if(alpha  < 0 ){
 		alpha <- 1/(1 - alpha)
-		P$F <- sparseMatrix(c(seq(2, 3 * p, by = 3), seq(1, 3 * p, by = 3)), 
+		P$F <- sparseMatrix(c(seq(1, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 
 				    c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
-		P$F <- rbind(P$F,0)
-		P$g <- rep(c(0, 0, 1), p)
+		P$g <- rep(c(0, 1, 0), p)
 		}
 	    else{
 		P$F <- sparseMatrix(c(seq(1, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 

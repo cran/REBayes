@@ -1,7 +1,7 @@
 #' Dual optimization for Kiefer-Wolfowitz problems
 #' 
 #' Interface function for calls to optimizer from various REBayes functions
-#' There is currently only one options for the optimization that based on  Mosek. 
+#' There is currently only one option for the optimization that based on  Mosek. 
 #' It relies on the \pkg{Rmosek} interface to R see installation instructions in
 #' the Readme file in the inst directory of this package.  This version of the function
 #' is intended to work with versions of Mosek after 7.0.  A more experimental option
@@ -32,7 +32,11 @@
 #' @return Returns a list with components: \item{f}{dual solution vector, the
 #' mixing density} \item{g}{primal solution vector, the mixture density
 #' evaluated at the data points} \item{logLik}{log likelihood}
-#' \item{status}{return status from Mosek}
+#' \item{status}{return status from Mosek}.  Mosek termination messages are
+#' treated as warnings from an R perspective since solutions producing, for example,
+#' MSK_RES_TRM_STALL: The optimizer is terminated due to slow progress, may still
+#' provide a satisfactory solution, especially when the return status variable is
+#' "optimal".
 #' @author R. Koenker
 #' @references
 #' Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
@@ -65,6 +69,7 @@ KWDual <- function(A, d, w, ...){
 # Revised:	10 Jun 2015 # Simplified signature
 # Revised:	 2 Jul 2015 # Added pogs method
 # Revised	30 Jan 2019 # Removed pogs method, added Mosek V9 option
+# Revised	27 Sep 2019 # changed stop to warning for stalled mosek
 
 n <- nrow(A)
 m <- ncol(A)
@@ -96,7 +101,7 @@ if(utils::packageVersion("Rmosek") < 9){
     P$scopt<- list(opro = opro)
     P$dparam$intpnt_nl_tol_rel_gap <- rtol
 }
-else { #Mosek Version > 9
+else { #Mosek Version => 9
     P <- list(sense = "min")
     A0 <- Matrix::Matrix(0, m, n)
     P$c <- c(rep(0,n), -w)
@@ -116,13 +121,12 @@ if(length(control)){
     P$sparam <- control$sparam
 }
 z <- Rmosek::mosek(P, opts = list(verbose = verb))
-if(z$response$code != 0)
-    stop(paste("Mosek error: ", z$response$msg))
 status <- z$sol$itr$solsta
 if (status != "OPTIMAL")
-        warning(paste("Solution status = ", status))
+    warning(paste("Solution status = ", status))
 f <- z$sol$itr$suc
-if(min(f) < -rtol) warning("estimated mixing distribution has some negative values: consider reducing rtol")
+if(min(f) < -rtol) 
+    warning("estimated mixing distribution has some negative values: consider reducing rtol")
 else f[f < 0] <- 0
 g <- as.vector(t(A) %*% (f * d))
 list(f = f, g = g, status = status)

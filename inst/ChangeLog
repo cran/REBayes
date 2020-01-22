@@ -294,3 +294,36 @@ renormalized the solution for f.  Check sum(fit$y) as an initial sanity check.
 cone constraint formulation.  This option is done automatically based on
 a test of packageVersion("Rmosek") that reveals which version of Mosek is
 installed.
+
+Version 1.9
+
+1.  Repaired a bug in the V9 code for medde() with alpha = 1.
+
+2.  Added a Grenander demo to show that the classical Grenander NPMLE
+for a decreasing density can be done several different ways.
+
+3.  Removed the primal code for meddep that was intended to confirm
+that the dual and primal version of medde were computing the same thing.
+This could be reintroduced, but it would require adapting the primal code
+in the prior version of the demo to work for V9.  The simplified demo
+now is called medde1 rather than meddep and just compares estimates of
+a Student t density with 4 different values of alpha.
+
+Version 2.0
+
+1.  Changed the stop() statement when the Mosek termination code isn't 0,
+to a warning(), since in Mosek 9 we were occasionally getting stalled
+solutions that proved to be essentially the same as those produced by Mosek 8.
+
+Version 2.1
+
+1.  Added an option to predict.Pmix and a new demo Pmix1 to
+illustrate it..
+
+Version 2.2
+
+1.  Simplified the medde specification of the mosek problem for alpha < 0
+cases.
+
+2.  Removed check of response$code for mosek solution which produced lots
+of annoying mosek stalled messages that didn't seem to be very meaningful.

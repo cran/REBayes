@@ -9,12 +9,16 @@
 #' @param object fitted object of class "Pmix"
 #' @param newdata Values at which prediction is desired
 #' @param Loss Loss function used to generate prediction.  Currently supported values:
-#' 2 to get mean predictions, 1 to get median predictions, 0 to get modal predictions
-#' or any tau in (0,1) to get tau-th quantile predictions.
+#' 2 to get mean predictions, 1 to get harmonic mean predictions, 0 to get modal predictions
+#' or any tau in (0,1) to get tau-th quantile predictions.  The posterior harmonic mean is
+#' the Bayes rule for quadratic loss weighted by variances as in Clevenson and Zidek (1975). 
 #' @param newexposure exposure values for the predictions 
 #' @param ... optional arguments to predict
 #' @return A vector of predictions
-#' @author Jiaying Gu
+#' @references  Clevenson, M. L. and Zidek, J. V. 1975. Simultaneous Estimation of the
+#' Means of Independent Poisson Laws, Journal of the American Statistical Association,
+#' 70, 698-705.
+#' @author Jiaying Gu and Roger Koenker
 #' @keywords nonparametric
 #' @importFrom stats dpois
 #' @export
@@ -34,8 +38,11 @@ predict.Pmix <- function(object, newdata, Loss = 2, newexposure = NULL, ...) {
 	A <- A0
 	xhat <- as.vector((A %*% (fv * v))/(A %*% fv))
     }
-    else if(Loss > 0 && Loss <= 1){ #median case
-	if(Loss == 1) Loss <- 1/2
+    else if(Loss == 1) { # harmonic mean case 
+	A <- A0
+	xhat <- 1/as.vector((A %*% (fv * (1/v)))/(A %*% fv))
+    }
+    else if(Loss > 0 ){ # quantile case
        A <- t(t(A0) * fv)
        B <- apply(A/apply(A,1,sum),1,cumsum) < Loss
        j <- apply(B,2,sum)

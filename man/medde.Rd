@@ -13,16 +13,18 @@ medde(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, w = NULL,
 \item{v}{Undata: either univariate or bivariate, univariate default is an
 equally spaced grid of 300 values, for bivariate data there is not (yet) a default.}
 
-\item{lambda}{total variation penalty parameter, if lambda is in [-1,0], a
-concavity constraint is imposed. see Koenker and Mizera (2010) for
-further details on the concavity constrained options.}
+\item{lambda}{total variation penalty smoothing parameter, if lambda is in [-1,0], a
+shape constraint is imposed. see Koenker and Mizera (2010)  for further details.
+When Dorder = 0, the shape constraint imposes that the density is monotonically
+decreasing, when Dorder = 1 it imposes a concavity constraint.}
 
 \item{alpha}{Renyi entropy parameter characterizing fidelity criterion
 by default 1 is log-concave and 0.5 is Hellinger.}
 
 \item{Dorder}{Order of the derivative operator for the penalty
 default is Dorder = 1, corresponding to TV norm constraint on the first derivative,
-or a concavity constraint on some transform of the density.}
+or a concavity constraint on some transform of the density.  Dorder = 0 imposes
+a TV penalty on the function itself, or when lambda < 0 a monotonicity constraint.}
 
 \item{w}{weights associated with x,}
 

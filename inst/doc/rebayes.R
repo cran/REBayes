@@ -81,7 +81,7 @@ z <- optim(c(5,5), logL, x = X, e = E, hessian = TRUE)
 sez <- sqrt(diag(solve(z$hessian)))
 z <- z$par
 # Estimation of the Poisson mixture model
-f = Pmix(X, v = 1000, exposure = E, rtol = 1e-10)
+f = Pmix(X, v = 1000, exposure = E, rtol = 1e-8)
 # Now plot the comparison
 par(mfrow=c(1,2))
 plot(f$x,f$y/sum(f$y), type="l", xlab = expression(theta), 

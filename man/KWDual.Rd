@@ -34,11 +34,15 @@ simulations on clusters.}
 Returns a list with components: \item{f}{dual solution vector, the
 mixing density} \item{g}{primal solution vector, the mixture density
 evaluated at the data points} \item{logLik}{log likelihood}
-\item{status}{return status from Mosek}
+\item{status}{return status from Mosek}.  Mosek termination messages are
+treated as warnings from an R perspective since solutions producing, for example,
+MSK_RES_TRM_STALL: The optimizer is terminated due to slow progress, may still
+provide a satisfactory solution, especially when the return status variable is
+"optimal".
 }
 \description{
 Interface function for calls to optimizer from various REBayes functions
-There is currently only one options for the optimization that based on  Mosek. 
+There is currently only one option for the optimization that based on  Mosek. 
 It relies on the \pkg{Rmosek} interface to R see installation instructions in
 the Readme file in the inst directory of this package.  This version of the function
 is intended to work with versions of Mosek after 7.0.  A more experimental option

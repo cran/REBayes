@@ -4,7 +4,8 @@
 \alias{predict.GLmix}
 \title{Predict Method for GLmix}
 \usage{
-\method{predict}{GLmix}(object, newdata, Loss = 2, newsigma = NULL, ...)
+\method{predict}{GLmix}(object, newdata, Loss = 2, newsigma = NULL,
+  ...)
 }
 \arguments{
 \item{object}{fitted object of class "GLmix"}

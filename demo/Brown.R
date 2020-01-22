@@ -70,7 +70,7 @@ require(Rmosek)
  x <- rnorm(n,m)
  v <- 1:500/25
  f <- Brown(x, v, verb = 5)
- plot(f$x, f$y, type = "l",xlab = "x", ylab = "g(x)")
+ plot(f$x, f$y, type = "l",xlab = "y", ylab = "f(y)")
  x <- 1:200/10
  h <- function(x) (pnorm(15-x)-pnorm(5-x))/10 #da truth
  lines(x,h(x),col="blue")

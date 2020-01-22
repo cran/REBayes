@@ -11,7 +11,7 @@
 \source{
 Fatih Guvenen, Fatih Karahan, Serdar Ozkan and Jae Song, (2016)
 What Do Data on Millions of U.S. Workers Reveal about Life-Cycle Earnings Dynamics?
-\url{https://fguvenendotcom.files.wordpress.com/2014/04/gkos_2016_rev2_v47.pdf}
+\url{https://www.nber.org/papers/w20913.pdf}
 }
 \usage{
 Guvenen

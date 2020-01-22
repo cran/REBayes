@@ -4,7 +4,8 @@
 \alias{TLmix}
 \title{NPMLE for Student t location mixtures}
 \usage{
-TLmix(x, v = 300, u = 300, df = 1, hist = FALSE, weights = NULL, ...)
+TLmix(x, v = 300, u = 300, df = 1, hist = FALSE, weights = NULL,
+  ...)
 }
 \arguments{
 \item{x}{Data: Sample Observations}
