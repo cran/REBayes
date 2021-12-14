@@ -4,7 +4,7 @@
 \alias{bball}
 \title{U.S. Major League Batting Average Data: 2002-2012}
 \source{
-ESPN Website: \url{http://espn.go.com/mlb/statistics}
+ESPN Website: \url{https://www.espn.com/mlb/stats}
 }
 \description{
 Data frame consisting of the following variables:

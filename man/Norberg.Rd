@@ -3,12 +3,14 @@
 \name{Norberg}
 \alias{Norberg}
 \title{Norberg Life Insurance Data}
-\format{A data frame with 72 observations on the following 3 variables.
+\format{
+A data frame with 72 observations on the following 3 variables.
 \itemize{
     \item{\code{OccGroup}}{Occupational Group}
     \item{\code{Exposure}}{Exposures}
     \item{\code{Deaths}}{Observed Deaths}
-}}
+}
+}
 \usage{
 Norberg
 }

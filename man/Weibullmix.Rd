@@ -4,8 +4,16 @@
 \alias{Weibullmix}
 \title{NPMLE for Weibull Mixtures}
 \usage{
-Weibullmix(x, v = 300, u = 300, alpha, lambda = 1, hist = FALSE,
-  weights = NULL, ...)
+Weibullmix(
+  x,
+  v = 300,
+  u = 300,
+  alpha,
+  lambda = 1,
+  hist = FALSE,
+  weights = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{Survival times}

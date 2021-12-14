@@ -17,7 +17,7 @@ knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", digits = 3, show.signif.stars = FALSE)
 cleanup <- FALSE
 
-## ----Xsetup, include = FALSE---------------------------------------------
+## ----Xsetup, include = FALSE--------------------------------------------------
 X.cap <- "Four estimates of the mixing distributions $G$:  In the left panel the 
 true mixing distribution is smooth, in the left panel it is discrete as described
 in the text.  
@@ -123,7 +123,7 @@ for(i in 1:2){
 	    "; ", "W(SC) = ", round(W3$W,3), "; ", "W(KWs) = ", round(W4$W,3), sep = ""), cex.main = 0.75)
 }
 
-## ----Y,  cache = TRUE, message = FALSE, warnings = FALSE, echo = FALSE----
+## ----Y,  cache = TRUE, message = FALSE, warnings = FALSE, echo = FALSE--------
 sim1 <- function(n, R = 10){
     A <- matrix(0, 3, R)
     G0 <- function(t) punif(t,0,6)/8 + 7 * pnorm(t, 0, 0.5)/8  

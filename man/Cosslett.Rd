@@ -35,7 +35,7 @@ Kiefer-Wolfowitz-Cosslett  estimator for binary response model.
 \details{
 In the primal form of the problem the pseudo log likelihood is:
 
-\deqn{l(f|y) =  sum_i [ y_i \log \sum_j (I(v_j <= x_i) * f_j) + 
+	\deqn{l(f|y) =  sum_i [ y_i \log \sum_j (I(v_j <= x_i) * f_j) + 
 		(1 - y_i) \log \sum_j (I(v_j > x_i) * f_j) ]}
 
 as usual the implementation used here solves the corresponding dual problem.

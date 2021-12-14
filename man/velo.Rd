@@ -3,10 +3,12 @@
 \name{velo}
 \alias{velo}
 \title{Rotational Velocity of Stars}
-\format{A numeric vector with 3933 observations on one variable.
+\format{
+A numeric vector with 3933 observations on one variable.
 \itemize{
     \item{\code{velo}}{a numeric vector with rotational velocities.}
-}}
+}
+}
 \source{
 Hoffleit, D. and Warren, W. H. (1991). The Bright Star Catalog (5th ed.). 
 Yale University Observatory, New Haven.

@@ -7,6 +7,7 @@
 #' @param v A vector of bin boundaries, if scalar then v equally spaced bins
 #'	are constructed 
 #' @param weights  replicate weights for x obervations, should sum to 1 
+#' @param eps tolerance for default gridding 
 #' @param ...  optional parameters passed to KWDual to control optimization
 #' @return An object of class \code{density} with components:
 #' 	\item{x}{midpoints of the bin boundaries} 
@@ -25,10 +26,9 @@
 #' @keywords nonparametric
 #' @importFrom stats dgamma
 #' @export
-Gammamix <- function(x, v = 300, shape = 1, weights = NULL, ...){
+Gammamix <- function(x, v = 300, shape = 1, weights = NULL, eps = 1e-10, ...){
 
     n = length(x)
-    eps <- 1e-4
     if (length(v) == 1)
 	v <- seq(min(x/shape) - eps, max(x/shape) + eps, length = v)
     p <- length(v)

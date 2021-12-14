@@ -3,7 +3,8 @@
 \name{flies}
 \alias{flies}
 \title{Medfly Data}
-\format{A data frame with 19072 observations on the following 17 variables.
+\format{
+A data frame with 19072 observations on the following 17 variables.
 \itemize{
     \item{\code{age}}{age at death in days}
     \item{\code{num}}{frequency count of age at death}
@@ -22,7 +23,8 @@
     \item{\code{size6}}{size group 6}
     \item{\code{size7}}{size group 7}
     \item{\code{size8}}{size group 8}
-}}
+}
+}
 \usage{
 flies
 }

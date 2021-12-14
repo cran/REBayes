@@ -4,8 +4,18 @@
 \alias{medde}
 \title{Maximum Entropy [De]Regularized Density Estimation}
 \usage{
-medde(x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1, w = NULL,
-  mass = 1, rtol = 1e-06, verb = 0, control = NULL)
+medde(
+  x,
+  v = 300,
+  lambda = 0.5,
+  alpha = 1,
+  Dorder = 1,
+  w = NULL,
+  mass = 1,
+  rtol = 1e-06,
+  verb = 0,
+  control = NULL
+)
 }
 \arguments{
 \item{x}{Data: either univariate or bivariate, the latter is highly experimental}

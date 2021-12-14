@@ -9,6 +9,10 @@ Shakespeare	Shakespeare vocabulary truncated Poisson Fitting
 Silverman	Silverman penalized density estimation via medde
 velo	Quasi concave density estimation of rotational velocity of stars
 Bmix1	Binomial Mixture with the Beckett-Diaconis tack data
+B2mix1	Bivariate Binomial Mixture 
+BPmix1	Binomial mixture with possibly dependent Poisson number of trials.
+NPmix1	Gaussian mixture with possibly dependent Poisson number of trials.
+Bmmix1	Binomial mixture with possibly dependent number of trials.
 Brown	Example of monotonized Bayes rule estimator via medde
 Cosslett1  Binary response with Gaussian link
 Cosslett2  Binary response with discrete link
@@ -17,3 +21,5 @@ tannenbaum Convergence tolerances do matter (sometimes)
 predict prediction for GLmix problems, to be extended eventually
 medde1	Comparison of 1d Renyi estimates
 Grenander	Three equivalent ways to compute the Grenander estimator
+RLR1	A Simple Lasso Plot for logistic regression
+RLR2	Bradley Terry Estimation with Ranking lasso regularization

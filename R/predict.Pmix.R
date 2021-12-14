@@ -43,7 +43,7 @@ predict.Pmix <- function(object, newdata, Loss = 2, newexposure = NULL, ...) {
 	xhat <- 1/as.vector((A %*% (fv * (1/v)))/(A %*% fv))
     }
     else if(Loss > 0 ){ # quantile case
-       A <- t(t(A0) * fv)
+       A <- A0 * outer(rep(1,n),fv)
        B <- apply(A/apply(A,1,sum),1,cumsum) < Loss
        j <- apply(B,2,sum)
        if(any(j == 0)) { # Should only happen when v grid is very restricted
@@ -53,7 +53,7 @@ predict.Pmix <- function(object, newdata, Loss = 2, newexposure = NULL, ...) {
        xhat <- v[j]
     }
     else if(Loss == 0) { # mode case
-       A <- t(t(A0) * fv)
+       A <- A0 * outer(rep(1,n),fv)
        xhat <- v[apply(A/apply(A,1,sum),1,which.max)]
     }   
     else 

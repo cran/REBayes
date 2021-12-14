@@ -9,7 +9,7 @@ y <- rnorm(n*m, mean = rep(mu, each = m), sd = rep(theta, each = m))
 id <- rep(1:n,each = m)
 f <- WGLVmix(y,id, verb = 5)
 require(lattice)
-g <- expand.grid(theta = f$v, alpha = f$u)
+g <- expand.grid(alpha = f$u, theta = f$v)
 g$fuv <- f$fuv
 pl <- cloud(fuv ~ alpha * theta, data = g, type = "h", lwd = 2, 
       zlim = c(0, max(g$fuv)), scales = list(arrows = FALSE,

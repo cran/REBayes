@@ -17,14 +17,14 @@ knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", digits = 2, show.signif.stars = FALSE)
 cleanup <- FALSE
 
-## ----N02setup, include=FALSE---------------------------------------------
+## ----N02setup, include=FALSE--------------------------------------------------
 N02.cap = "Kiefer Wolfowitz Estimation of a Gaussian Location Mixture:
 The left panel is the (unknown) two component mixture density, the middle panel is the estimated
 NPMLE mixing density and the right panel is the estimated Bayes rule for predicting 
 $\\hat \\mu = \\delta (x)$ based on seeing  an observation $x$."
 set.seed(1729) 
 
-## ----N02, fig.height = 4, fig.width = 10, fig.cap = N02.cap--------------
+## ----N02, fig.height = 4, fig.width = 10, fig.cap = N02.cap-------------------
 # A simple Gaussian mixture model
 par(mfrow = c(1,3))
 x <- seq(-5, 6, by = 0.05)
@@ -35,14 +35,14 @@ z <- GLmix(y)
 plot(z, xlab = expression(mu), ylab = expression(f(mu)), main = "")
 plot(x, predict(z,x), type = "l", ylab = expression(delta(x)))
 
-## ----N0Gsetup, include=FALSE---------------------------------------------
+## ----N0Gsetup, include=FALSE--------------------------------------------------
 N0G.cap = "Kiefer Wolfowitz Estimation of a Gaussian Location Mixture:
 The left panel is the (unknown) mixture density, the middle panel is the estimated
 NPMLE mixing density and the right panel is the estimated Bayes rule for predicting 
 $\\hat \\mu = \\delta (x)$ based on seeing  an observation $x$."
 set.seed(1726) 
 
-## ----N0G, fig.height = 4, fig.width = 10, fig.cap = N0G.cap--------------
+## ----N0G, fig.height = 4, fig.width = 10, fig.cap = N0G.cap-------------------
 # Another simple Gaussian mixture model
 par(mfrow = c(1,3))
 x <- seq(-5, 7, by = 0.05)
@@ -53,24 +53,24 @@ z <- GLmix(y)
 plot(z, xlab = expression(mu), ylab = expression(f(mu)), main = "")
 plot(x, predict(z,x), type = "l", ylab = expression(delta(x)))
 
-## ----P01setup, include=FALSE---------------------------------------------
+## ----P01setup, include=FALSE--------------------------------------------------
 P01.cap = "Histogram of Claims per Exposure for 72 occupation groups."
 
-## ----P01, fig.height = 4, fig.width = 6, fig.cap = P01.cap---------------
+## ----P01, fig.height = 4, fig.width = 6, fig.cap = P01.cap--------------------
 # Parametric Gamma vs Poisson mixture models for insurance claims
 data("Norberg")
 E <- Norberg$Exposure/344
 X <- Norberg$Death
 hist(X/E, 90, freq = TRUE, xlab = "X/E", main = "", ylab = "Frequency")
 
-## ----P02setup, include=FALSE---------------------------------------------
+## ----P02setup, include=FALSE--------------------------------------------------
 P02.cap = "Estimated mixing distribution $G$ for $\\theta$ for the group insurance data. The left panel 
 depicts to the Kiefer-Wolfowitz NPMLE estimator for $G$ with 1000 grid points. The right panel 
 depicts the cube root of the mass associated with support points around 8. The smooth 
 curve superimposed in the left panel corresponds to the parametric maximum likelihood
 estimate of the mixing density assuming $G$ follows a Gamma distribution."
 
-## ----P02, fig.height = 4, fig.width = 6, cache = TRUE, fig.cap = P02.cap----
+## ----P02, fig.height = 4, fig.width = 6, cache = TRUE, fig.cap = P02.cap------
 # Maximum likelihood estimation of the Gamma model
 logL<-  function(par, x, e){
     f <- choose(x + par[1] - 1, x) * 
@@ -90,13 +90,13 @@ lines(f$x, dgamma(f$x, shape = z[1], rate = z[2]), col = 2)
 plot(f$x,(f$y/sum(f$y))^(1/3), type="l", xlab = expression(theta), 
 ylab = expression(f(theta)^{1/3}), ylim = c(0,1))
 
-## ----P03setup, include=FALSE---------------------------------------------
+## ----P03setup, include=FALSE--------------------------------------------------
 P03.cap = "Comparison of the Parametric and the Nonparametric Empirical Bayes 
 estimator of $\\theta_i$ for 72 occupation groups.  As indicated by the 45 degree
 line there is good agreement between the parametric and nonparametric Bayes rules
 except for the two groups appearing in the upper right corner of the plot."
 
-## ----P03, fig.height = 4, fig.width = 6, fig.cap = P03.cap---------------
+## ----P03, fig.height = 4, fig.width = 6, fig.cap = P03.cap--------------------
 # Bayes rules for insurance application
 PBrule <- (X + z[1])/(E + z[2])
 NPBrule <- f$dy
@@ -104,10 +104,10 @@ plot(PBrule, NPBrule, cex = 0.5,
      xlab = "P-EBayes", ylab = "NP-EBayes")
 abline(c(0,1))
 
-## ----W01setup, include=FALSE---------------------------------------------
+## ----W01setup, include=FALSE--------------------------------------------------
 W01.cap = "Raw and estimated mortality rates for Carey medflies by gender"
 
-## ----W01, fig.height = 5, fig.width = 8, fig.cap = W01.cap---------------
+## ----W01, fig.height = 5, fig.width = 8, fig.cap = W01.cap--------------------
 data("flies") 
 attach(flies)
 # Weibull hazard function
@@ -148,7 +148,7 @@ for(g in 1:2){
    legend("topleft", labs, lty = rep(1,2), lwd = 1.5, col=cols)
    }
 
-## ----W02setup, include=FALSE---------------------------------------------
+## ----W02setup, include=FALSE--------------------------------------------------
 W02.cap = "Initial Cage Density Effect in the Weibull Mixture Model:
 Profile Log Likelihood (in 1000's) for the  cage density effect with
 0.95 (Wilks) confidence interval in blue."
@@ -181,7 +181,7 @@ blo <- uniroot(fsp,c(-1,-.5))$root
 bhi <- uniroot(fsp,c(-.5, 0))$root
 polygon(c(blo,bhi,bhi,blo), c(-40,-40,-30,-30), col = "lightblue")
 
-## ----W03setup, include=FALSE---------------------------------------------
+## ----W03setup, include=FALSE--------------------------------------------------
 counts <- tapply(num,age,"sum")
 freq <- counts/sum(counts)
 day <- as.numeric(names(counts))
@@ -217,12 +217,12 @@ hW <- hweibull(day, alpha = 2.95, lambda = 1, fitW)
 lines(day, hW, col = 2)
 legend("topright", c("NPMLE", "Gamma"), col = 2:1, lty = 1:2)
 
-## ----W04setup, include=FALSE---------------------------------------------
+## ----W04setup, include=FALSE--------------------------------------------------
 W04.cap = "Conditional Frailty at Various Ages:  Note that
 the cube root of the frailties have been plotted to accentuate
 the smaller mass points"
 
-## ----W04, fig.height = 8, fig.width = 8, fig.cap = W04.cap---------------
+## ----W04, fig.height = 8, fig.width = 8, fig.cap = W04.cap--------------------
 # Conditional fraility at various ages
 Gfrailt <- function(age, fit){
     alpha <- fit[1]
@@ -245,10 +245,10 @@ for(t in c(1.5, 20, 60, 100)){
 	ylab = expression(h( theta , t)^{1/3}))
 	}
 
-## ----W05setup, include=FALSE---------------------------------------------
+## ----W05setup, include=FALSE--------------------------------------------------
 W05.cap = "Ten-Day Term Life Insurance Premia for Medflies of Various Ages"
 
-## ----W05, fig.height = 4, fig.width = 6, fig.cap = W05.cap---------------
+## ----W05, fig.height = 4, fig.width = 6, fig.cap = W05.cap--------------------
 # Life insurance premia for medflies of various ages
 premium <- function(v, t, k = 1, alpha, fit){
     if("Weibullmix" %in% class(fit)) {

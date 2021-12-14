@@ -4,7 +4,7 @@
 \alias{Gammamix}
 \title{NPMLE for Gamma Mixtures}
 \usage{
-Gammamix(x, v = 300, shape = 1, weights = NULL, ...)
+Gammamix(x, v = 300, shape = 1, weights = NULL, eps = 1e-10, ...)
 }
 \arguments{
 \item{x}{vector of observed variances}
@@ -15,6 +15,8 @@ are constructed}
 \item{shape}{vector of shape parameters corresponding to x}
 
 \item{weights}{replicate weights for x obervations, should sum to 1}
+
+\item{eps}{tolerance for default gridding}
 
 \item{...}{optional parameters passed to KWDual to control optimization}
 }

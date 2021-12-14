@@ -327,3 +327,112 @@ cases.
 
 2.  Removed check of response$code for mosek solution which produced lots
 of annoying mosek stalled messages that didn't seem to be very meaningful.
+
+Version 2.3
+
+1.  Added B2mix function for bivariate binomial mixtures 
+
+Version 2.31
+
+1.  Replaced an undefined mu variable in predict.B2mix.R.
+
+2.  Fixed the definition of the OraclelogLik in B2mix1 demo so that it is
+evaluated at the true mixture distribution, rather than assuming that the
+oracle knows which p vector is associated with each observation.  
+
+Version 2.33-6
+
+1.  Added a KWPrimal function to present mosek with primal rather than dual
+problems.  This _should_ produce equivalent solutions, but badly needs further
+testing.  Intended initially to facilitate development of new code to enable
+one to add further linear equality constraints on the mixing distribution.
+
+2.  Added new function for fitting a binomial model with possibly dependent
+Poisson number of trials, and a demo BPmix1.
+
+3.  Added another demo fitting binomial model with possible dependent numbers
+of trials, however in this case no Poisson assumption is made, we only hope
+(!) to infer the dependence from the marginal distribution of the trial data.
+This is highly experimental.
+
+4.  Added new function for Gaussian mixtures with standard deviations
+proportional to 1/sqrt(m) where m is a Poisson random variable and possibly
+dependent on the mean of the Gaussians.  This is analogous to code{BPmix}.
+There is an associated demo NPmix1.
+
+Version 2.37
+
+1.  Added new function BDGLmix to implement Efron's Bayesian deconvolution
+(log-spline) estimator.  It returns an object that is compatible with the
+GLmix object, so predict can be used to compute estimates of posterior means
+and quantiles.  This seems particularly useful for confidence intervals as
+shown here:  http://www.econ.uiuc.edu/~roger/research/ebayes/cieb.pdf
+
+Version 2.38
+
+1.  Added several utility functions rKW, qKW, bwKW for computing random
+samples, quantiles, and smoothing bandwidths respectively for KW objects.
+
+Version 2.39
+
+1.  Added GLVmix and associated predict and plot methods.  This is like
+the longitudinal WGLVmix fitting function except that the input data 
+structure is simplified for the case where the raw longitudinal data is
+not available.
+
+Version 2.40
+
+1.  Added KW2smooth and associated bandwidth function bwKW2
+
+Version 2.41
+
+1.  Modified WGLVmix and GLVmix so that they return solutions in the "right"
+order, that is such that contour(u,v,matrix(fuv,pu,pv)) works properly.  
+NB  This change means that older plotting code such as used for the income dynamics
+paper and the baseball paper would need to be modified slightly.
+
+Version 2.43
+
+1.  Fixed bug in WGLVmix in construction of B matrix
+
+2.  Added predict method for WGLVmix and added "GLVmix" to the class
+inheritance so that the plot method for GLVmix should work for WGLVmix
+objects.
+
+3.  Changed predict methods for WGLVmix and GLVmix so that if newdata is
+missing and Loss = 2 then just return object$du. 
+
+4.  WGLVmix and GLVmix now return A matrix.
+
+5.  Added Lfdr generic and methods for GLVmix and WGLVmix objects.
+
+6.  Added qKW2, Finv and ThreshFDR to the misc.R file
+
+Version 2.44
+
+1.  Modified Lfdr.R so Left option uses weak inequality.  Jiaying's email
+of 29/8/20.
+
+Version 2.46
+
+1.  In version 2.45 a bug was introduced in predict.GLmix,  attributable
+to an inadvisable matrix vector multiplication.  This bug was fixed here
+and in other predict functions, in particular their quantile options were
+also modified.
+
+Version 2.47
+
+1.  Modified bwKW so bandwidth is bounded away from zero.
+
+Version 2.48
+
+1.  Modified Gammamix to add eps to calling sequence since prior default
+wasn't small enough.  The new default is eps = 1e-10.
+
+
+Version 2.50
+
+1.  Added the function RLR to estimate logistic regression models subject to
+an l1 penalty on a linear transformation of the parameters.
+
+2.  Added logLik to the return object of RLR.

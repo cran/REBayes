@@ -1,5 +1,7 @@
 Brown <- function(x, v = 300, rtol = 1e-06, verb = 0, control = NULL){
     # Monotone Bayes Rule Density Estimation for Gaussian Mixture Model
+    if(utils::packageVersion("Rmosek") != 8)
+	stop("Brown demo requires Mosek V8")
     if(length(v) == 1){
 	eps <- ifelse(lambda < 0, 0.0001,1)
 	v <- seq(min(x) - eps, max(x) + eps, length = v)

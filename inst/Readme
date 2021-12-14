@@ -58,3 +58,5 @@ appearing in REBayes, nonlinear terms in the objective function are
 transformed into convex cone constraints.  Some notes about this
 transformation focused primarily on the implications for the fitting function
 medde() in the REBayes package are available 
+here:  http://www.econ.uiuc.edu/~roger/research/ebayes/kwdual9.pdf
+and http://www.econ.uiuc.edu/~roger/research/ebayes/Mosek9.pdf

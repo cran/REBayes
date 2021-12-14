@@ -19,6 +19,7 @@
 #' @export
 predict.GLmix <- function(object, newdata, Loss = 2, newsigma = NULL, ...) {
     x <- newdata
+    n <- length(x)
     v <- object$x
     fv <- object$y
     if (length(newsigma)) object$sigma = newsigma
@@ -28,7 +29,7 @@ predict.GLmix <- function(object, newdata, Loss = 2, newsigma = NULL, ...) {
     }
     else if(Loss > 0 && Loss <= 1){ #quantile case
 	if(Loss == 1) Loss <- 1/2
-       A <- t(t(dnorm(outer(x, v, "-"), sd = object$sigma)) * fv)
+       A <- dnorm(outer(x, v, "-"), sd = object$sigma) * outer(rep(1,n),fv)
        B <- apply(A/apply(A,1,sum),1,cumsum) < Loss
        j <- apply(B,2,sum)
        if(any(j == 0)) { # Should only happen when v grid is very restricted
@@ -38,7 +39,7 @@ predict.GLmix <- function(object, newdata, Loss = 2, newsigma = NULL, ...) {
        xhat <- v[j]
     }
     else if(Loss == 0) { # mode case
-       A <- t(t(dnorm(outer(x, v, "-"), sd = object$sigma)) * fv)
+       A <- dnorm(outer(x, v, "-"), sd = object$sigma) * outer(rep(1,n), fv)
        xhat <- v[apply(A/apply(A,1,sum),1,which.max)]
     }
     else 

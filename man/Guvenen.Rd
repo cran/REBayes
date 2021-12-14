@@ -3,15 +3,17 @@
 \name{Guvenen}
 \alias{Guvenen}
 \title{Annual Increments in Log Income}
-\format{A data frame with 279 observations on two variables.
+\format{
+A data frame with 279 observations on two variables.
 \itemize{
     \item{\code{earnings}}{annual increment in log income}
     \item{\code{logdensity}}{estimated log density values}
-}}
+}
+}
 \source{
 Fatih Guvenen, Fatih Karahan, Serdar Ozkan and Jae Song, (2016)
 What Do Data on Millions of U.S. Workers Reveal about Life-Cycle Earnings Dynamics?
-\url{https://www.nber.org/papers/w20913.pdf}
+\url{https://www.nber.org/system/files/working_papers/w20913/w20913.pdf}
 }
 \usage{
 Guvenen

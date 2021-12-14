@@ -2,7 +2,7 @@
 % Please edit documentation in R/WGLVmix.R
 \name{WGLVmix}
 \alias{WGLVmix}
-\title{Weighted NPMLE ofLongitudinal Gaussian Mean and Variances Model}
+\title{Weighted NPMLE of Longitudinal Gaussian Mean and Variances Model}
 \usage{
 WGLVmix(y, id, w, u = 30, v = 30, ...)
 }
@@ -27,6 +27,7 @@ A list consisting of the following components:
 	\item{logLik}{log likelihood value for mean problem} 
 	\item{du}{Bayes rule estimate of the mixing density means.} 
 	\item{dv}{Bayes rule estimate of the mixing density variances.} 
+	\item{A}{Constraint matrix} 
 	\item{status}{Mosek convergence status}
 }
 \description{
@@ -34,6 +35,9 @@ A Kiefer-Wolfowitz procedure for ML estimation of a Gaussian model with
 dependent mean and variance components and weighted longitudinal data.
 This version assumes a general bivariate distribution for the mixing
 distribution. The defaults use a rather coarse bivariate gridding.
+In contrast to the function \code{GLVmix} the full longitudinal data
+structure is required for this function and the likelihood evaluation
+reflects this difference.
 }
 \references{
 Gu, J. and R. Koenker (2014) Heterogeneous Income Dynamics: An
@@ -43,7 +47,9 @@ Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixtur
 \emph{Journal of Statistical Software}, 82, 1--26.
 }
 \seealso{
-WTLVmix for an implementation assuming independent heterogeneity
+WTLVmix for an implementation assuming independent heterogeneity,
+GLVmix for an implementation that assumes the availability of only the summary 
+statistics but not the full longitudinal data structure.
 }
 \author{
 R. Koenker and J. Gu

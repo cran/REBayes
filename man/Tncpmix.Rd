@@ -4,8 +4,7 @@
 \alias{Tncpmix}
 \title{NPMLE for Student t non-centrality parameter mixtures}
 \usage{
-Tncpmix(x, v = 300, u = 300, df = 1, hist = FALSE,
-  weights = NULL, ...)
+Tncpmix(x, v = 300, u = 300, df = 1, hist = FALSE, weights = NULL, ...)
 }
 \arguments{
 \item{x}{Data: Sample Observations}

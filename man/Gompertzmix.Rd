@@ -4,8 +4,16 @@
 \alias{Gompertzmix}
 \title{NPMLE for Gompertz Mixtures}
 \usage{
-Gompertzmix(x, v = 300, u = 300, alpha, theta, hist = FALSE,
-  weights = NULL, ...)
+Gompertzmix(
+  x,
+  v = 300,
+  u = 300,
+  alpha,
+  theta,
+  hist = FALSE,
+  weights = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{Survival times}

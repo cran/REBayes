@@ -23,7 +23,7 @@
 #' 	\item age age of the player
 #' 	\item agesq age squared
 #' }
-#' @source  ESPN Website: \url{http://espn.go.com/mlb/statistics}
+#' @source  ESPN Website: \url{https://www.espn.com/mlb/stats}
 #' @references Gu, Jiaying and Roger Koenker (2015) Empirical Bayesball Remixed:
 #' Empirical Bayes Methods for Longitudinal Data, J. Applied Econometrics, forthcoming.
 #' @keywords data

@@ -5,8 +5,17 @@
 \title{WGVmix: Weighted Generalized Maximum Likelihood for Empirical Bayes
 Estimation of Gamma Variances}
 \usage{
-WGVmix(y, id, w, v, pv = 300, eps = 1e-06, rtol = 1e-06, verb = 0,
-  control = NULL)
+WGVmix(
+  y,
+  id,
+  w,
+  v,
+  pv = 300,
+  eps = 1e-06,
+  rtol = 1e-06,
+  verb = 0,
+  control = NULL
+)
 }
 \arguments{
 \item{y}{A vector of observations}

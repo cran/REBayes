@@ -111,7 +111,7 @@ GLmix <- function (x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = N
     logLik <- n * sum(w * log(g))
     dy <- as.vector((A %*% (y * d * v))/g)
     z <- list(x = v, y = y, g = g, logLik = logLik, 
-	sigma = sigma, dx = x, dy = dy, status = f$status)
+	sigma = sigma, dx = x, dy = dy, A = A, status = f$status)
     class(z) <- c("GLmix", "density")
     return(z)
 }

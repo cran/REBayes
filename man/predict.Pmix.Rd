@@ -4,8 +4,7 @@
 \alias{predict.Pmix}
 \title{Predict Method for Pmix}
 \usage{
-\method{predict}{Pmix}(object, newdata, Loss = 2, newexposure = NULL,
-  ...)
+\method{predict}{Pmix}(object, newdata, Loss = 2, newexposure = NULL, ...)
 }
 \arguments{
 \item{object}{fitted object of class "Pmix"}

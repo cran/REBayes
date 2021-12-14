@@ -3,11 +3,13 @@
 \name{tannenbaum}
 \alias{tannenbaum}
 \title{Perverse Gaussian Mixture data}
-\format{5000 iid Gaussians
+\format{
+5000 iid Gaussians
 This data set was randomly generated in the course of trying to understand some
 anomalies in estimating Gaussian location mixture problems with \code{GLmix}.
 It is used by \code{demo(tannenbaum)} to illustrate that sometimes it is
-worthwhile to tighten the default convergence tolerance for Mosek.}
+worthwhile to tighten the default convergence tolerance for Mosek.
+}
 \usage{
 tannenbaum
 }

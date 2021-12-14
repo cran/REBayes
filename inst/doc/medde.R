@@ -17,7 +17,7 @@ knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", digits = 2, show.signif.stars = FALSE)
 cleanup <- FALSE
 
-## ----Guvsetup, include = FALSE-------------------------------------------
+## ----Guvsetup, include = FALSE------------------------------------------------
 Guv.cap <- "Density estimation of annual increments in log income for U.S. individuals over
 the period 1994-2013.  The left panel of the figure reproduces a plot of the logarithm
 of a kernel density estimate from \\cite{Guvenen} showing that annual income increments
@@ -25,7 +25,7 @@ are clearly not log concave.  However the middle panel showing $-1/\\sqrt{f}$ do
 appear to be nicely concave and is fit remarkably well by the \\Renyi  procedure with 
 $\\alpha = 1/2$."
 
-## ----Guv, fig.height = 4, fig.width = 10, fig.cap = Guv.cap, echo = FALSE----
+## ----Guv, fig.height = 4, fig.width = 10, fig.cap = Guv.cap, echo = FALSE-----
 # Estimate Hellinger Model for Guvenen Annual Income Increment Data
 data(Guvenen)
 x <- Guvenen[,1]
@@ -51,7 +51,7 @@ lines(xx,zz,col = "red")
 plot(xx, yy,xlab = "x ~ log income annual increments", ylab = "f(x)", type = "l")
 lines(x,exp(y),col = "red")
 
-## ----velosetup, include = FALSE------------------------------------------
+## ----velosetup, include = FALSE-----------------------------------------------
 velo.cap <- "Rotational velocity of stars with three quasi concave shape constrained density estimates 
     using the \\Renyi likelihood."
 
@@ -70,7 +70,7 @@ for(i in 1:3){
 leg <- as.expression(lapply(c(1/2,0,-2),function(x) bquote(alpha ==.(x))))
 legend(300, 0.025, leg, lty = 1, col = 2:4)
 
-## ----Silsetup, include = FALSE-------------------------------------------
+## ----Silsetup, include = FALSE------------------------------------------------
 Sil.cap <- "Gaussian histogram based on 500 observations and two penalized
 maximum likelihood estimates with total variation norm penalty
 and $\\lambda \\in \\{ 0.5 \\times 10^{-4}, 0.5 \\times 10^{-6} \\}$."
@@ -88,7 +88,7 @@ lines(f, col = "red")
 f <- medde(x, Dorder = 2, lambda = 0.05, verb = 0)
 lines(f, col = "blue")
 
-## ----lnormsetup, include = FALSE-----------------------------------------
+## ----lnormsetup, include = FALSE----------------------------------------------
 lnorm.cap <- "Mixture of three lognormals histogram and two
 \\Renyi likelihood estimates with total variation ($L_1$ norm) penalty
 with $\\alpha \\in \\{ 0, 1 \\}$."

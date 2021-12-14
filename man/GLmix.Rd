@@ -4,8 +4,7 @@
 \alias{GLmix}
 \title{Kiefer-Wolfowitz NPMLE for Gaussian Location Mixtures}
 \usage{
-GLmix(x, v = 300, sigma = 1, hist = FALSE, histm = 300,
-  weights = NULL, ...)
+GLmix(x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = NULL, ...)
 }
 \arguments{
 \item{x}{Data: Sample Observations}
@@ -49,7 +48,7 @@ procedure tries to do separate histogram binning for distinct values of
 number of distinct \code{sigma}. By default the grid for the binning is
 equally spaced on the support of the data. This function does the normal
 convolution problem, for gamma mixtures of variances see \code{GVmix}, or
-for mixtures of both means and variances \code{TLVmix}.
+for mixtures of both means and variances \code{TLVmix}.  
 
 The predict method for \code{GLmix} objects will compute means, medians or
 modes of the posterior according to whether the \code{Loss} argument is 2, 1

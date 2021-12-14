@@ -19,6 +19,7 @@
 #' @export
 predict.Bmix <- function(object, newdata, Loss = 2, newk, ...) {
     x <- newdata
+    n <- length(x)
     v <- object$x
     fv <- object$y
     k = newk
@@ -30,8 +31,7 @@ predict.Bmix <- function(object, newdata, Loss = 2, newk, ...) {
     }
     else if(Loss > 0 && Loss <= 1){ #quantile case
 	if(Loss == 1) Loss <- 1/2
-       A <- t(t(outer(x, v, function(x, v, k) dbinom(x, size = k, prob = v), 
-        k = k)) * fv)
+       A <- outer(x, v, function(x, v, k) dbinom(x, size = k, prob = v), k = k) * outer(rep(1,n), fv)
        B <- apply(A/apply(A,1,sum),1,cumsum) < Loss
        j <- apply(B,2,sum)
        if(any(j == 0)) { # Should only happen when v grid is very restricted
@@ -41,8 +41,7 @@ predict.Bmix <- function(object, newdata, Loss = 2, newk, ...) {
        xhat <- v[j]
     }
     else if(Loss == 0) { # mode case
-       A <- t(t(outer(x, v, function(x, v, k) dbinom(x, size = k, prob = v), 
-        k = k)) * fv)
+       A <- outer(x, v, function(x, v, k) dbinom(x, size = k, prob = v), k = k) * outer(rep(1,n),fv)
        xhat <- v[apply(A/apply(A,1,sum),1,which.max)]
     }   
     else 

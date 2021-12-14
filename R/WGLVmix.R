@@ -1,9 +1,12 @@
-#' Weighted NPMLE ofLongitudinal Gaussian Mean and Variances Model
+#' Weighted NPMLE of Longitudinal Gaussian Mean and Variances Model
 #' 
 #' A Kiefer-Wolfowitz procedure for ML estimation of a Gaussian model with
 #' dependent mean and variance components and weighted longitudinal data.
 #' This version assumes a general bivariate distribution for the mixing
 #' distribution. The defaults use a rather coarse bivariate gridding.
+#' In contrast to the function \code{GLVmix} the full longitudinal data
+#' structure is required for this function and the likelihood evaluation
+#' reflects this difference.
 #' 
 #' @param y A vector of observations
 #' @param id A strata indicator vector of the same length
@@ -18,6 +21,7 @@
 #' 	\item{logLik}{log likelihood value for mean problem} 
 #' 	\item{du}{Bayes rule estimate of the mixing density means.} 
 #' 	\item{dv}{Bayes rule estimate of the mixing density variances.} 
+#' 	\item{A}{Constraint matrix} 
 #' 	\item{status}{Mosek convergence status}
 #' @author R. Koenker and J. Gu
 #' @references Gu, J. and R. Koenker (2014) Heterogeneous Income Dynamics: An
@@ -25,7 +29,9 @@
 #'
 #' Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
 #' \emph{Journal of Statistical Software}, 82, 1--26.
-#' @seealso WTLVmix for an implementation assuming independent heterogeneity
+#' @seealso WTLVmix for an implementation assuming independent heterogeneity,
+#' GLVmix for an implementation that assumes the availability of only the summary 
+#' statistics but not the full longitudinal data structure.
 #' @keywords nonparametric
 #' @export
 WGLVmix <- function(y, id, w, u = 30, v = 30, ...){
@@ -48,21 +54,19 @@ WGLVmix <- function(y, id, w, u = 30, v = 30, ...){
     pv <- length(v)
     dv <- rep(1,pv)
     pv <- length(v)
-    
     R <- outer(r*s,v,"/")  
     G <- outer(s * gamma(r),rep(1,pv))
     r <- outer((m - 1)/2, rep(1,pv))
     Av <- outer((exp(-R) * R^r)/G, rep(1,pu))
+    Av <- aperm(Av,c(1,3,2)) # permute Au indices to align with those of Au
     Au <- dnorm(outer(outer(t, u, "-") * outer(sqrt(wsum),rep(1,pu)), sqrt(v), "/"))
     Au <- Au/outer(outer(1/sqrt(wsum),rep(1,pu)),sqrt(v))
-    Au <- aperm(Au,c(1,3,2)) # permute Au indices to align with those of Av
-    A <- Av * Au
-    
-    B <- NULL
-    for (j in 1:pu) B <- cbind(B,A[,,j])
+    Auv <- Av * Au
+    A <- NULL
+    for (j in 1:pv) A <- cbind(A,Auv[,,j])
     duv = as.vector(kronecker(du, dv))
-    uv <- expand.grid(theta = v, alpha = u)
-    f <- KWDual(B, duv, wu, ...)
+    uv <- expand.grid(alpha = u, theta = v)
+    f <- KWDual(A, duv, wu, ...)
     fuv <- f$f
     g = f$g
     status <- f$status
@@ -70,8 +74,10 @@ WGLVmix <- function(y, id, w, u = 30, v = 30, ...){
     logK <- log(gamma(r)) - r * log(r) - 0.5 * log(wsum) - 
 	r * log(2*pi) - log(s^(r-1)) + 0.5 * tapply(log(w), id, "sum")
     logLik <- sum(log(g)) + sum(logK)
-    dx <- B%*%(uv[,2] * duv * fuv)/g  #Bayes rule for u: E(u|t,s)
-    dy <- B %*% (uv[,1] * duv * fuv)/g  # Bayes rule for v: E(v|t,s)
-    list(u = u, v = v, fuv = fuv, logLik = logLik, dx = dx, dy = dy,
-	status = status)
+    du <- A%*%(uv[,1] * duv * fuv)/g  #Bayes rule for u: E(u|t,s)
+    dv <- A %*% (uv[,2] * duv * fuv)/g  # Bayes rule for v: E(v|t,s)
+    z <- list(u = u, v = v, fuv = fuv, logLik = logLik, du = du, dv = dv,
+	A = A, status = status)
+    class(z) <- c("WGLVmix", "GLVmix")
+    z
 }
