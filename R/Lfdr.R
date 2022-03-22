@@ -35,10 +35,13 @@ Lfdr.GLVmix <- function(G, newdata, cnull, tail = "R", ...){
 	    pv = length(v)
 	    fuv = G$fuv
 	    uv <- expand.grid(alpha = u, theta = v)
-	    R <- outer(r * s, v, "/")
-	    G <- outer(s * gamma(r), rep(1, pv))
-	    r <- outer((m - 1)/2, rep(1, pv))
-	    Av <- outer((exp(-R) * R^r)/G, rep(1, pu))
+	    Av <- matrix(NA, n, pv)
+	    for (i in 1:n){   
+		for (j in 1:pv){ 
+		    Av[i,j] = dgamma(s[i], r[i], scale = v[j]/r[i])
+		}
+	    }
+	    Av <- outer(Av, rep(1,pu))
 	    Av <- aperm(Av, c(1, 3, 2))
 	    Au <- dnorm(outer(outer(t, u, "-") * outer(sqrt(wsum), rep(1, 
 		pu)), sqrt(v), "/"))
@@ -71,10 +74,13 @@ Lfdr.WGLVmix <- function(G, newdata, cnull, tail = "R", ...){
 	    pv = length(v)
 	    fuv = G$fuv
 	    uv <- expand.grid(alpha = u, theta = v)
-	    R <- outer(r * s, v, "/")
-	    G <- outer(s * gamma(r), rep(1, pv))
-	    r <- outer((m - 1)/2, rep(1, pv))
-	    Av <- outer((exp(-R) * R^r)/G, rep(1, pu))
+	    Av <- matrix(NA, n, pv)
+	    for (i in 1:n){   #ugly loop, improve later
+		for (j in 1:pv){
+		    Av[i,j] = dgamma(s[i], r[i], scale = v[j]/r[i])
+		}
+	    }
+	    Av <- outer(Av, rep(1,pu))
 	    Av <- aperm(Av, c(1, 3, 2))
 	    Au <- dnorm(outer(outer(t, u, "-") * outer(sqrt(wsum), rep(1, 
 		pu)), sqrt(v), "/"))
@@ -92,7 +98,7 @@ Lfdr.WGLVmix <- function(G, newdata, cnull, tail = "R", ...){
 
 #' @rdname Lfdr
 #' @export
-Lfdr.GLmix <- function(G, newdata, cnull, tail = "R", ...){ # changed for left tail selection
+Lfdr.GLmix <- function(G, newdata, cnull, tail = "R", ...){ 
     v = G$x
     fv = G$y
     if(missing(newdata)) A = G$A

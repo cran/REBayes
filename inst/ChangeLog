@@ -436,3 +436,20 @@ Version 2.50
 an l1 penalty on a linear transformation of the parameters.
 
 2.  Added logLik to the return object of RLR.
+
+2.51
+
+1.  Bmix has added option to check uniqueness of solution and further
+explanation about this in documentation.
+
+2.  GVmix has tighter eps to avoid problem with dgamma evaluation and outer
+brute force evaluation of A matrix replaced by loop and system dgamma().
+This was motivated by numerical problems with previous version for Daniel
+Wilhelm's testing.
+
+3.  GLVmix and WGLVmix also replace brute force dgamma with system function.
+
+4.  Added v <- v[v > 0] for these scale mixture grids to avoid dgamma errors.
+
+5.  Reliance on dgompertz from reliaR package was removed due to anticipated
+achival of that package announced 21 March 2022 by Kurt.

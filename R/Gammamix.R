@@ -31,6 +31,7 @@ Gammamix <- function(x, v = 300, shape = 1, weights = NULL, eps = 1e-10, ...){
     n = length(x)
     if (length(v) == 1)
 	v <- seq(min(x/shape) - eps, max(x/shape) + eps, length = v)
+    v <- v[v > 0]
     p <- length(v)
     d <- rep(1,p)
     if(length(weights)) w <- weights

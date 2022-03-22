@@ -31,7 +31,6 @@
 #' @keywords nonparametric
 #' @export
 Gompertzmix <- function(x, v = 300, u = 300, alpha, theta, hist = FALSE, weights = NULL, ...){
-    requireNamespace("reliaR", quietly = TRUE)
     n <- length(x)
     eps <- 1e-4
     if (length(v) == 1) # Support is bounded by max and min of MLE for v
@@ -48,10 +47,22 @@ Gompertzmix <- function(x, v = 300, u = 300, alpha, theta, hist = FALSE, weights
         w <- w[wnz]/sum(w[wnz])
         x <- x[wnz]
     }
+    dgompertz <- function(x, alpha, theta, log = FALSE){
+	if ((!is.numeric(alpha)) || (!is.numeric(theta)) || (!is.numeric(x))) 
+	    stop("non-numeric argument to mathematical function")
+	if ((min(theta) <= 0) || (x <= 0)) 
+	    stop("Invalid arguments")
+	u <- x * alpha
+	pdf <- theta * exp(u) * exp((theta/alpha) * (1 - exp(u)))
+	if (log) 
+	    pdf <- log(pdf)
+	return(pdf)
+    }
+	
     if(length(weights)) w <- weights
     else w <- rep(1,n)/n
     d <- rep(1,m)
-    A <- outer(x,theta *exp(v),FUN=reliaR::dgompertz,alpha=alpha)
+    A <- outer(x,theta * exp(v),FUN=dgompertz,alpha=alpha)
     f = KWDual(A, d, w, ...)
     logLik <- n * sum(w * log(f$g))
     dy <- as.vector((A %*% (f$f * d * v))/f$g)  # Bayes rule for v

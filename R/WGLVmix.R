@@ -47,23 +47,25 @@ WGLVmix <- function(y, id, w, u = 30, v = 30, ...){
     n <- length(s)
     if(length(u) == 1) u <- seq(min(t) - eps, max(t) + eps, length = u)
     if(length(v) == 1) v <- seq(min(s) - eps, max(s) + eps, length = v)
+    v <- v[v > 0]
     pu <- length(u)
     du <- rep(1,pu)
-    pu <- length(u)
     wu <- rep(1,n)/n
     pv <- length(v)
     dv <- rep(1,pv)
-    pv <- length(v)
-    R <- outer(r*s,v,"/")  
-    G <- outer(s * gamma(r),rep(1,pv))
-    r <- outer((m - 1)/2, rep(1,pv))
-    Av <- outer((exp(-R) * R^r)/G, rep(1,pu))
-    Av <- aperm(Av,c(1,3,2)) # permute Au indices to align with those of Au
-    Au <- dnorm(outer(outer(t, u, "-") * outer(sqrt(wsum),rep(1,pu)), sqrt(v), "/"))
-    Au <- Au/outer(outer(1/sqrt(wsum),rep(1,pu)),sqrt(v))
+    Av <- matrix(NA, n, pv)
+    for(i in 1:n){
+	for(j in 1:pv){
+	    Av[i,j] <- dgamma(s[i], r[i], scale = v[j]/r[i])
+	}
+    }
+    Av <- outer(Av, rep(1,pu))
+    Av <- aperm(Av, c(1,3,2))
+    Au <- dnorm(outer(outer(t, u, "-") * outer(sqrt(wsum), rep(1, pu)), sqrt(v), "/"))
     Auv <- Av * Au
     A <- NULL
-    for (j in 1:pv) A <- cbind(A,Auv[,,j])
+    for(j in 1:pv)
+	A <- cbind(A, Auv[,,j])
     duv = as.vector(kronecker(du, dv))
     uv <- expand.grid(alpha = u, theta = v)
     f <- KWDual(A, duv, wu, ...)

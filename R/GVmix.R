@@ -32,19 +32,23 @@
 #' @export
 GVmix <- function(x, m, v = 300, weights = NULL, ...){
     n = length(x)
-    eps <- 1e-4
+    r <- (m - 1)/2
+    eps <- 1e-8
     if (length(v) == 1)
         v <- seq(min(x) - eps, max(x) + eps, length = v)
+    v <- v[v > 0]
     p <- length(v)
     d <- rep(1,p)
     p <- length(v)
     if(length(weights)) w <- weights
     else w <- rep(1, n)/n
-    r <- (m - 1)/2
     R <- outer(r * x, v, "/")
-    G <- outer(x * gamma(r), rep(1, p))
-    r <- outer(r, rep(1, p))
-    A <- (exp(-R) * R^r)/G
+    A <- matrix(NA, n, p)
+    for(i in 1:n){
+	for(j in 1:p){
+	    A[i,j] <- dgamma(x[i], r[i], scale = v[j]/r[i])
+	}
+    }
     f <- KWDual(A, d, w, ...)
     y <- f$f
     g <- f$g

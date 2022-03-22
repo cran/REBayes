@@ -43,14 +43,18 @@ GLVmix <- function (t, s,  m, u = 30, v = 30, ...)
         u <- seq(min(t) - eps, max(t) + eps, length = u)
     if (length(v) == 1) 
         v <- seq(min(s) - eps, max(s) + eps, length = v)
+    v <- v[v > 0]
     pu <- length(u)
     du <- rep(1, pu)
     pv <- length(v)
     dv <- rep(1, pv)
-    R <- outer(r * s, v, "/")
-    G <- outer(s * gamma(r), rep(1, pv))
-    r <- outer((m - 1)/2, rep(1, pv))
-    Av <- outer((exp(-R) * R^r)/G, rep(1,pu))
+    Av <- matrix(NA, n, pv)
+    for (i in 1:n){
+    	for (j in 1:pv){
+    		Av[i,j] = dgamma(s[i], r[i], scale = v[j]/r[i])
+	}
+    }
+    Av <- outer(Av, rep(1, pu))
     Av <- aperm(Av,c(1,3,2))
     Au <- dnorm(outer(outer(t, u, "-") * 
 	      outer(sqrt(m), rep(1, pu)), sqrt(v), "/"))

@@ -4,7 +4,7 @@
 \alias{Bmix}
 \title{Binomial mixture estimation via Kiefer Wolfowitz MLE}
 \usage{
-Bmix(x, k, v = 300, collapse = TRUE, weights = NULL, ...)
+Bmix(x, k, v = 300, collapse = TRUE, weights = NULL, unique = FALSE, ...)
 }
 \arguments{
 \item{x}{Count of "successes" for binomial observations}
@@ -18,16 +18,21 @@ spacing of length v on [eps, 1- eps], if v is scalar.}
 
 \item{weights}{replicate weights for x obervations, should sum to 1}
 
+\item{unique}{option to check unique of reported solution}
+
 \item{...}{Other arguments to be passed to KWDual to control optimization}
 }
 \value{
 An object of class density with components: 
+\itemize{
 	\item{x}{grid midpoints of evaluation of the mixing density} 
 	\item{y}{function values of the mixing density at x} 
 	\item{g}{estimates of the mixture density at the distinct data values} 
 	\item{logLik}{Log Likelihood value at the estimate}
 	\item{dy}{Bayes rule estimates of binomial probabilities for distinct data values}
+	\item{unique}{Flag indicating whether the solution is unique}
 	\item{status}{exit code from the optimizer}
+}
 }
 \description{
 Interior point solution of Kiefer-Wolfowitz NPMLE for mixture of binomials
@@ -36,6 +41,22 @@ Interior point solution of Kiefer-Wolfowitz NPMLE for mixture of binomials
 The predict method for \code{Bmix} objects will compute means, medians or
 modes of the posterior according to whether the \code{Loss} argument is 2, 1
 or 0, or posterior quantiles if \code{Loss} is in (0,1).
+When the number of trials is small the NPMLE may be non-unique.  This happens
+when there exists a vector \eqn{v} in the unit simplex of \eqn{R^m}  
+such that \eqn{Av = f} where \eqn{f = (n_0/n , ... , n_k/n)} the observed frequencies, 
+and A is the k by m matrix with typical element \deqn{C(k,x) p_j^x (1-p_j)^{k - x}.}
+If there exists such a solution, it follows that the maximal likelihood value is attained by any Ghat
+such that \deqn{p_j = \int C(k,j) p^j (1-p)^{k-j} dGhat (p) = n_j/n,} for j = 0, ... , k.
+There will be many such solutions, but by the Caratheodory theorem any one of them can be expressed
+as a linear combination of no more than k extreme points of the constraint set.
+In contrast, when there are no solutions
+inside the simplex satisfying the equation, then the NPMLE is the unique projection onto the boundary
+of that set.  To facilitate checking this condition if the \code{check} parameter is \code{TRUE}, the 
+linear program is feasible and the \code{unique} component is returned as \code{TRUE} if
+the program is infeasible, and \code{FALSE} is returned otherwise.  This check is restricted to
+settings in which k is fixed, and \code{collapse} is \code{TRUE}.  See Robbins (1956, p 161) for
+some further discussion of the binomial mixture model and a very clever alternative approach to
+prediction.
 }
 \references{
 Kiefer, J. and J. Wolfowitz Consistency of the Maximum
@@ -44,6 +65,9 @@ Parameters \emph{Ann. Math. Statist}. 27, (1956), 887-906.
 
 Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,
 Compound Decisions, and Empirical Bayes Rules,'' \emph{JASA}, 109, 674--685.
+
+Robbins, H. (1956) An Empirical Bayes Approach to Statistics, 3rd Berkeley
+Symposium.
 
 Koenker, R. and J. Gu, (2017) REBayes: An {R} Package for Empirical Bayes Mixture Methods,
 \emph{Journal of Statistical Software}, 82, 1--26.
