@@ -63,7 +63,7 @@ verb <- ifelse(length(dots$verb), dots$verb, 0)
 if(length(dots$control)) control <- dots$control
 else control <- NULL
 
-if(utils::packageVersion("Rmosek") < 9)
+if(utils::packageVersion("Rmosek") < "9")
     stop("Version Mosek 9 only")
 else { #Mosek Version => 9
     P <- list(sense = "min")

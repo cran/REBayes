@@ -60,7 +60,7 @@ RLR <- function(X, Y, D, lambda, ...)
 
     dots <- list(...)
 
-    if(utils::packageVersion("Rmosek") < 9)
+    if(utils::packageVersion("Rmosek") < "9")
 	stop("RLR requires Mosek Version >= 9")
 
     # Default mosek method

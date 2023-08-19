@@ -452,4 +452,32 @@ Wilhelm's testing.
 4.  Added v <- v[v > 0] for these scale mixture grids to avoid dgamma errors.
 
 5.  Reliance on dgompertz from reliaR package was removed due to anticipated
-achival of that package announced 21 March 2022 by Kurt.
+archival of that package announced 21 March 2022 by Kurt.
+
+2.52
+
+1.  Added censoring option for Weibullmix
+
+
+2.54
+
+1.  Removed mention of the pogs option for KWDual in the documention.
+
+2.  Changed default grid for TLmix to avoid extreme support points for grid.
+
+3.  Added error checking to KWDual to report Mosek warnings and errors.  I
+tried to distinguish between Mosek errors and warnings, but was defeated when
+I found that the STALL warning was not 100006 as documented, but 10006.  So
+all Mosek messages are warnings as things currently stand.  This change was
+prompted by two inquiries that reported obscure R messages when the Mosek
+message that it couldn't find the license file would have been better.
+
+4.  Turns out that the Mosek STALL message is more common than I originally
+thought, so I've altered the changes in 3.) so that this particular warning
+is only made when verb > 0.
+
+5.  Fixed various utils::packageVersion("Rmosek") < 9  to replace 9 by "9" per
+Kurt's memo of 18/07/23.
+
+6. fixed arg check in Gompertzmix
+

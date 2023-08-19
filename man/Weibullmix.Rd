@@ -10,6 +10,7 @@ Weibullmix(
   u = 300,
   alpha,
   lambda = 1,
+  event = NULL,
   hist = FALSE,
   weights = NULL,
   ...
@@ -26,6 +27,8 @@ Weibullmix(
 
 \item{lambda}{Scale parameter for Weibull Distribution; must either have length 1, or length
 equal to \code{length(x)} the latter case accommodates the possibility of a linear predictor}
+
+\item{event}{censoring indicator, 1 if actual event time, 0 if censored}
 
 \item{hist}{If TRUE aggregate to histogram counts}
 
@@ -51,6 +54,7 @@ where reducing the sample size dimension is desirable. By default the grid
 for the binning is equally spaced on the support of the data.  Parameterization:
 f(t|alpha, lambda) = alpha * exp(v) * (lambda * t )^(alpha-1) * 
 exp(-(lambda * t)^alpha * exp(v)); shape = alpha; scale = lambda^(-1) * (exp(v))^(-1/alpha)
+This version purports to handle right censoring.
 }
 \references{
 Kiefer, J. and J. Wolfowitz Consistency of the Maximum

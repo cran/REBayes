@@ -48,6 +48,8 @@
 #' @param x Data: either univariate or bivariate, the latter is highly experimental 
 #' @param v Undata: either univariate or bivariate, univariate default is an
 #' equally spaced grid of 300 values, for bivariate data there is not (yet) a default.
+#' Making v extend well beyond the support of x is advisable to avoid weird boundary
+#' behavior of the estimated density.
 #' @param lambda total variation penalty smoothing parameter, if lambda is in [-1,0], a
 #' shape constraint is imposed. see Koenker and Mizera (2010)  for further details.
 #' When Dorder = 0, the shape constraint imposes that the density is monotonically
@@ -155,7 +157,7 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
         LX <- rep(0, p + q)
         UX <- rep(Inf, p + q)
     }
-     if (utils::packageVersion("Rmosek") < 9) {
+     if (utils::packageVersion("Rmosek") < "9") {
         opro <- matrix(list(), nrow = 5, ncol = p)
         opro[2, ] <- 1:p
         opro[5, ] <- rep(0, p)

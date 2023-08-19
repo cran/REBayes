@@ -50,7 +50,7 @@ Gompertzmix <- function(x, v = 300, u = 300, alpha, theta, hist = FALSE, weights
     dgompertz <- function(x, alpha, theta, log = FALSE){
 	if ((!is.numeric(alpha)) || (!is.numeric(theta)) || (!is.numeric(x))) 
 	    stop("non-numeric argument to mathematical function")
-	if ((min(theta) <= 0) || (x <= 0)) 
+	if ((min(theta) <= 0) || (min(x) <= 0)) 
 	    stop("Invalid arguments")
 	u <- x * alpha
 	pdf <- theta * exp(u) * exp((theta/alpha) * (1 - exp(u)))

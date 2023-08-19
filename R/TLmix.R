@@ -6,7 +6,8 @@
 #' a Student t compound decision problem.  The histogram option is intended
 #' for large problems, say n > 1000, where reducing the sample size dimension
 #' is desirable. By default the grid for the binning is equally spaced on the
-#' support of the data. Equal spaced binning is problematic for Cauchy data.
+#' interval between the 0.01 and 0.99 quantiles of the observed sample.  This
+#' is intended to avoid extreme gridding for Student's with small df.
 #' 
 #' @param x Data: Sample Observations
 #' @param v bin boundaries defaults to equal spacing of length v
@@ -39,7 +40,7 @@ TLmix <- function(x, v = 300, u = 300, df = 1, hist = FALSE, weights = NULL, ...
 
    n <- length(x)
    eps <- 1e-4
-   if(length(v) == 1) v <- seq(min(x)-eps, max(x)+eps, length = v)
+   if(length(v) == 1) v <- seq(quantile(x, 0.01)-eps, quantile(x, 0.99)+eps, length = v)
    if(hist){
       if(length(u) == 1) u <- seq(min(x)-eps,max(x)+eps,length = u)
       w <- tabulate(findInterval(x,u))

@@ -16,7 +16,7 @@ traprule <- function(x,y) sum(diff(x) * (y[-1] + y[-length(y)]))/2
 #'
 #' @param f bivariate KW fitted object as from GLVmix
 #' @param bw bandwidth defaults to bwKW2(f), 
-#' @param k kernel 2 for biweight, 3 for triweight
+#' @param k kernel 1 for Gaussian, 2 for biweight, 3 for triweight
 #' @author R. Koenker
 #' @keywords utility
 #' @export
@@ -24,7 +24,7 @@ traprule <- function(x,y) sum(diff(x) * (y[-1] + y[-length(y)]))/2
 KW2smooth <- function(f, bw = NULL, k = 2){
     kernel <- function(x0, x, bw){
 	t <- (x - x0)/bw
-	switch(k - 1,
+	switch(k-1,
 	(1-t^2)^2*((t> -1 & t<1)-0) * 15/16,
 	(1-t^2)^3*((t> -1 & t<1)-0) * 35/32)
     }
@@ -62,9 +62,9 @@ KW2smooth <- function(f, bw = NULL, k = 2){
 KWsmooth <- function(f, bw = NULL, k = 2){
     kernel <- function(x0, x, bw){
 	t <- (x - x0)/bw
-	switch(k - 1,
-	(1-t^2)^2*((t> -1 & t<1)-0) * 15/16,
-	(1-t^2)^3*((t> -1 & t<1)-0) * 35/32)
+	switch(k, dnorm(t),
+	(1-t^2)^k*((t> -1 & t<1)-0) * 15/16,
+	(1-t^2)^k*((t> -1 & t<1)-0) * 35/32)
     }
     fs <- f
     if(max(abs(diff(diff(f$x)))) > 1e-10) 

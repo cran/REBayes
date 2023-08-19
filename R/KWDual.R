@@ -4,11 +4,7 @@
 #' There is currently only one option for the optimization that based on  Mosek. 
 #' It relies on the \pkg{Rmosek} interface to R see installation instructions in
 #' the Readme file in the inst directory of this package.  This version of the function
-#' is intended to work with versions of Mosek after 7.0.  A more experimental option
-#' employing the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
-#' and employing an ADMM (Alternating Direction Method of Multipliers) approach has
-#' been deprecated, those interested could try installing version 1.4 of REBayes, and
-#' following the instructions provided there.
+#' is intended to work with versions of Mosek after 7.0.  
 #' 
 #' @param A Linear constraint matrix
 #' @param d constraint vector
@@ -70,6 +66,7 @@ KWDual <- function(A, d, w, ...){
 # Revised:	 2 Jul 2015 # Added pogs method
 # Revised	30 Jan 2019 # Removed pogs method, added Mosek V9 option
 # Revised	27 Sep 2019 # changed stop to warning for stalled mosek
+# Revised	27 Jul 2022 # Removed mention of pogs method
 
 n <- nrow(A)
 m <- ncol(A)
@@ -84,7 +81,7 @@ verb <- ifelse(length(dots$verb), dots$verb, 0)
 if(length(dots$control)) control <- dots$control
 else control <- NULL
 
-if(utils::packageVersion("Rmosek") < 9){
+if(utils::packageVersion("Rmosek") < "9"){
     P <- list(sense = "min")
     P$c <- rep(0, n)
     P$A <- A
@@ -121,6 +118,14 @@ if(length(control)){
     P$sparam <- control$sparam
 }
 z <- Rmosek::mosek(P, opts = list(verbose = verb))
+if(z$response$code > 0){ # Print Mosek messages maybe
+    if(length(grep("LICENSE", z$response$msg)))
+        stop("Mosek Error:", z$response$msg)
+    else if(verb > 0)
+        warning("Mosek Warning:", z$response$msg)
+    else if(length(grep("STALL", z$response$msg)) != 1)
+        warning("Mosek Warning:", z$response$msg)
+}
 status <- z$sol$itr$solsta
 if (status != "OPTIMAL")
     warning(paste("Solution status = ", status))
