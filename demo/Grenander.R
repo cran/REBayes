@@ -59,7 +59,7 @@ plot.Grenander = function(x, ...){
     lines(c(0,x$x,max(x$x)),c(x$y[1],x$y),lwd=2,type = "S",col="blue")
 }
 
-n = 50
+n = 100
 x = rexp(n, 1) 
 x = runif(n, 0, x)
 f = Grenander(x)

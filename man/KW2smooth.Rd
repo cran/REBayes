@@ -11,7 +11,7 @@ KW2smooth(f, bw = NULL, k = 2)
 
 \item{bw}{bandwidth defaults to bwKW2(f),}
 
-\item{k}{kernel 2 for biweight, 3 for triweight}
+\item{k}{kernel 1 for Gaussian, 2 for biweight, 3 for triweight}
 }
 \description{
 Smooth a bivariate Kiefer-Wolfowitz NPMLE

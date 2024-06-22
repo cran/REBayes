@@ -5,7 +5,7 @@
 \title{Rotational Velocity of Stars}
 \format{
 A numeric vector with 3933 observations on one variable.
-\itemize{
+\describe{
     \item{\code{velo}}{a numeric vector with rotational velocities.}
 }
 }

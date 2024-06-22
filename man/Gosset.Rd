@@ -5,9 +5,9 @@
 \title{Gosset Criminal Finger Data}
 \format{
 A data frame with 3000 observations on 2 variables.
-\itemize{
+\describe{
     \item{\code{LMFinger}}{Length of Left Middle Finger (cm).}
-    \item{\code{k}}{Height (cm)}
+    \item{\code{Height}}{Height (cm)}
 }
 }
 \source{

@@ -20,7 +20,7 @@ length(y)}
 \item{c0}{penalty parameter for the Euclidean norm penalty.}
 }
 \value{
-An object of class {GLmix, density} with components: 
+An object of class GLmix, density with components: 
      \item{x}{points of  evaluation on the domain of the density} 
      \item{y}{estimated function values at these points of the mixing density} 
      \item{sigma}{returns a sigma = 1 for compatibility with GLmix}

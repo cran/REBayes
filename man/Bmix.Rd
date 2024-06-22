@@ -24,7 +24,6 @@ spacing of length v on [eps, 1- eps], if v is scalar.}
 }
 \value{
 An object of class density with components: 
-\itemize{
 	\item{x}{grid midpoints of evaluation of the mixing density} 
 	\item{y}{function values of the mixing density at x} 
 	\item{g}{estimates of the mixture density at the distinct data values} 
@@ -32,7 +31,6 @@ An object of class density with components:
 	\item{dy}{Bayes rule estimates of binomial probabilities for distinct data values}
 	\item{unique}{Flag indicating whether the solution is unique}
 	\item{status}{exit code from the optimizer}
-}
 }
 \description{
 Interior point solution of Kiefer-Wolfowitz NPMLE for mixture of binomials

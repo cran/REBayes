@@ -21,7 +21,9 @@ medde(
 \item{x}{Data: either univariate or bivariate, the latter is highly experimental}
 
 \item{v}{Undata: either univariate or bivariate, univariate default is an
-equally spaced grid of 300 values, for bivariate data there is not (yet) a default.}
+equally spaced grid of 300 values, for bivariate data there is not (yet) a default.
+Making v extend well beyond the support of x is advisable to avoid weird boundary
+behavior of the estimated density.}
 
 \item{lambda}{total variation penalty smoothing parameter, if lambda is in [-1,0], a
 shape constraint is imposed. see Koenker and Mizera (2010)  for further details.

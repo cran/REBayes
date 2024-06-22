@@ -14,7 +14,7 @@
 #' 320 independent binomials.  See \code{demo(Bmix1)} for further details.
 #' @usage tacks
 #' @format  A data frame with 320 observations on 2 variables.
-#' \itemize{
+#' \describe{
 #'     \item{\code{x}}{a numeric vector giving the number of tacks landed point up.}
 #'     \item{\code{k}}{a numeric vector giving the number of trials.}
 #' }

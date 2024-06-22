@@ -5,7 +5,7 @@
 \title{Annual Increments in Log Income}
 \format{
 A data frame with 279 observations on two variables.
-\itemize{
+\describe{
     \item{\code{earnings}}{annual increment in log income}
     \item{\code{logdensity}}{estimated log density values}
 }

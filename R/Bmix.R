@@ -31,7 +31,6 @@
 #' @param unique option to check unique of reported solution
 #' @param ... Other arguments to be passed to KWDual to control optimization
 #' @return An object of class density with components: 
-#' \itemize{
 #' 	\item{x}{grid midpoints of evaluation of the mixing density} 
 #' 	\item{y}{function values of the mixing density at x} 
 #' 	\item{g}{estimates of the mixture density at the distinct data values} 
@@ -39,7 +38,6 @@
 #' 	\item{dy}{Bayes rule estimates of binomial probabilities for distinct data values}
 #' 	\item{unique}{Flag indicating whether the solution is unique}
 #' 	\item{status}{exit code from the optimizer}
-#' }
 #' @author R. Koenker
 #' @references Kiefer, J. and J. Wolfowitz Consistency of the Maximum
 #' Likelihood Estimator in the Presence of Infinitely Many Incidental

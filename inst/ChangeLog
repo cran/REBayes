@@ -481,3 +481,16 @@ Kurt's memo of 18/07/23.
 
 6. fixed arg check in Gompertzmix
 
+2.55
+
+1.  Updated demo(Brown) to work with Mosek V9
+
+2.  Changed the name of demo(medde1) to demo(Renyi)
+
+3.  Updated demo(Renyi) to have sane axis labels and headings.
+
+4.  Fixed a bug in WLVmix:  dv was not intialized.
+
+2.56
+
+1.  Added HLmix to compute NPMLE using the Huber (1964) base density.

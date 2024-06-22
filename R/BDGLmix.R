@@ -13,7 +13,7 @@
 #' length(y)
 #' @param df degrees of freedom of the natural spline basis
 #' @param c0 penalty parameter for the Euclidean norm penalty.
-#' @return An object of class {GLmix, density} with components: 
+#' @return An object of class GLmix, density with components: 
 #'      \item{x}{points of  evaluation on the domain of the density} 
 #'      \item{y}{estimated function values at these points of the mixing density} 
 #'      \item{sigma}{returns a sigma = 1 for compatibility with GLmix} 

@@ -19,7 +19,7 @@ Cosslett2  Binary response with discrete link
 Cosslett3  Profile likelihood for Binary response with discrete link
 tannenbaum Convergence tolerances do matter (sometimes)
 predict prediction for GLmix problems, to be extended eventually
-medde1	Comparison of 1d Renyi estimates
+Renyi	Comparison of 1d Renyi estimates
 Grenander	Three equivalent ways to compute the Grenander estimator
 RLR1	A Simple Lasso Plot for logistic regression
 RLR2	Bradley Terry Estimation with Ranking lasso regularization

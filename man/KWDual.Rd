@@ -45,11 +45,7 @@ Interface function for calls to optimizer from various REBayes functions
 There is currently only one option for the optimization that based on  Mosek. 
 It relies on the \pkg{Rmosek} interface to R see installation instructions in
 the Readme file in the inst directory of this package.  This version of the function
-is intended to work with versions of Mosek after 7.0.  A more experimental option
-employing the \pkg{pogs} package available from \url{https://github.com/foges/pogs}
-and employing an ADMM (Alternating Direction Method of Multipliers) approach has
-been deprecated, those interested could try installing version 1.4 of REBayes, and
-following the instructions provided there.
+is intended to work with versions of Mosek after 7.0.
 }
 \references{
 Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,

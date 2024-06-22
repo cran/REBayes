@@ -5,7 +5,7 @@
 \title{Medfly Data}
 \format{
 A data frame with 19072 observations on the following 17 variables.
-\itemize{
+\describe{
     \item{\code{age}}{age at death in days}
     \item{\code{num}}{frequency count of age at death}
     \item{\code{prcurr}}{current proportion male}

@@ -37,7 +37,8 @@ Kiefer Wolfowitz MLE density estimation as proposed by Jiang and Zhang for
 a Student t compound decision problem.  The histogram option is intended
 for large problems, say n > 1000, where reducing the sample size dimension
 is desirable. By default the grid for the binning is equally spaced on the
-support of the data. Equal spaced binning is problematic for Cauchy data.
+interval between the 0.01 and 0.99 quantiles of the observed sample.  This
+is intended to avoid extreme gridding for Student's with small df.
 }
 \references{
 Kiefer, J. and J. Wolfowitz Consistency of the Maximum

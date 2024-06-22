@@ -8,7 +8,7 @@
 #' Note that last of these pushes the optimization methods about as far as they can do.
 #' @usage velo
 #' @format  A numeric vector with 3933 observations on one variable.
-#' \itemize{
+#' \describe{
 #'     \item{\code{velo}}{a numeric vector with rotational velocities.}
 #' }
 #' @source  Hoffleit, D. and Warren, W. H. (1991). The Bright Star Catalog (5th ed.). 

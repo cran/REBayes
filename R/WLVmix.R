@@ -50,8 +50,9 @@ WLVmix <- function (y, id, w, u = 300, v = 300, eps = 1e-4, maxit = 2, ...) {
     if (length(v) == 1) 
         v <- seq(min(s) - eps, max(s) + eps, length = v)
     pu <- length(u)
+    pv <- length(v)
     du <- rep(1,pu)
-    pu <- length(u)
+    dv <- rep(1,pv)
     wu <- rep(1, n)/n
     FV0 <- GVmix(s, m, v = v, ...)
     statit[1, 1] <- FV0$status

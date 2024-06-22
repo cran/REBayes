@@ -38,7 +38,7 @@ Interior point solution of Kiefer-Wolfowitz NPMLE for mixture of bivariate binom
 This function was inspired by a paper by Kline and Walters (2019) on evaluation of audit
 experiments for employment discrimination.  An example of its usage is available
 with `demo(B2mix1)`.  There can be identification issues particularly when the
-numbers of trials are modest as described in Gu (2020).  Caveat emptor!
+numbers of trials are modest as described in Koenker and Gu (2024).  Caveat emptor!
 The predict method for B2mix objects will compute posterior means,
 }
 \references{
@@ -49,7 +49,8 @@ Parameters \emph{Ann. Math. Statist}. 27, (1956), 887-906.
 Kline, P. and C. Walters, (2019) Audits as Evidence: Experiments, Ensembles
 and Enforcement, preprint.
 
-Gu, J. (2020) A Collection of Notes on Binomial Mixtures, preprint.
+Koenker, R. and Gu, J. (2024) Empirical Bayes: Some Tools, Rules and Duals,
+Cambridge University Press.
 }
 \seealso{
 `Bmix` for univariate binomial mixtures.

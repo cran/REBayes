@@ -3,10 +3,10 @@
 #' @description Norwegian Life Insurance Exposures and Claims
 #' @usage Norberg
 #' @format A data frame with 72 observations on the following 3 variables.
-#' \itemize{
+#' \describe{
 #'     \item{\code{OccGroup}}{Occupational Group}
 #'     \item{\code{Exposure}}{Exposures}
-#'     \item{\code{Deaths}}{Observed Deaths}
+#'     \item{\code{Death}}{Observed Deaths}
 #' }
 #' @details 
 #' The data arise from 1125 original groups insured during all or part of

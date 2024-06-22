@@ -234,5 +234,39 @@ L1norm <- function(F,G, eps = 1e-6) {
         dy <- (abs(F(xk) - G(xk)))[-n]
         dx <- diff(xk)
         sum(dy * dx)
-        }
+}
+#' Huber density function
+#'
+#' Huber (1964) least favorable density for the Gaussian contamination model 
+#' @param x points to evaluate the density
+#' @param mu center of symmetry of the density
+#' @param sigma  standard deviation of the nominal Gaussian model
+#' @param k Huber k value
+#' @param heps Huber epsilson value
+#' @return A vector of density values 
+#' @importFrom stats dnorm
+#' @author R. Koenker
+#' @keywords utility
+#' @export
+#' 
+dhuber <- function(x, mu = 0, sigma = 1, k = 1.642, heps = hubereps(k)){
+    (x > k)*(1-heps)*dnorm(k)*exp(-k*(x-k)) + 
+    (abs(x) <= k)*(1-heps)*dnorm(x) + 
+    (x < -k)*(1-heps)*dnorm(k)*exp(k*(x+k)) 
+}
+#' Huber epsilon 
+#'
+#' Find the epsilon corresponding to a Huber k value
+#' @param k Huber k value
+#' @return Huber epsilon value
+#' @author R. Koenker
+#' @importFrom stats dnorm pnorm
+#' @export
+#' 
+hubereps <- function(k){
+    v <- function(z, k)
+	2*dnorm(k)/k - 2*pnorm(-k) - z/(1-z)
+    uniroot(v, c(0.01, 0.3), k = k)$root
+}
+
 

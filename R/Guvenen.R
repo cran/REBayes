@@ -4,7 +4,7 @@
 #' log income for U.S. individuals over the period 1994-2013, as estimated by \cite{Guvenen}.
 #' @usage Guvenen
 #' @format  A data frame with 279 observations on two variables.
-#' \itemize{
+#' \describe{
 #'     \item{\code{earnings}}{annual increment in log income}
 #'     \item{\code{logdensity}}{estimated log density values}
 #' }

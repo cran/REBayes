@@ -35,6 +35,7 @@
 #' @seealso GLmix for Gaussian version
 #' @keywords nonparametric
 #' @importFrom stats dt
+#' @importFrom stats quantile
 #' @export
 TLmix <- function(x, v = 300, u = 300, df = 1, hist = FALSE, weights = NULL, ...){
 
