@@ -494,3 +494,15 @@ Kurt's memo of 18/07/23.
 2.56
 
 1.  Added HLmix to compute NPMLE using the Huber (1964) base density.
+
+2.57
+
+1.  Added Renyi options to KWDual.
+
+2.  Corrected the MLE/Shannon case for medde() and KWDual().
+
+2.59
+
+1.  Added HuberSpline and HodgesLehmann functions
+
+2.  Added Huber1 and HL1 demos

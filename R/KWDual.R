@@ -4,7 +4,7 @@
 #' There is currently only one option for the optimization that based on  Mosek. 
 #' It relies on the \pkg{Rmosek} interface to R see installation instructions in
 #' the Readme file in the inst directory of this package.  This version of the function
-#' is intended to work with versions of Mosek after 7.0.  
+#' is intended to work with versions of Mosek after 7.0, but preferably after 10.0
 #' 
 #' @param A Linear constraint matrix
 #' @param d constraint vector
@@ -25,6 +25,10 @@
 #' allows Mosek to uses multiple threads (cores) if available, which is
 #' generally desirable, but may have unintended (undesirable) consequences when running
 #' simulations on clusters.
+#' An experimental option, also passable via the \code{dots} mechanism is the parameter
+#' \code{alpha}.  The default value, \code{alpha = 0}, yields the maximum likelihood 
+#' estimator, NPMLE, while other values correspond to various choice of the Renyi 
+#' divergence fitting criteria as catalogued in documentation for the function \code{medde}.
 #' @return Returns a list with components: \item{f}{dual solution vector, the
 #' mixing density} \item{g}{primal solution vector, the mixture density
 #' evaluated at the data points} \item{logLik}{log likelihood}
@@ -67,72 +71,111 @@ KWDual <- function(A, d, w, ...){
 # Revised	30 Jan 2019 # Removed pogs method, added Mosek V9 option
 # Revised	27 Sep 2019 # changed stop to warning for stalled mosek
 # Revised	27 Jul 2022 # Removed mention of pogs method
+# Revised	15 Jul 2024 # Added minimum distance Renyi fitting options
 
-n <- nrow(A)
-m <- ncol(A)
-A <- t(A) 
-A <- Matrix::Matrix(A, sparse = TRUE)
-
-dots <- list(...)
-
-# Default mosek method
-rtol <- ifelse(length(dots$rtol), dots$rtol, 1e-6)
-verb <- ifelse(length(dots$verb), dots$verb, 0)
-if(length(dots$control)) control <- dots$control
-else control <- NULL
-
-if(utils::packageVersion("Rmosek") < "9"){
-    P <- list(sense = "min")
-    P$c <- rep(0, n)
-    P$A <- A
-    P$bc <- rbind(rep(0,m),d)
-    P$bx <- rbind(rep(0,n),rep(Inf,n))
-    opro <- matrix ( list (), nrow =5, ncol = n)
-    rownames ( opro ) <- c(" type ","j","f","g","h")
-    
-    opro[1,] <-  as.list(rep('log',n))
-    opro[2,] <-  as.list(1:n)
-    opro[3,] <-  as.list(-w)
-    opro[4,] <-  as.list(rep(1,n))
-    opro[5,] <-  as.list(rep(0,n))
-    P$scopt<- list(opro = opro)
-    P$dparam$intpnt_nl_tol_rel_gap <- rtol
-}
-else { #Mosek Version => 9
+    n <- nrow(A)
+    m <- ncol(A)
+    A <- t(A)
+    A <- Matrix::Matrix(A, sparse = TRUE)
+    dv <- -w
+    dots <- list(...)
+    rtol <- ifelse(length(dots$rtol), dots$rtol, 1e-06)
+    verb <- ifelse(length(dots$verb), dots$verb, 0)
+    alpha <- ifelse(length(dots$alpha), dots$alpha, 0) 
+    if(length(dots$control)) 
+	control <- dots$control 
+    else
+	control <- NULL
+    if (utils::packageVersion("Rmosek") < "9"){
+	stopifnot(alpha == 0)
+	P <- list(sense = "min")
+        P$c <- rep(0, n)
+        P$A <- A
+        P$bc <- rbind(rep(0, m), d)
+        P$bx <- rbind(rep(0, n), rep(Inf, n))
+        opro <- matrix(list(), nrow = 5, ncol = n)
+        rownames(opro) <- c(" type ", "j", "f", "g", "h")
+        opro[1, ] <- as.list(rep("log", n))
+        opro[2, ] <- as.list(1:n)
+        opro[3, ] <- as.list(-w)
+        opro[4, ] <- as.list(rep(1, n))
+        opro[5, ] <- as.list(rep(0, n))
+        P$scopt <- list(opro = opro)
+        P$dparam$intpnt_nl_tol_rel_gap <- rtol
+    }
+    else {
     P <- list(sense = "min")
     A0 <- Matrix::Matrix(0, m, n)
-    P$c <- c(rep(0,n), -w)
     P$A <- cbind(A, A0)
     P$bc <- rbind(rep(0, m), d)
-    P$bx <- rbind(c(rep(0, n), rep(-Inf,n)), rep(Inf, 2*n))
-    P$F <- sparseMatrix(c(seq(1,3*n, by = 3), seq(3, 3*n, by = 3)),
-		 c(1:n, (n+1):(2*n)), x = rep(1,2*n))
-    P$g <- rep(c(0,1,0), n)
-    P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = n)
-    rownames(P$cones) <- c("type", "dim", "conepar")
+    P$bx <- rbind(c(rep(0, n), rep(-Inf, n)), rep(Inf, 2 * n))
+    if (alpha == 0) {
+        P$c <- c(rep(0, n), dv)
+        P$F <- sparseMatrix(c(seq(1, 3 * n, by = 3), seq(3, 
+            3 * n, by = 3)), c(1:n, (n + 1):(2 * n)), x = rep(1, 2 * n))
+        P$g <- rep(c(0, 1, 0), n)
+        P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = n)
+        rownames(P$cones) <- c("type", "dim", "conepar")
+    }
+    else if (alpha == 1) {
+        P$c <- c(rep(0, n), dv)
+        P$F <- sparseMatrix(c(seq(2, 3 * n, by = 3), seq(3, 
+            3 * n, by = 3)), c(1:n, (n + 1):(2 * n)), x = rep(1, 2 * n))
+        P$g <- rep(c(1, 0, 0), n)
+        P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = n)
+        rownames(P$cones) <- c("type", "dim", "conepar")
+    }
+    else {
+	beta <- alpha/(alpha - 1)
+        P$c <- c(rep(0, n), -sign(beta) * dv)
+        if (alpha > 1) {
+            alpha <- 1/alpha
+            P$F <- sparseMatrix(c(seq(3, 3 * n, by = 3), 
+             seq(1, 3 * n, by = 3)), c(1:n, (n + 1):(2 * 
+             n)), x = rep(1, 2 * n))
+            P$g <- rep(c(0, 1, 0), n)
+        }
+        else if (alpha < 0) {
+            alpha <- 1/(1 - alpha)
+            P$F <- sparseMatrix(c(seq(1, 3 * n, by = 3), 
+              seq(3, 3 * n, by = 3)), c(1:n, (n + 1):(2 * 
+              n)), x = rep(1, 2 * n))
+            P$g <- rep(c(0, 1, 0), n)
+        }
+        else {
+            P$F <- sparseMatrix(c(seq(1, 3 * n, by = 3), 
+              seq(3, 3 * n, by = 3)), c(1:n, (n + 1):(2 * 
+              n)), x = rep(1, 2 * n))
+            P$g <- rep(c(0, 1, 0), n)
+        }
+        P$cones <- matrix(list("PPOW", 3, c(alpha, 1 - alpha)), nrow = 3, ncol = n)
+        rownames(P$cones) <- c("type", "dim", "conepar")
+	}
+    }
     P$dparam$intpnt_co_tol_rel_gap <- rtol
-}
-if(length(control)){
-    P$iparam <- control$iparam
-    P$dparam <- control$dparam
-    P$sparam <- control$sparam
-}
-z <- Rmosek::mosek(P, opts = list(verbose = verb))
-if(z$response$code > 0){ # Print Mosek messages maybe
-    if(length(grep("LICENSE", z$response$msg)))
-        stop("Mosek Error:", z$response$msg)
-    else if(verb > 0)
-        warning("Mosek Warning:", z$response$msg)
-    else if(length(grep("STALL", z$response$msg)) != 1)
-        warning("Mosek Warning:", z$response$msg)
-}
-status <- z$sol$itr$solsta
-if (status != "OPTIMAL")
-    warning(paste("Solution status = ", status))
-f <- z$sol$itr$suc
-if(min(f) < -rtol) 
-    warning("estimated mixing distribution has some negative values: consider reducing rtol")
-else f[f < 0] <- 0
-g <- as.vector(t(A) %*% (f * d))
-list(f = f, g = g, status = status)
+    if (length(control)) {
+        P$iparam <- control$iparam
+        P$dparam <- control$dparam
+        P$sparam <- control$sparam
+    }
+    z <- Rmosek::mosek(P, opts = list(verbose = verb))
+    if (z$response$code > 0) {
+        if (length(grep("LICENSE", z$response$msg))) 
+            stop("Mosek Error:", z$response$msg)
+        else if (verb > 0) 
+            warning("Mosek Warning:", z$response$msg)
+        else if (length(grep("STALL", z$response$msg)) != 1) 
+            warning("Mosek Warning:", z$response$msg)
+    }
+    status <- z$sol$itr$solsta
+    if (status != "OPTIMAL") 
+        warning(paste("Solution status = ", status))
+    f <- z$sol$itr$suc
+    if (min(f) < -rtol) 
+        warning("estimated mixing distribution has some negative values: consider reducing rtol")
+    else 
+	f[f < 0] <- 0
+    f <- f/sum(f)
+    g <- as.vector(t(A) %*% (f * d))
+    list(f = f, g = g, status = status)
 }

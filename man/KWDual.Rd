@@ -28,7 +28,11 @@ desirable to tighten this, say to 1e-10.  Another example that motivated the int
 1))}, which forces Mosek to use a single threaded process.  The default
 allows Mosek to uses multiple threads (cores) if available, which is
 generally desirable, but may have unintended (undesirable) consequences when running
-simulations on clusters.}
+simulations on clusters.
+An experimental option, also passable via the \code{dots} mechanism is the parameter
+\code{alpha}.  The default value, \code{alpha = 0}, yields the maximum likelihood 
+estimator, NPMLE, while other values correspond to various choice of the Renyi 
+divergence fitting criteria as catalogued in documentation for the function \code{medde}.}
 }
 \value{
 Returns a list with components: \item{f}{dual solution vector, the
@@ -45,7 +49,7 @@ Interface function for calls to optimizer from various REBayes functions
 There is currently only one option for the optimization that based on  Mosek. 
 It relies on the \pkg{Rmosek} interface to R see installation instructions in
 the Readme file in the inst directory of this package.  This version of the function
-is intended to work with versions of Mosek after 7.0.
+is intended to work with versions of Mosek after 7.0, but preferably after 10.0
 }
 \references{
 Koenker, R and I. Mizera, (2013) ``Convex Optimization, Shape Constraints,

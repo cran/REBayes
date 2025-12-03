@@ -23,3 +23,5 @@ Renyi	Comparison of 1d Renyi estimates
 Grenander	Three equivalent ways to compute the Grenander estimator
 RLR1	A Simple Lasso Plot for logistic regression
 RLR2	Bradley Terry Estimation with Ranking lasso regularization
+Huber1	Huber Spline example
+HL1	Hodges and Lehmann example

@@ -198,11 +198,11 @@ medde <- function (x, v = 300, lambda = 0.5, alpha = 1, Dorder = 1,
             P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = p)
             rownames(P$cones) <- c("type", "dim", "conepar")
         }
-	else if (alpha == 1) { # Entropy case
+	else if (alpha == 1) { # Shannon Entropy case
             P$c <- c(rep(0, p + q), dv)
-            P$F <- sparseMatrix(c(seq(3, 3 * p, by = 3), seq(1, 3 * p, by = 3)), 
-				c(1:p, (p + q + 1):(2 * p + q)), x = rep(-1, 2 * p))
-            P$g <- rep(c(0, 1, 0), p)
+            P$F <- sparseMatrix(c(seq(2, 3 * p, by = 3), seq(3, 3 * p, by = 3)), 
+				c(1:p, (p + q + 1):(2 * p + q)), x = rep(1, 2 * p))
+            P$g <- rep(c(1, 0, 0), p)
             P$cones <- matrix(list("PEXP", 3, NULL), nrow = 3, ncol = p)
             rownames(P$cones) <- c("type", "dim", "conepar")
         }
