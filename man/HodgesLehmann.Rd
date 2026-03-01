@@ -6,21 +6,34 @@
  
  Given a prior \eqn{G} find a modified prior \eqn{f} that bounds  minimax risk.}
 \usage{
-HodgesLehmann(grid, G, alpha, type = "Huber", ...)
+HodgesLehmann(grid, G, alpha, type = "Huber", sd = 1, ...)
 }
 \arguments{
-\item{grid}{grid on which to interpolate}
+\item{grid}{grid on which to interpolate Hodges-Lehmann solution}
 
-\item{G}{initial prior}
+\item{G}{initial prior (should integrate to 1)}
 
 \item{alpha}{contamination proportion}
 
 \item{type}{either "Huber" or "Mallows"}
 
+\item{sd}{standard deviation of the Gaussian noise}
+
 \item{...}{other arguments to be passed to Mosek.}
 }
 \value{
-An object of class density with solution
+A list containing:
+\itemize{
+\code{x}: grid for domain of marginal density
+
+\code{y}: function values for modified marginal density at \code{x}
+
+\code{h}: function values for contamination portion at \code{x}
+
+\code{d}: Bayes rule for modified prior at \code{x}
+
+\code{H}: function values for contamination prior distribution, only for the "Mallows" option
+}
 }
 \description{
 There are two variants both  minimize Fisher information for location 

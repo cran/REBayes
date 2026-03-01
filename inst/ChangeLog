@@ -506,3 +506,9 @@ Kurt's memo of 18/07/23.
 1.  Added HuberSpline and HodgesLehmann functions
 
 2.  Added Huber1 and HL1 demos
+
+2.60
+
+1.  Corrected demo HL1.R
+
+2.  Modified HodgesLehmann return object

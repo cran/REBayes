@@ -12,12 +12,24 @@
 #'   	\deqn{f(x) = \alpha \Phi * G + (1-\alpha) h(x), \; h(x) = \Phi * H}
 #'  N.B. When the grid is not equispaced, one would have to include grid spacings.
 #'
-#' @param grid grid on which to interpolate
-#' @param G initial prior
+#' @param grid grid on which to interpolate Hodges-Lehmann solution
+#' @param G initial prior (should integrate to 1)
 #' @param alpha contamination proportion
 #' @param type either "Huber" or "Mallows" 
+#' @param sd standard deviation of the Gaussian noise
 #' @param ... other arguments to be passed to Mosek.
-#' @return An object of class density with solution
+#' @return A list containing:
+#' \itemize{
+#'	\code{x}: grid for domain of marginal density
+#'
+#'	\code{y}: function values for modified marginal density at \code{x}
+#'
+#'	\code{h}: function values for contamination portion at \code{x}
+#'
+#'	\code{d}: Bayes rule for modified prior at \code{x}
+#'
+#'	\code{H}: function values for contamination prior distribution, only for the "Mallows" option
+#' }
 #' @author R. Koenker and J. Gu
 #'
 #' @references 
@@ -47,9 +59,10 @@
 #' @export 
 
 
-HodgesLehmann <- function(grid, G, alpha, type = "Huber", ...){
+HodgesLehmann <- function(grid, G, alpha, type = "Huber", sd = 1, ...){
   require(REBayes)
-  gridg <- G$x 
+  if(!all.equal(sum(G$y),1)) warning("Initial G mass should sum to 1")
+  gridg <- G$x
   m <- length(grid)
   p <- length(gridg)
   fG <- dnorm(outer(grid, gridg, "-"))%*%G$y
@@ -102,12 +115,21 @@ HodgesLehmann <- function(grid, G, alpha, type = "Huber", ...){
     P$cones[,k] <- list("RQUAD", 3, NULL)
   P$dparam$intpnt_co_tol_rel_gap <- rtol
   res <- Rmosek::mosek(P, opts = list(verbose = verb))
-  if(type == "Huber")
-    z <- list(x = grid, y = res$sol$itr$xx[1:m], yh = res$sol$itr$xx[-c(1:(4*m-3))] )
+  x <- grid
+  y = res$sol$itr$xx[1:m]
+  if(type == "Huber"){
+      h <-  res$sol$itr$xx[-c(1:(4*m-3))] 
+      d <- x[-1] + diff(log(y))/diff(x)
+      d <- c(d[1],d)
+      z <- list(x = grid, y = y, h = h, d = d)
+  }
   else{
-    yh <- dnorm(outer(grid, gridg, "-"))%*%res$sol$itr$xx[-c(1:(4*m-3+p))]
-    z <- list(x = grid, y = res$sol$itr$xx[1:m], yh = yh/sum(yh),
-	g = res$sol$itr$xx[-c(1:(4*m-3))][1:p], h = res$sol$itr$xx[-c(1:(4*m-3+p))])
+    h <- dnorm(outer(grid, gridg, "-"))%*%res$sol$itr$xx[-c(1:(4*m-3+p))]
+    h <- h/sum(h)
+    H <- res$sol$itr$xx[-c(1:(4 * m - 3 + p))]
+    d = x[-1] + diff(log(y))/diff(x)
+    d = c(d[1],d)
+    z <- list(x = grid, y = y, h = h, d = d, H = H)
   }
   class(z) <- "density"
   return(z)

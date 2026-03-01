@@ -1,5 +1,7 @@
 # A Model for Shakespeare's vocabulary
-require(deconvolveR) # For data
+if (!requireNamespace("deconvolveR", quietly = TRUE)) {
+  stop("Package 'pkgname' is required for data of this demo.")
+}
 data(bardWordCount)
 w <- bardWordCount
 x <- 1:100

@@ -10,14 +10,12 @@ G <- GLmix(y, v, rtol = 1e-10)
 f0 <- HodgesLehmann(grid, G, alpha = 0.9, rtol = 1e-10)
 f1 <- HodgesLehmann(grid, G, alpha = 0.9, type = "Mallows", rtol = 1e-10)
 
-plot(f1$x, f1$yh, type="l", xlab = "x", ylab = "h(x)", main = "n = 500", ylim = c(0, 0.05))
-lines(f0$x, f0$yh,col=2)
+plot(f1$x, f1$h, type="l", xlab = "x", ylab = "h(x)", main = "n = 500", ylim = c(0, 0.05))
+lines(f0$x, f0$h,col=2)
+legend("topleft", c("Mallows", "Huber"), lty = 1, col = 1:2, cex = .7)
 
-d1 <- f1$x[-1]+diff(log(f1$y))/diff(f1$x)
-d0 <- f0$x[-1]+diff(log(f0$y))/diff(f0$x)
-
-d1f <- approxfun(f1$x[-1], d1)
-d0f <- approxfun(f0$x[-1],d0)
+d1f <- approxfun(f1$x, f1$d)
+d0f <- approxfun(f0$x,f0$d)
 d2f <- approxfun(G$x,predict(G,G$x))
 
 newy <- seq(-6,6,by = 0.01)
@@ -40,14 +38,12 @@ G <- GLmix(y, v, rtol = 1e-10)
 f0 <- HodgesLehmann(grid, G, alpha = 0.9, rtol = 1e-10)
 f1 <- HodgesLehmann(grid, G, alpha = 0.9, type = "Mallows", rtol = 1e-10)
 
-plot(newy, d1f(newy), type="l", main = "n= 5000", xlab = "x", ylab = "d(x)")
-lines(f0$x, f0$yh,col=2)
+plot(f1$x, f1$h, type="l", main = "n= 5000", xlab = "x", ylab = "h(x)")
+lines(f0$x, f0$h,col=2)
+legend("topleft", c("Mallows", "Huber"), lty = 1, col = 1:2, cex = .7)
 
-d1 <- f1$x[-1]+diff(log(f1$y))/diff(f1$x)
-d0 <- f0$x[-1]+diff(log(f0$y))/diff(f0$x)
-
-d1f <- approxfun(f1$x[-1], d1)
-d0f <- approxfun(f0$x[-1],d0)
+d1f <- approxfun(f1$x, f1$d)
+d0f <- approxfun(f0$x, f0$d)
 d2f <- approxfun(G$x,predict(G,G$x))
 
 newy <- seq(-6,6,by = 0.01)

@@ -93,7 +93,7 @@ at \url{http://davoidofmeaning.blogspot.com/2016/12/r-vinaigrettes.html}.
 It seemed appropriate that my first venture in this new genre should be
 samokritika (self-criticism) directed at the R package REBayes, \cite{REBayes}.
 Code to reproduce the computational results presented is available from
-\url{http://www.econ.uiuc.edu/~roger/research/ebayes/ebayes.html}, along
+the EBayes link in the papers section of my web page, along
 with the pdf version of this note.  I would like to thank Jiaying Gu for
 very helpful comments on an earlier draft.
 }
